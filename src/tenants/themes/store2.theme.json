@@ -1,0 +1,19 @@
+{
+  "id": "store2",
+  "name": "Store Two",
+  "colors": {
+    "primary": "#0f172a",
+    "primaryForeground": "#f8fafc",
+    "accent": "#059669",
+    "accentForeground": "#ffffff",
+    "muted": "#64748b",
+    "surface": "#f8fafc",
+    "surfaceBorder": "#e2e8f0"
+  },
+  "radius": "0.5rem",
+  "hero": {
+    "badge": "Limited drop",
+    "title": "Quiet luxury",
+    "subtitle": "A second tenant theme — same platform, different story."
+  }
+}

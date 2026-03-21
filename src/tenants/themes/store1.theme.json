@@ -1,0 +1,19 @@
+{
+  "id": "store1",
+  "name": "Store One",
+  "colors": {
+    "primary": "#18181b",
+    "primaryForeground": "#fafafa",
+    "accent": "#2563eb",
+    "accentForeground": "#ffffff",
+    "muted": "#71717a",
+    "surface": "#fafafa",
+    "surfaceBorder": "#e4e4e7"
+  },
+  "radius": "0.75rem",
+  "hero": {
+    "badge": "New arrivals",
+    "title": "Design that sells",
+    "subtitle": "Curated products with a calm, conversion-focused experience."
+  }
+}
