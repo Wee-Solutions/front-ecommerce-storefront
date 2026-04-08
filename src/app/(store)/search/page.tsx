@@ -41,26 +41,24 @@ export default async function SearchPage({ searchParams }: Props) {
       take: PAGE_SIZE,
       skip,
     },
-    locale
+    locale,
   ).catch(() => ({ totalCount: 0, products: [] }));
 
   const totalPages = Math.max(1, Math.ceil(result.totalCount / PAGE_SIZE));
-  const hrefForPage = (p: number) => {
-    const params = new URLSearchParams();
-    if (term) params.set("q", term);
-    if (p > 1) params.set("page", String(p));
-    const qs = params.toString();
-    return `/search${qs ? `?${qs}` : ""}`;
-  };
 
   return (
     <div>
       <nav className="mb-6 text-sm text-[var(--sf-color-muted)]">
-        <Link href="/" className="transition hover:text-[var(--sf-color-primary)]">
+        <Link
+          href="/"
+          className="transition hover:text-[var(--sf-color-primary)]"
+        >
           {dict.search.home}
         </Link>
         <span className="mx-2 opacity-50">/</span>
-        <span className="text-[var(--sf-color-primary)]">{dict.search.title}</span>
+        <span className="text-[var(--sf-color-primary)]">
+          {dict.search.title}
+        </span>
       </nav>
       <h1 className="text-2xl font-semibold tracking-tight text-[var(--sf-color-primary)] md:text-3xl">
         {term ? `${dict.search.resultsFor} “${term}”` : dict.search.allProducts}
@@ -85,7 +83,8 @@ export default async function SearchPage({ searchParams }: Props) {
           <Pagination
             page={page}
             totalPages={totalPages}
-            hrefForPage={hrefForPage}
+            pathname="/search"
+            query={term ? { q: term } : undefined}
           />
         </>
       )}

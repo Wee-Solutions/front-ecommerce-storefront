@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 type Props = {
   badge: string;
@@ -14,6 +16,23 @@ type Props = {
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
+const container = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 0.05 },
+  },
+};
+
+const rise = {
+  hidden: { opacity: 0, y: 26 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.62, ease },
+  },
+};
+
 export function AnimatedHero({
   badge,
   title,
@@ -24,52 +43,114 @@ export function AnimatedHero({
 }: Props) {
   const reduce = useReducedMotion();
 
-  const inner = (
-    <>
-      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/75">
+  const staticBlock = (
+    <div className="max-w-4xl space-y-0 text-center">
+      <p className="sf-section-eyebrow text-[var(--sf-color-primary-fg)]/65">
         {badge}
       </p>
-      <h1 className="mt-4 text-balance text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
+      <span
+        className="mx-auto mt-5 block h-px w-12 bg-gradient-to-r from-transparent via-[var(--sf-color-accent)] to-transparent opacity-90"
+        aria-hidden
+      />
+      <h1 className="font-heading mt-8 max-w-4xl text-balance text-4xl font-medium leading-[1.05] tracking-tight text-[var(--sf-color-primary-fg)] sm:text-5xl md:text-6xl lg:text-[3.5rem] lg:leading-[1.02]">
         {title}
       </h1>
-      <p className="mt-5 text-pretty text-sm leading-relaxed text-white/85 sm:text-base">
+      <p className="mx-auto mt-8 max-w-xl text-pretty text-base leading-relaxed text-[var(--sf-color-primary-fg)]/85 sm:text-lg">
         {subtitle}
       </p>
-      <div className="mt-10 flex flex-wrap justify-center gap-3">
+      <div className="mt-12 flex flex-wrap justify-center gap-4">
         <Link
           href="/search"
-          className="inline-flex min-h-11 items-center rounded-full bg-[var(--sf-color-accent)] px-7 text-sm font-medium text-[var(--sf-color-accent-fg)] shadow-lg shadow-black/15 transition hover:brightness-110 hover:shadow-xl active:scale-[0.98]"
+          className={cn(
+            buttonVariants({ variant: "default", size: "lg" }),
+            "min-h-12 rounded-full border-0 bg-[var(--sf-color-accent)] px-10 text-[15px] font-semibold text-[var(--sf-color-accent-fg)] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.45)] transition hover:brightness-[1.06] hover:shadow-[0_24px_60px_-12px_rgba(0,0,0,0.5)] active:scale-[0.98]"
+          )}
         >
           {shopAllLabel}
         </Link>
-        {browseHref && (
+        {browseHref ? (
           <Link
             href={browseHref}
-            className="inline-flex min-h-11 items-center rounded-full border border-white/35 bg-white/5 px-7 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/15 active:scale-[0.98]"
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "min-h-12 rounded-full border-[var(--sf-color-primary-fg)]/40 bg-[var(--sf-color-primary-fg)]/[0.07] px-10 text-[15px] text-[var(--sf-color-primary-fg)] backdrop-blur-md hover:bg-[var(--sf-color-primary-fg)]/14 active:scale-[0.98]"
+            )}
           >
             {browseLabel}
           </Link>
-        )}
+        ) : null}
       </div>
-    </>
+    </div>
   );
 
   return (
-    <section className="relative overflow-hidden rounded-[var(--sf-radius)] bg-[var(--sf-color-primary)] px-6 py-16 text-[var(--sf-color-primary-fg)] shadow-[var(--sf-shadow-lg)] sm:px-10 sm:py-24">
+    <section className="relative isolate min-h-[min(88vh,40rem)] overflow-hidden rounded-[var(--sf-radius)] bg-[var(--sf-color-primary)] px-5 py-20 shadow-[var(--sf-shadow-lg)] sm:px-10 sm:py-28 md:min-h-[min(90vh,44rem)]">
       <div
-        className="sf-hero-mesh pointer-events-none absolute inset-0 opacity-90"
+        className="sf-hero-mesh sf-hero-aurora pointer-events-none absolute inset-0 opacity-100"
         aria-hidden
       />
-      <div className="relative mx-auto max-w-2xl text-center">
+      <div
+        className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-[var(--sf-color-primary-fg)]/[0.12]"
+        aria-hidden
+      />
+      <div className="relative flex min-h-[inherit] flex-col items-center justify-center py-6 text-center md:py-10">
         {reduce ? (
-          inner
+          staticBlock
         ) : (
           <motion.div
-            initial={{ opacity: 0, y: 22 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease }}
+            className="max-w-4xl space-y-0 text-center"
+            variants={container}
+            initial="hidden"
+            animate="visible"
           >
-            {inner}
+            <motion.p
+              variants={rise}
+              className="sf-section-eyebrow text-[var(--sf-color-primary-fg)]/65"
+            >
+              {badge}
+            </motion.p>
+            <motion.span
+              variants={rise}
+              className="mx-auto mt-5 block h-px w-12 bg-gradient-to-r from-transparent via-[var(--sf-color-accent)] to-transparent opacity-90"
+              aria-hidden
+            />
+            <motion.h1
+              variants={rise}
+              className="font-heading mt-8 max-w-4xl text-balance text-4xl font-medium leading-[1.05] tracking-tight text-[var(--sf-color-primary-fg)] sm:text-5xl md:text-6xl lg:text-[3.5rem] lg:leading-[1.02]"
+            >
+              {title}
+            </motion.h1>
+            <motion.p
+              variants={rise}
+              className="mx-auto mt-8 max-w-xl text-pretty text-base leading-relaxed text-[var(--sf-color-primary-fg)]/85 sm:text-lg"
+            >
+              {subtitle}
+            </motion.p>
+            <motion.div
+              variants={rise}
+              className="mt-12 flex flex-wrap justify-center gap-4"
+            >
+              <Link
+                href="/search"
+                className={cn(
+                  buttonVariants({ variant: "default", size: "lg" }),
+                  "min-h-12 rounded-full border-0 bg-[var(--sf-color-accent)] px-10 text-[15px] font-semibold text-[var(--sf-color-accent-fg)] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.45)] transition hover:brightness-[1.06] hover:shadow-[0_24px_60px_-12px_rgba(0,0,0,0.5)] active:scale-[0.98]"
+                )}
+              >
+                {shopAllLabel}
+              </Link>
+              {browseHref ? (
+                <Link
+                  href={browseHref}
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "lg" }),
+                    "min-h-12 rounded-full border-[var(--sf-color-primary-fg)]/40 bg-[var(--sf-color-primary-fg)]/[0.07] px-10 text-[15px] text-[var(--sf-color-primary-fg)] backdrop-blur-md hover:bg-[var(--sf-color-primary-fg)]/14 active:scale-[0.98]"
+                  )}
+                >
+                  {browseLabel}
+                </Link>
+              ) : null}
+            </motion.div>
           </motion.div>
         )}
       </div>

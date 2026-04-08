@@ -1,19 +1,22 @@
 {
   "id": "store1",
-  "name": "Store One",
+  "name": "Maison Lumière",
   "colors": {
-    "primary": "#18181b",
-    "primaryForeground": "#fafafa",
-    "accent": "#2563eb",
+    "primary": "#3d2f35",
+    "primaryForeground": "#fdf8f6",
+    "accent": "#b76e79",
     "accentForeground": "#ffffff",
-    "muted": "#71717a",
-    "surface": "#fafafa",
-    "surfaceBorder": "#e4e4e7"
+    "muted": "#8a787c",
+    "surface": "#f8edea",
+    "surfaceBorder": "#e8d5d0",
+    "pageBackground": "#faf4f2",
+    "card": "#fffdfb",
+    "wash": "#f5e8e4"
   },
-  "radius": "0.75rem",
+  "radius": "0.875rem",
   "hero": {
-    "badge": "New arrivals",
-    "title": "Design that sells",
-    "subtitle": "Curated products with a calm, conversion-focused experience."
+    "badge": "New season",
+    "title": "Effortless elegance, every day",
+    "subtitle": "Thoughtfully curated womenswear—silhouettes you will love, fabrics that feel as beautiful as they look."
   }
 }

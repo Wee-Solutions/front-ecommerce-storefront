@@ -3,13 +3,15 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { RelatedProducts } from "@/components/catalog/related-products";
-import { ProductGallery } from "@/components/product/product-gallery";
 import { ReviewSection } from "@/components/product/review-section";
-import { ProductPurchasePanel } from "@/features/catalog/product-purchase-panel";
+import { ProductDetailCommerce } from "@/features/catalog/product-detail-commerce";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getServerLocale } from "@/lib/i18n/server-locale";
 import { isGuid } from "@/lib/guards";
+import { isMockApiEnabled } from "@/config/mock-mode";
+import { detailHighlights } from "@/lib/product-display";
 import { getServerStoreContext } from "@/lib/tenant/server-store";
+import { getMockReviewsForProduct } from "@/mocks/mock-reviews";
 import { getProductById } from "@/services/products.service";
 import { GatewayRequestError } from "@/types/api/gateway";
 
@@ -61,70 +63,60 @@ export default async function ProductPage({ params }: Props) {
   }
 
   const categoryIds = product.categories.map((c) => c.id);
+  const pdpHighlights = detailHighlights(product, 6);
 
   return (
     <div>
-      <nav className="mb-6 text-sm text-[var(--sf-color-muted)]">
+      <nav
+        className="mb-8 flex flex-wrap items-center gap-2 text-xs font-medium text-muted-foreground"
+        aria-label="Breadcrumb"
+      >
         <Link
           href="/"
-          className="transition hover:text-[var(--sf-color-primary)]"
+          className="rounded-full border border-border/70 bg-card/80 px-3 py-1 transition hover:border-primary/30 hover:text-foreground"
         >
           {dict.product.home}
         </Link>
         {product.categories[0] && (
           <>
-            <span className="mx-2 opacity-50">/</span>
+            <span className="text-border" aria-hidden>
+              /
+            </span>
             <Link
               href={`/c/${product.categories[0].id}`}
-              className="transition hover:text-[var(--sf-color-primary)]"
+              className="rounded-full border border-border/70 bg-card/80 px-3 py-1 transition hover:border-primary/30 hover:text-foreground"
             >
               {product.categories[0].name}
             </Link>
           </>
         )}
-        <span className="mx-2 opacity-50">/</span>
-        <span className="line-clamp-1 text-[var(--sf-color-primary)]">
+        <span className="text-border" aria-hidden>
+          /
+        </span>
+        <span className="line-clamp-1 max-w-[min(100%,14rem)] rounded-full border border-primary/15 bg-primary/5 px-3 py-1 text-foreground sm:max-w-md">
           {product.title}
         </span>
       </nav>
 
-      <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-        <ProductGallery
-          mainImage={product.mainImage}
-          images={product.images}
-          title={product.title}
-        />
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-[var(--sf-color-primary)] sm:text-3xl md:text-4xl">
-            {product.title}
-          </h1>
-          {product.subTitle && (
-            <p className="mt-3 text-sm leading-relaxed text-[var(--sf-color-muted)]">
-              {product.subTitle}
-            </p>
-          )}
-          <ProductPurchasePanel product={product} />
-          <div className="mt-10 space-y-3 text-sm leading-relaxed">
-            {product.description?.includes("<") ? (
-              <div
-                className="text-[var(--sf-color-muted)] [&_a]:text-[var(--sf-color-accent)] [&_a]:underline"
-                dangerouslySetInnerHTML={{
-                  __html: product.description,
-                }}
-              />
-            ) : (
-              <p className="whitespace-pre-wrap text-[var(--sf-color-muted)]">
-                {product.description || dict.product.noDescription}
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
+      <ProductDetailCommerce
+        product={product}
+        highlights={pdpHighlights}
+        labels={{
+          styleCode: dict.product.styleCode,
+          details: dict.product.details,
+          noDescription: dict.product.noDescription,
+        }}
+      />
 
       <ReviewSection
         productId={product.id}
         title={dict.product.reviewsTitle}
         description={dict.product.reviewsPlaceholder}
+        reviews={
+          isMockApiEnabled()
+            ? getMockReviewsForProduct(product.id)
+            : undefined
+        }
       />
 
       <Suspense

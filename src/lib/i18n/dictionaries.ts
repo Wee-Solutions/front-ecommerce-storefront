@@ -8,6 +8,8 @@ export type Dictionary = {
     menu: string;
     search: string;
     cart: string;
+    /** Slim top bar message, e.g. shipping promo */
+    announcement: string;
   };
   search: {
     placeholder: string;
@@ -27,9 +29,24 @@ export type Dictionary = {
     collections: string;
     viewAll: string;
     featured: string;
+    featuredSubtitle: string;
     heroBadge: string;
     heroTitle: string;
     heroSubtitle: string;
+    trustShipping: string;
+    trustReturns: string;
+    trustConcierge: string;
+    shopCategories: string;
+    shopCategoriesHint: string;
+    shopByFabric: string;
+    editorialEyebrow: string;
+    editorialSupporting: string;
+    fabricSilk: string;
+    fabricCashmere: string;
+    fabricLinen: string;
+    fabricLeather: string;
+    fabricWool: string;
+    fabricExplorerBlurb: string;
   };
   product: {
     pageFallback: string;
@@ -40,11 +57,28 @@ export type Dictionary = {
     available: string;
     outOfStock: string;
     addToCart: string;
+    /** Short CTA on product cards */
+    viewDetails: string;
     vatExcluded: string;
     home: string;
     reviewsTitle: string;
     reviewsPlaceholder: string;
     related: string;
+    /** Heading above long description on PDP */
+    details: string;
+    /** Use {{rating}} and {{count}} placeholders */
+    ratingReviews: string;
+    lowStock: string;
+    saveForLater: string;
+    shopNow: string;
+    trustShip: string;
+    trustReturn: string;
+    trustAuthentic: string;
+    styleCode: string;
+    /** Short label before a “from” price on cards, e.g. “From” */
+    priceFrom: string;
+    /** Hint under card price when product has options */
+    optionsOnProductPage: string;
   };
   category: {
     home: string;
@@ -153,6 +187,8 @@ const en: Dictionary = {
     menu: "Menu",
     search: "Search",
     cart: "Cart",
+    announcement:
+      "Complimentary express shipping on orders over $200 · Easy 30-day returns",
   },
   search: {
     placeholder: "Search products…",
@@ -171,10 +207,27 @@ const en: Dictionary = {
     collections: "Collections",
     viewAll: "View all",
     featured: "Featured",
+    featuredSubtitle: "Editor's picks — the pieces our clients are wearing now.",
     heroBadge: "New arrivals",
-    heroTitle: "Design that sells",
+    heroTitle: "The art of dressing well",
     heroSubtitle:
-      "Curated products with a calm, conversion-focused experience.",
+      "Handpicked silhouettes, sublime fabrics, and quiet confidence—discover pieces you will reach for again and again.",
+    trustShipping: "White-glove delivery",
+    trustReturns: "30-day returns",
+    trustConcierge: "Personal styling support",
+    shopCategories: "Shop by category",
+    shopCategoriesHint: "Jump straight into the edit",
+    shopByFabric: "Shop by material",
+    editorialEyebrow: "The edit",
+    editorialSupporting:
+      "One hero piece each week—considered cuts, precious fibers, and the kind of detail you notice up close.",
+    fabricSilk: "Silk",
+    fabricCashmere: "Cashmere",
+    fabricLinen: "Linen",
+    fabricLeather: "Leather",
+    fabricWool: "Wool",
+    fabricExplorerBlurb:
+      "Tap a material to browse everything we carry in that fiber.",
   },
   product: {
     pageFallback: "Product",
@@ -185,12 +238,24 @@ const en: Dictionary = {
     available: "available",
     outOfStock: "Out of stock for this selection",
     addToCart: "Add to cart",
+    viewDetails: "View piece",
     vatExcluded: "VAT excluded",
     home: "Home",
     reviewsTitle: "Reviews",
     reviewsPlaceholder:
       "Reviews will appear here when the review API is connected.",
     related: "You may also like",
+    details: "The details",
+    ratingReviews: "{{rating}} · {{count}} reviews",
+    lowStock: "Only a few left",
+    saveForLater: "Save",
+    shopNow: "Shop now",
+    trustShip: "Complimentary express shipping over $200",
+    trustReturn: "30-day returns · Prepaid label",
+    trustAuthentic: "Authenticity guaranteed",
+    styleCode: "Style #",
+    priceFrom: "From",
+    optionsOnProductPage: "Sizes & colors on the product page",
   },
   category: {
     home: "Home",
@@ -303,6 +368,7 @@ const he: Dictionary = {
     menu: "תפריט",
     search: "חיפוש",
     cart: "עגלה",
+    announcement: "משלוח מהיר חינם בהזמנות מעל $200 · החזרות עד 30 יום",
   },
   search: {
     placeholder: "חיפוש מוצרים…",
@@ -321,9 +387,26 @@ const he: Dictionary = {
     collections: "קולקציות",
     viewAll: "הצג הכל",
     featured: "מומלצים",
+    featuredSubtitle: "בחירות העורך — הפריטים שהלקוחות שלנו לובשים עכשיו.",
     heroBadge: "הגעות חדשות",
-    heroTitle: "עיצוב שמוכר",
-    heroSubtitle: "מוצרים נבחרים בחוויית קנייה שקטה וממוקדת המרה.",
+    heroTitle: "אמנות ללבוש נכון",
+    heroSubtitle:
+      "קווים נבחרים, בדים מרגישים וביטחון שקט—תגלו פריטים שתחזרו אליהם שוב ושוב.",
+    trustShipping: "משלוח יוקרתי",
+    trustReturns: "החזרות עד 30 יום",
+    trustConcierge: "ליווי סטיילינג אישי",
+    shopCategories: "קנו לפי קטגוריה",
+    shopCategoriesHint: "קיצור דרך לאוסף",
+    shopByFabric: "קנו לפי בד",
+    editorialEyebrow: "האדיט",
+    editorialSupporting:
+      "פריט שבועי אחד—גזרה מדויקת, סיבים נדירים ופרטים שרואים מקרוב.",
+    fabricSilk: "משי",
+    fabricCashmere: "קשמיר",
+    fabricLinen: "פשתן",
+    fabricLeather: "עור",
+    fabricWool: "צמר",
+    fabricExplorerBlurb: "בחרו חומר גלם כדי לסנן את כל הפריטים באותו סיב.",
   },
   product: {
     pageFallback: "מוצר",
@@ -334,11 +417,23 @@ const he: Dictionary = {
     available: "זמין",
     outOfStock: "אזל מהמלאי לבחירה זו",
     addToCart: "הוספה לעגלה",
+    viewDetails: "לפריט",
     vatExcluded: "לא כולל מע״מ",
     home: "בית",
     reviewsTitle: "ביקורות",
     reviewsPlaceholder: "ביקורות יוצגו כאן כאשר יחובר ממשק הביקורות.",
     related: "אולי תאהבו גם",
+    details: "הפרטים",
+    ratingReviews: "{{rating}} · {{count}} ביקורות",
+    lowStock: "נותרו מעט יחידות",
+    saveForLater: "שמירה",
+    shopNow: "לקנייה",
+    trustShip: "משלוח מהיר חינם מעל $200",
+    trustReturn: "החזרות 30 יום · תווית משלוח",
+    trustAuthentic: "מקוריות מובטחת",
+    styleCode: "מק״ט ",
+    priceFrom: "החל מ־",
+    optionsOnProductPage: "מידות וצבעים בדף המוצר",
   },
   category: {
     home: "בית",
@@ -448,6 +543,8 @@ const ar: Dictionary = {
     menu: "القائمة",
     search: "بحث",
     cart: "السلة",
+    announcement:
+      "شحن سريع مجاني للطلبات فوق 200$ · إرجاع خلال 30 يوماً",
   },
   search: {
     placeholder: "ابحث عن المنتجات…",
@@ -466,9 +563,26 @@ const ar: Dictionary = {
     collections: "المجموعات",
     viewAll: "عرض الكل",
     featured: "مميز",
+    featuredSubtitle: "اختيارات المحرر — القطع التي يرتديها عملاؤنا الآن.",
     heroBadge: "وصل حديثاً",
-    heroTitle: "تصميم يبيع",
-    heroSubtitle: "منتجات مختارة بتجربة هادئة تركز على التحويل.",
+    heroTitle: "فنّ اختيار الأناقة",
+    heroSubtitle:
+      "قصّات منتقاة وأقمشة راقية وثقة هادئة—اكتشفوا قطعاً ستعودون إليها مراراً.",
+    trustShipping: "توصيل فاخر",
+    trustReturns: "إرجاع خلال 30 يوماً",
+    trustConcierge: "دعم تنسيق شخصي",
+    shopCategories: "تسوق حسب الفئة",
+    shopCategoriesHint: "اختصار إلى التحرير",
+    shopByFabric: "تسوق حسب القماش",
+    editorialEyebrow: "التحرير",
+    editorialSupporting:
+      "قطعة بارزة أسبوعياً—قصّات مدروسة وأقمشة نادرة وتفاصيل تُرى عن قرب.",
+    fabricSilk: "حرير",
+    fabricCashmere: "كشمير",
+    fabricLinen: "كتان",
+    fabricLeather: "جلد",
+    fabricWool: "صوف",
+    fabricExplorerBlurb: "اختروا خامة لتصفح كل القطع من نفس النسيج.",
   },
   product: {
     pageFallback: "منتج",
@@ -479,11 +593,23 @@ const ar: Dictionary = {
     available: "متوفر",
     outOfStock: "نفد من المخزون لهذا الاختيار",
     addToCart: "أضف إلى السلة",
+    viewDetails: "عرض القطعة",
     vatExcluded: "غير شامل ضريبة القيمة المضافة",
     home: "الرئيسية",
     reviewsTitle: "التقييمات",
     reviewsPlaceholder: "ستظهر التقييمات هنا عند ربط واجهة التقييمات.",
     related: "قد يعجبك أيضاً",
+    details: "التفاصيل",
+    ratingReviews: "{{rating}} · {{count}} مراجعة",
+    lowStock: "تبقى كمية محدودة",
+    saveForLater: "حفظ",
+    shopNow: "تسوق الآن",
+    trustShip: "شحن سريع مجاني فوق 200$",
+    trustReturn: "إرجاع خلال 30 يوماً · ملصق مسبق الدفع",
+    trustAuthentic: "ضمان الأصالة",
+    styleCode: "الرمز ",
+    priceFrom: "من",
+    optionsOnProductPage: "المقاسات والألوان في صفحة المنتج",
   },
   category: {
     home: "الرئيسية",

@@ -7,11 +7,39 @@ import { useTranslations } from "@/contexts/locale-context";
 type Props = {
   page: number;
   totalPages: number;
-  hrefForPage: (p: number) => string;
+  /** Path only, e.g. `/search` or `/c/<categoryId>` (no query). */
+  pathname: string;
+  /**
+   * Query params to preserve on every page link (excluding `page`).
+   * Omit empty values; `page` is added only for page 2 and up.
+   */
+  query?: Record<string, string | undefined | null>;
 };
 
-export function Pagination({ page, totalPages, hrefForPage }: Props) {
+function buildHref(
+  pathname: string,
+  query: Record<string, string | undefined | null> | undefined,
+  p: number
+): string {
+  const params = new URLSearchParams();
+  if (query) {
+    for (const [key, value] of Object.entries(query)) {
+      if (value) params.set(key, value);
+    }
+  }
+  if (p > 1) params.set("page", String(p));
+  const qs = params.toString();
+  return qs ? `${pathname}?${qs}` : pathname;
+}
+
+export function Pagination({
+  page,
+  totalPages,
+  pathname,
+  query,
+}: Props) {
   const t = useTranslations();
+  const hrefForPage = (p: number) => buildHref(pathname, query, p);
 
   if (totalPages <= 1) return null;
   const items: (number | "gap")[] = [];

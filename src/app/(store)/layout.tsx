@@ -52,8 +52,9 @@ export default async function StoreLayout({
       <LocaleProvider locale={locale} dict={dict}>
         <div
           style={themeToCssVars(theme)}
-          className="flex min-h-screen flex-col bg-[var(--sf-page-bg)] text-zinc-900"
+          className="sf-boutique-canvas sf-grain flex min-h-screen flex-col bg-background text-foreground"
         >
+          <div className="relative z-[1] flex min-h-screen flex-1 flex-col">
           <StoreShell
             storeName={theme.name}
             categories={categories}
@@ -61,6 +62,7 @@ export default async function StoreLayout({
           >
             {children}
           </StoreShell>
+          </div>
         </div>
       </LocaleProvider>
     </AppProviders>

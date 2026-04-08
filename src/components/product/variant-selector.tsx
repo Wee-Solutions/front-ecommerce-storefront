@@ -47,13 +47,13 @@ export function VariantSelector({
   if (product.properties.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
       {product.properties.map((prop) => (
-        <fieldset key={prop.propertyId} className="space-y-2">
-          <legend className="text-sm font-medium text-[var(--sf-color-primary)]">
+        <fieldset key={prop.propertyId} className="space-y-3">
+          <legend className="text-xs font-semibold tracking-[0.18em] text-muted-foreground uppercase">
             {prop.propertyName}
           </legend>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2.5">
             {prop.values.map((val) => {
               const active = selection[prop.propertyId] === val.propertyValueId;
               return (
@@ -68,10 +68,12 @@ export function VariantSelector({
                     })
                   }
                   className={clsx(
-                    "rounded-full border px-3 py-1.5 text-sm transition",
+                    "min-h-10 rounded-full border px-4 py-2 text-sm font-medium transition-[color,box-shadow,transform,border-color] duration-200",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                     active
-                      ? "border-[var(--sf-color-accent)] bg-[var(--sf-color-accent)] text-[var(--sf-color-accent-fg)]"
-                      : "border-[var(--sf-color-border)] text-[var(--sf-color-primary)] hover:border-[var(--sf-color-muted)]"
+                      ? "border-primary bg-primary text-primary-foreground shadow-[0_10px_28px_-12px_rgba(61,47,53,0.55)]"
+                      : "border-border/80 bg-card/60 text-foreground hover:border-primary/35 hover:bg-muted/40",
+                    disabled && "pointer-events-none opacity-50"
                   )}
                 >
                   {val.value}

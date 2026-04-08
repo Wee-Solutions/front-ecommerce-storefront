@@ -1,11 +1,27 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import { Rubik, Noto_Sans_Arabic, Geist } from "next/font/google";
+import {
+  Cormorant_Garamond,
+  Noto_Sans_Arabic,
+  Plus_Jakarta_Sans,
+  Rubik,
+} from "next/font/google";
 import { isLocale, isRtlLocale } from "@/lib/i18n/locale-config";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-ui",
+  display: "swap",
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
 
 const rubik = Rubik({
   subsets: ["latin", "hebrew"],
@@ -25,8 +41,9 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: "Storefront", template: "%s" },
-  description: "Multi-tenant commerce storefront",
+  title: { default: "Boutique", template: "%s | Boutique" },
+  description:
+    "Women's fashion boutique — curated apparel with a calm, premium shopping experience.",
 };
 
 export default async function RootLayout({
@@ -43,9 +60,15 @@ export default async function RootLayout({
     <html
       lang={locale}
       dir={dir}
-      className={cn("h-full", "scroll-smooth", rubik.variable, notoArabic.variable, "font-sans", geist.variable)}
+      className={cn(
+        "h-full scroll-smooth font-sans",
+        plusJakarta.variable,
+        cormorant.variable,
+        rubik.variable,
+        notoArabic.variable
+      )}
     >
-      <body className="min-h-full bg-[var(--sf-page-bg)] font-sans text-zinc-900 antialiased selection:bg-[var(--sf-color-accent)]/25 selection:text-[var(--sf-color-primary)]">
+      <body className="min-h-full bg-background font-sans text-foreground antialiased selection:bg-primary/20 selection:text-foreground">
         {children}
       </body>
     </html>

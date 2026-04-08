@@ -1,3 +1,5 @@
+import { isMockApiEnabled } from "@/config/mock-mode";
+import { mockGetCategoryTree } from "@/mocks/mock-categories";
 import { gatewayFetch } from "@/services/http/gateway-fetch";
 import type {
   CategoryTreeRequest,
@@ -11,6 +13,13 @@ export async function getCategoryTree(
   request: CategoryTreeRequest = {},
   language = "en"
 ) {
+  if (isMockApiEnabled()) {
+    void vendorCode;
+    void request;
+    void language;
+    return mockGetCategoryTree();
+  }
+
   const raw = await gatewayFetch<CategoryTreeResponse>({
     vendorCode,
     path: "/categories/GetTree",

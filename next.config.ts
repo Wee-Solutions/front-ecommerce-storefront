@@ -20,6 +20,11 @@ const nextConfig: NextConfig = {
       },
       { protocol: "http", hostname: "localhost", pathname: "/**" },
       { protocol: "http", hostname: "127.0.0.1", pathname: "/**" },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
+      },
       ...extraHosts.map((hostname) => ({
         protocol: "https" as const,
         hostname,

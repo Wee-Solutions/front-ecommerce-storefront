@@ -1,58 +1,84 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
-import type { ImageItem } from "@/types/api/product";
+import type { ImageItem, ProductDetail } from "@/types/api/product";
 
-export function ProductGallery({
-  mainImage,
-  images,
-  title,
-}: {
-  mainImage?: ImageItem | null;
-  images: ImageItem[];
-  title: string;
-}) {
-  const all: ImageItem[] = [
-    ...(mainImage ? [mainImage] : []),
-    ...images.filter((img) => img.id !== mainImage?.id),
-  ];
-  const [active, setActive] = useState(0);
-  const current = all[active] ?? mainImage;
+function buildImageList(product: ProductDetail): ImageItem[] {
+  const main = product.mainImage;
+  const rest = product.images.filter((img) => img.id !== main?.id);
+  return main ? [main, ...rest] : rest;
+}
+
+type Props = {
+  product: ProductDetail;
+  /** URL shown as the hero; thumbs stay in sync when this matches an item. */
+  activeUrl: string | null;
+  onActiveUrlChange: (url: string) => void;
+};
+
+export function ProductGallery({ product, activeUrl, onActiveUrlChange }: Props) {
+  const baseList = useMemo(() => buildImageList(product), [product]);
+  const displayList = useMemo(() => {
+    if (!activeUrl) return baseList;
+    if (baseList.some((i) => i.url === activeUrl)) return baseList;
+    return [{ id: "__variant-hero", url: activeUrl }, ...baseList];
+  }, [baseList, activeUrl]);
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    if (!activeUrl) {
+      setActiveIndex(0);
+      return;
+    }
+    const i = displayList.findIndex((img) => img.url === activeUrl);
+    setActiveIndex(i >= 0 ? i : 0);
+  }, [activeUrl, displayList]);
+
+  const current = displayList[activeIndex] ?? displayList[0];
 
   if (!current?.url) {
     return (
-      <div className="flex aspect-square items-center justify-center rounded-[var(--sf-radius)] bg-[var(--sf-color-surface)] text-[var(--sf-color-muted)]">
+      <div className="flex aspect-[4/5] items-center justify-center rounded-3xl border border-border/60 bg-muted/40 text-muted-foreground">
         No image
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="relative aspect-square overflow-hidden rounded-[var(--sf-radius)] border border-[var(--sf-color-border)] bg-[var(--sf-color-surface)]">
+    <div className="flex flex-col gap-4">
+      <div className="group relative aspect-[4/5] overflow-hidden rounded-3xl border border-border/50 bg-muted/20 shadow-[0_28px_70px_-24px_rgba(61,47,53,0.35)] ring-1 ring-black/5">
         <Image
+          key={current.url}
           src={current.url}
-          alt={title}
+          alt={product.title}
           fill
           priority
-          className="object-contain p-4"
+          className="object-cover transition duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.02]"
           sizes="(max-width:1024px) 100vw, 50vw"
         />
+        <div
+          className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/10"
+          aria-hidden
+        />
       </div>
-      {all.length > 1 && (
-        <ul className="flex gap-2 overflow-x-auto pb-1" role="list">
-          {all.map((img, i) => (
-            <li key={img.id}>
+      {displayList.length > 1 && (
+        <ul className="flex gap-2.5 overflow-x-auto pb-1" role="list">
+          {displayList.map((img, i) => (
+            <li key={`${img.id}-${i}`}>
               <button
                 type="button"
-                onClick={() => setActive(i)}
+                onClick={() => {
+                  setActiveIndex(i);
+                  onActiveUrlChange(img.url);
+                }}
                 className={clsx(
-                  "relative h-16 w-16 shrink-0 overflow-hidden rounded-md border-2 transition",
-                  i === active
-                    ? "border-[var(--sf-color-accent)]"
-                    : "border-transparent opacity-70 hover:opacity-100"
+                  "relative h-[4.5rem] w-[4.5rem] shrink-0 overflow-hidden rounded-xl border-2 bg-muted/30 shadow-sm transition",
+                  i === activeIndex
+                    ? "border-primary ring-2 ring-primary/25"
+                    : "border-transparent opacity-75 hover:opacity-100"
                 )}
                 aria-label={`Show image ${i + 1}`}
               >
@@ -61,7 +87,7 @@ export function ProductGallery({
                   alt=""
                   fill
                   className="object-cover"
-                  sizes="64px"
+                  sizes="72px"
                 />
               </button>
             </li>

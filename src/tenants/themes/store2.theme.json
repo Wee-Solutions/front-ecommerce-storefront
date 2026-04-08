@@ -1,19 +1,22 @@
 {
   "id": "store2",
-  "name": "Store Two",
+  "name": "Verde Studio",
   "colors": {
-    "primary": "#0f172a",
-    "primaryForeground": "#f8fafc",
-    "accent": "#059669",
+    "primary": "#2a332e",
+    "primaryForeground": "#f6faf7",
+    "accent": "#5c7a62",
     "accentForeground": "#ffffff",
-    "muted": "#64748b",
-    "surface": "#f8fafc",
-    "surfaceBorder": "#e2e8f0"
+    "muted": "#6d7a72",
+    "surface": "#eef4ef",
+    "surfaceBorder": "#d4e0d7",
+    "pageBackground": "#f4f8f5",
+    "card": "#fefffe",
+    "wash": "#e8f0ea"
   },
-  "radius": "0.5rem",
+  "radius": "0.75rem",
   "hero": {
     "badge": "Limited drop",
-    "title": "Quiet luxury",
-    "subtitle": "A second tenant theme — same platform, different story."
+    "title": "Quiet luxury, natural tones",
+    "subtitle": "A second boutique story on the same platform—earthy palettes and refined essentials."
   }
 }

@@ -27,7 +27,7 @@ export async function RelatedProducts({
         take: 8,
         skip: 0,
       },
-      language
+      language,
     );
     items = res.products.filter((p) => p.id !== excludeProductId).slice(0, 4);
   } catch {

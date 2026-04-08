@@ -25,6 +25,14 @@ export type ProductListItem = {
   isDisplayInHomePage: boolean;
   isVATExcluded: boolean;
   isWeightBased: boolean;
+  /** Optional merchandising tags from API (e.g. Evening, New). */
+  tags?: { id: string; name: string }[];
+  /** True when PDP has size/color/etc. — card may show “from” price. */
+  hasOptions?: boolean;
+  /** Lowest variant price when `hasOptions`; for “From …” on cards. */
+  priceFrom?: number | null;
+  /** Strike price for the lowest-priced variant tier when it is on sale. */
+  priceFromCompareAt?: number | null;
 };
 
 export type ProductSearchResponse = {

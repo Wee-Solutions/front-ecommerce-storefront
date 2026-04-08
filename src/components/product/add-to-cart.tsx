@@ -1,8 +1,9 @@
 "use client";
 
-import clsx from "clsx";
 import { useTranslations } from "@/contexts/locale-context";
+import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/features/cart/cart-store";
+import { cn } from "@/lib/utils";
 
 type Props = {
   productId: string;
@@ -31,9 +32,14 @@ export function AddToCart({
   const t = useTranslations();
 
   return (
-    <button
+    <Button
       type="button"
       disabled={disabled || unitPrice < 0}
+      size="lg"
+      className={cn(
+        "min-h-11 min-w-[10rem] rounded-full px-8 font-semibold shadow-md transition hover:shadow-lg active:scale-[0.98]",
+        className
+      )}
       onClick={() =>
         addLine({
           productId,
@@ -45,12 +51,8 @@ export function AddToCart({
           propertyValueIds,
         })
       }
-      className={clsx(
-        "inline-flex min-h-11 min-w-[10rem] items-center justify-center rounded-full bg-[var(--sf-color-primary)] px-8 text-sm font-semibold text-[var(--sf-color-primary-fg)] shadow-md transition hover:brightness-110 hover:shadow-lg active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40",
-        className
-      )}
     >
       {t.product.addToCart}
-    </button>
+    </Button>
   );
 }

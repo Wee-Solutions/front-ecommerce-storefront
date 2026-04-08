@@ -1,0 +1,350 @@
+import type { CategoryTreeItem } from "@/types/api/category";
+import type { ProductDetail } from "@/types/api/product";
+
+/** Stable Unsplash fashion photography (crop + format for Next/Image). */
+export function fashionImg(photoId: string, w = 900, h = 1125) {
+  return `https://images.unsplash.com/${photoId}?auto=format&fit=crop&w=${w}&h=${h}&q=85`;
+}
+
+const VID = "mock-vendor";
+
+const img = (path: string) => ({ id: path.replace(/\W/g, "").slice(0, 12), url: fashionImg(path) });
+
+export const MOCK_CATEGORY_IDS = {
+  dresses: "c2222222-2222-4222-8222-222222222222",
+  knitwear: "c3333333-3333-4333-8333-333333333333",
+  accessories: "c4444444-4444-4444-8444-444444444444",
+} as const;
+
+function baseUnit() {
+  return { id: "00000001-0000-4000-8000-000000000001", category: 1, name: "Piece" };
+}
+
+/** Full product catalog for mock mode (source of truth). */
+export const MOCK_PRODUCT_DETAILS: ProductDetail[] = [
+  {
+    id: "11111111-1111-4111-8111-000000000001",
+    vendorId: VID,
+    title: "Aurora silk midi dress",
+    subTitle: "Bias-cut Italian silk · Champagne",
+    description:
+      "An evening-ready midi with a fluid drape and subtle sheen. Adjustable straps and a concealed side zip. Dry clean only.",
+    mainImage: img("photo-1595777457583-95e059d581b8"),
+    images: [
+      img("photo-1595777457583-95e059d581b8"),
+      img("photo-1566174050873-fbbe8dadc41e"),
+    ],
+    price: 428,
+    oldPrice: 498,
+    baseUnit: baseUnit(),
+    quantity: 40,
+    reserved: 2,
+    isVATExcluded: false,
+    isWeightBased: false,
+    sku: "MLK-DRS-01",
+    isDisplayInHomePage: true,
+    isActive: true,
+    categories: [
+      { id: MOCK_CATEGORY_IDS.dresses, name: "Dresses" },
+    ],
+    tags: [
+      { id: "t1", name: "Evening" },
+      { id: "t-new", name: "New in" },
+    ],
+    properties: [
+      {
+        propertyId: "prop-size-1",
+        propertyName: "Size",
+        values: [
+          { propertyValueId: "pv-sz-xs", value: "XS" },
+          { propertyValueId: "pv-sz-s", value: "S" },
+          { propertyValueId: "pv-sz-m", value: "M" },
+          { propertyValueId: "pv-sz-l", value: "L" },
+        ],
+      },
+    ],
+    variants: [
+      {
+        id: "v1111111-1111-4111-8111-000000000011",
+        sku: "MLK-DRS-01-XS",
+        price: 428,
+        oldPrice: 498,
+        images: [img("photo-1595777457583-95e059d581b8")],
+        propertyValues: [
+          { propertyValueId: "pv-sz-xs", propertyName: "Size", value: "XS" },
+        ],
+        inventory: { quantity: 6, reserved: 0 },
+      },
+      {
+        id: "v1111111-1111-4111-8111-000000000012",
+        sku: "MLK-DRS-01-S",
+        price: 428,
+        oldPrice: 498,
+        images: [img("photo-1595777457583-95e059d581b8")],
+        propertyValues: [
+          { propertyValueId: "pv-sz-s", propertyName: "Size", value: "S" },
+        ],
+        inventory: { quantity: 12, reserved: 1 },
+      },
+      {
+        id: "v1111111-1111-4111-8111-000000000013",
+        sku: "MLK-DRS-01-M",
+        price: 428,
+        oldPrice: null,
+        images: [img("photo-1566174050873-fbbe8dadc41e")],
+        propertyValues: [
+          { propertyValueId: "pv-sz-m", propertyName: "Size", value: "M" },
+        ],
+        inventory: { quantity: 14, reserved: 0 },
+      },
+      {
+        id: "v1111111-1111-4111-8111-000000000014",
+        sku: "MLK-DRS-01-L",
+        price: 448,
+        oldPrice: null,
+        images: [img("photo-1566174050873-fbbe8dadc41e")],
+        propertyValues: [
+          { propertyValueId: "pv-sz-l", propertyName: "Size", value: "L" },
+        ],
+        inventory: { quantity: 8, reserved: 1 },
+      },
+    ],
+  },
+  {
+    id: "11111111-1111-4111-8111-000000000002",
+    vendorId: VID,
+    title: "Soho cashmere crew",
+    subTitle: "Mongolian cashmere · Pearl melange",
+    description:
+      "Featherlight 12-gauge knit with ribbed cuffs. Layer under tailoring or wear solo. Designed for a relaxed, slightly cropped fit.",
+    mainImage: img("photo-1576566588028-4147f3842f27"),
+    images: [img("photo-1576566588028-4147f3842f27"), img("photo-1434389677669-e08b4cac3105")],
+    price: 268,
+    oldPrice: null,
+    baseUnit: baseUnit(),
+    quantity: 55,
+    reserved: 0,
+    isVATExcluded: false,
+    isWeightBased: false,
+    sku: "MLK-KNT-02",
+    isDisplayInHomePage: true,
+    isActive: true,
+    categories: [{ id: MOCK_CATEGORY_IDS.knitwear, name: "Knitwear" }],
+    tags: [
+      { id: "t2", name: "Essential" },
+      { id: "t-bestseller", name: "Bestseller" },
+    ],
+    properties: [],
+    variants: [],
+  },
+  {
+    id: "11111111-1111-4111-8111-000000000003",
+    vendorId: VID,
+    title: "Liora linen blazer",
+    subTitle: "Belgian linen · Soft black",
+    description:
+      "Half-lined silhouette with a single-breasted closure and functional cuffs. Pressed finish; steam to refresh between wears.",
+    mainImage: img("photo-1591369822096-ffd1403ed2e0"),
+    images: [img("photo-1591369822096-ffd1403ed2e0")],
+    price: 320,
+    oldPrice: 380,
+    baseUnit: baseUnit(),
+    quantity: 22,
+    reserved: 3,
+    isVATExcluded: false,
+    isWeightBased: false,
+    sku: "MLK-JKT-03",
+    isDisplayInHomePage: true,
+    isActive: true,
+    categories: [{ id: MOCK_CATEGORY_IDS.dresses, name: "Dresses" }],
+    tags: [{ id: "t3", name: "Tailoring" }],
+    properties: [],
+    variants: [],
+  },
+  {
+    id: "11111111-1111-4111-8111-000000000004",
+    vendorId: VID,
+    title: "Vela pleated skirt",
+    subTitle: "Japanese crepe · Graphite",
+    description:
+      "Permanent knife pleats with a satin-faced waistband. Midi length; invisible zipper at side seam.",
+    mainImage: img("photo-1583496661160-fb5886a0aa0b"),
+    images: [img("photo-1583496661160-fb5886a0aa0b")],
+    price: 198,
+    oldPrice: null,
+    baseUnit: baseUnit(),
+    quantity: 30,
+    reserved: 0,
+    isVATExcluded: false,
+    isWeightBased: false,
+    sku: "MLK-SKT-04",
+    isDisplayInHomePage: true,
+    isActive: true,
+    categories: [{ id: MOCK_CATEGORY_IDS.dresses, name: "Dresses" }],
+    tags: [],
+    properties: [],
+    variants: [],
+  },
+  {
+    id: "11111111-1111-4111-8111-000000000005",
+    vendorId: VID,
+    title: "Maison leather tote",
+    subTitle: "Vegetable-tanned calf · Caramel",
+    description:
+      "Structured carryall with suede-lined interior and interior zip pocket. Fits a 13\" laptop. Made in small batches in Tuscany.",
+    mainImage: img("photo-1590874103328-eac38a683ce7"),
+    images: [img("photo-1590874103328-eac38a683ce7"), img("photo-1548036328-c9fa89d128fa")],
+    price: 590,
+    oldPrice: 650,
+    baseUnit: baseUnit(),
+    quantity: 18,
+    reserved: 1,
+    isVATExcluded: false,
+    isWeightBased: false,
+    sku: "MLK-BAG-05",
+    isDisplayInHomePage: true,
+    isActive: true,
+    categories: [{ id: MOCK_CATEGORY_IDS.accessories, name: "Accessories" }],
+    tags: [{ id: "t4", name: "Leather" }],
+    properties: [],
+    variants: [],
+  },
+  {
+    id: "11111111-1111-4111-8111-000000000006",
+    vendorId: VID,
+    title: "Noir double-face wool coat",
+    subTitle: "Virgin wool blend · Ink",
+    description:
+      "Minimal wrap coat with hidden button closure and deep pockets. Mid-thigh length; ideal over tailoring or knits.",
+    mainImage: img("photo-1539533018447-63fcce2678e3"),
+    images: [img("photo-1539533018447-63fcce2678e3")],
+    price: 720,
+    oldPrice: null,
+    baseUnit: baseUnit(),
+    quantity: 14,
+    reserved: 0,
+    isVATExcluded: false,
+    isWeightBased: false,
+    sku: "MLK-COT-06",
+    isDisplayInHomePage: true,
+    isActive: true,
+    categories: [{ id: MOCK_CATEGORY_IDS.knitwear, name: "Knitwear" }],
+    tags: [],
+    properties: [],
+    variants: [],
+  },
+  {
+    id: "11111111-1111-4111-8111-000000000007",
+    vendorId: VID,
+    title: "Lune satin camisole",
+    subTitle: "Sand-washed silk · Ivory",
+    description:
+      "Delicate adjustable straps and a flattering V neckline. French seams throughout.",
+    mainImage: img("photo-1617127365659-c47fa864d8bc"),
+    images: [img("photo-1617127365659-c47fa864d8bc")],
+    price: 128,
+    oldPrice: null,
+    baseUnit: baseUnit(),
+    quantity: 60,
+    reserved: 2,
+    isVATExcluded: false,
+    isWeightBased: false,
+    sku: "MLK-TOP-07",
+    isDisplayInHomePage: false,
+    isActive: true,
+    categories: [
+      { id: MOCK_CATEGORY_IDS.dresses, name: "Dresses" },
+    ],
+    tags: [],
+    properties: [],
+    variants: [],
+  },
+  {
+    id: "11111111-1111-4111-8111-000000000008",
+    vendorId: VID,
+    title: "Harper wide-leg trousers",
+    subTitle: "Wool twill · Camel",
+    description:
+      "High-rise with pressed crease and elongated leg. Pair with the Liora blazer for a full suit moment.",
+    mainImage: img("photo-1594633312681-425c7b97ccd1"),
+    images: [img("photo-1594633312681-425c7b97ccd1")],
+    price: 245,
+    oldPrice: 275,
+    baseUnit: baseUnit(),
+    quantity: 25,
+    reserved: 0,
+    isVATExcluded: false,
+    isWeightBased: false,
+    sku: "MLK-TRS-08",
+    isDisplayInHomePage: false,
+    isActive: true,
+    categories: [{ id: MOCK_CATEGORY_IDS.dresses, name: "Dresses" }],
+    tags: [],
+    properties: [],
+    variants: [],
+  },
+  {
+    id: "11111111-1111-4111-8111-000000000009",
+    vendorId: VID,
+    title: "Étoile pearl studs",
+    subTitle: "Freshwater pearls · 14k gold plate",
+    description:
+      "Hand-set pearls on hypoallergenic posts. Sold as a pair with a soft storage pouch.",
+    mainImage: img("photo-1515562141207-7a88fb7ce338"),
+    images: [img("photo-1515562141207-7a88fb7ce338")],
+    price: 89,
+    oldPrice: null,
+    baseUnit: baseUnit(),
+    quantity: 100,
+    reserved: 5,
+    isVATExcluded: false,
+    isWeightBased: false,
+    sku: "MLK-JWL-09",
+    isDisplayInHomePage: false,
+    isActive: true,
+    categories: [{ id: MOCK_CATEGORY_IDS.accessories, name: "Accessories" }],
+    tags: [],
+    properties: [],
+    variants: [],
+  },
+];
+
+export const MOCK_CATEGORY_TREE: CategoryTreeItem[] = [
+  {
+    id: MOCK_CATEGORY_IDS.dresses,
+    name: "Dresses",
+    description: "Occasion and everyday dresses in silk, crepe, and fluid jersey.",
+    productsCount: MOCK_PRODUCT_DETAILS.filter((p) =>
+      p.categories.some((c) => c.id === MOCK_CATEGORY_IDS.dresses)
+    ).length,
+    bannerImages: [],
+    subCategories: [],
+    mainImageURL: fashionImg("photo-1595777457583-95e059d581b8", 1200, 750),
+    iconImageURL: undefined,
+    parentCategoryId: null,
+  },
+  {
+    id: MOCK_CATEGORY_IDS.knitwear,
+    name: "Knitwear",
+    description: "Cashmere and fine-gauge layers for trans-seasonal dressing.",
+    productsCount: MOCK_PRODUCT_DETAILS.filter((p) =>
+      p.categories.some((c) => c.id === MOCK_CATEGORY_IDS.knitwear)
+    ).length,
+    bannerImages: [],
+    subCategories: [],
+    mainImageURL: fashionImg("photo-1576566588028-4147f3842f27", 1200, 750),
+    parentCategoryId: null,
+  },
+  {
+    id: MOCK_CATEGORY_IDS.accessories,
+    name: "Accessories",
+    description: "Leather goods and jewelry selected to complete the look.",
+    productsCount: MOCK_PRODUCT_DETAILS.filter((p) =>
+      p.categories.some((c) => c.id === MOCK_CATEGORY_IDS.accessories)
+    ).length,
+    bannerImages: [],
+    subCategories: [],
+    mainImageURL: fashionImg("photo-1590874103328-eac38a683ce7", 1200, 750),
+    parentCategoryId: null,
+  },
+];

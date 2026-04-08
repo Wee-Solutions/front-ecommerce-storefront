@@ -57,48 +57,61 @@ export default async function CollectionPage({ params, searchParams }: Props) {
       take: PAGE_SIZE,
       skip,
     },
-    locale
+    locale,
   ).catch(() => ({ totalCount: 0, products: [] }));
 
   const totalPages = Math.max(1, Math.ceil(result.totalCount / PAGE_SIZE));
 
-  const hrefForPage = (p: number) =>
-    `/c/${categoryId}${p > 1 ? `?page=${p}` : ""}`;
-
   return (
     <div>
-      <nav className="mb-6 text-sm text-[var(--sf-color-muted)]">
-        <Link href="/" className="transition hover:text-[var(--sf-color-primary)]">
+      <nav
+        className="mb-8 flex flex-wrap items-center gap-2 text-xs font-medium text-muted-foreground"
+        aria-label="Breadcrumb"
+      >
+        <Link
+          href="/"
+          className="rounded-full border border-border/70 bg-card/80 px-3 py-1 transition hover:border-primary/30 hover:text-foreground"
+        >
           {dict.category.home}
         </Link>
-        <span className="mx-2 opacity-50">/</span>
-        <span className="text-[var(--sf-color-primary)]">
+        <span className="text-border" aria-hidden>
+          /
+        </span>
+        <span className="rounded-full border border-primary/15 bg-primary/5 px-3 py-1 text-foreground">
           {current?.name ?? dict.category.collection}
         </span>
       </nav>
 
-      <header className="mb-10">
-        <h1 className="text-2xl font-semibold tracking-tight text-[var(--sf-color-primary)] md:text-3xl">
+      <header className="mb-12 md:mb-14">
+        <p className="sf-section-eyebrow text-muted-foreground">
+          {dict.category.collection}
+        </p>
+        <h1 className="font-heading mt-3 text-4xl font-medium tracking-tight text-foreground md:text-5xl">
           {current?.name ?? dict.category.collection}
         </h1>
+        {result.totalCount > 0 && (
+          <p className="mt-2 text-sm text-muted-foreground">
+            {result.totalCount} {dict.category.productsSuffix}
+          </p>
+        )}
         {current?.description && (
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[var(--sf-color-muted)]">
+          <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
             {current.description}
           </p>
         )}
       </header>
 
       {current && current.subCategories.length > 0 && (
-        <div className="mb-10 rounded-[var(--sf-radius)] border border-[var(--sf-color-border)] bg-[var(--sf-color-surface)] p-5 shadow-[var(--sf-shadow-sm)]">
-          <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-[var(--sf-color-muted)]">
+        <div className="mb-12 rounded-2xl border border-border/60 bg-gradient-to-b from-card to-muted/20 p-6 shadow-sm ring-1 ring-border/30 md:p-8">
+          <p className="sf-section-eyebrow mb-4 text-muted-foreground">
             {dict.category.browse}
           </p>
-          <ul className="flex flex-wrap gap-2">
+          <ul className="flex flex-wrap gap-2.5">
             {current.subCategories.map((sub) => (
               <li key={sub.id}>
                 <Link
                   href={`/c/${sub.id}`}
-                  className="inline-block rounded-full border border-[var(--sf-color-border)] bg-white px-4 py-1.5 text-sm text-[var(--sf-color-primary)] transition hover:border-[var(--sf-color-accent)]/50 hover:shadow-sm"
+                  className="inline-flex rounded-full border border-border/80 bg-card px-5 py-2 text-sm font-medium text-foreground shadow-sm transition hover:border-primary/35 hover:shadow-md"
                 >
                   {sub.name}
                 </Link>
@@ -109,12 +122,12 @@ export default async function CollectionPage({ params, searchParams }: Props) {
       )}
 
       {result.products.length === 0 ? (
-        <p className="text-sm text-[var(--sf-color-muted)]">
+        <p className="text-sm text-muted-foreground">
           {dict.category.noProducts}
         </p>
       ) : (
         <>
-          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
             {result.products.map((p) => (
               <li key={p.id}>
                 <ProductCard product={p} />
@@ -124,7 +137,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
           <Pagination
             page={page}
             totalPages={totalPages}
-            hrefForPage={hrefForPage}
+            pathname={`/c/${categoryId}`}
           />
         </>
       )}
