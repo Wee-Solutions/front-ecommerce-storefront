@@ -14,13 +14,17 @@ import {
   findMatchingVariant,
   type VariantSelection,
 } from "@/components/product/variant-selector";
+import { formatCartVariantSummary } from "@/lib/cart-variant-summary";
 import { useVendor } from "@/contexts/vendor-context";
-import { getProductInventory, getProductPrice } from "@/services/products.service";
+import {
+  getProductInventory,
+  getProductPrice,
+} from "@/services/products.service";
 import type { ProductDetail } from "@/types/api/product";
 
 function selectionComplete(
   product: ProductDetail,
-  selection: VariantSelection
+  selection: VariantSelection,
 ): boolean {
   if (product.properties.length === 0) return true;
   return product.properties.every((p) => Boolean(selection[p.propertyId]));
@@ -34,9 +38,9 @@ export function ProductPurchasePanel({
   onHeroImageUrlChange?: (url: string | null) => void;
 }) {
   const t = useTranslations();
-  const { vendorCode, language } = useVendor();
+  const { language } = useVendor();
   const [selection, setSelection] = useState<VariantSelection>(() =>
-    buildInitialSelection(product)
+    buildInitialSelection(product),
   );
   const [qty, setQty] = useState(1);
 
@@ -49,9 +53,14 @@ export function ProductPurchasePanel({
       .sort();
   }, [complete, product.properties, selection]);
 
+  const propertyValueIdsKey = useMemo(
+    () => propertyValueIds.join(","),
+    [propertyValueIds],
+  );
+
   const matchedVariant = useMemo(
     () => (complete ? findMatchingVariant(product, selection) : undefined),
-    [complete, product, selection]
+    [complete, product, selection],
   );
 
   const needsPriceApi =
@@ -60,18 +69,9 @@ export function ProductPurchasePanel({
     (!matchedVariant || matchedVariant.price == null);
 
   const priceQuery = useQuery({
-    queryKey: [
-      "product-price",
-      product.id,
-      propertyValueIds.join(","),
-      vendorCode,
-    ],
+    queryKey: ["product-price", product.id, propertyValueIdsKey, language],
     queryFn: () =>
-      getProductPrice(
-        vendorCode,
-        { productId: product.id, propertyValueIds },
-        language
-      ),
+      getProductPrice({ productId: product.id, propertyValueIds }, language),
     enabled: needsPriceApi,
   });
 
@@ -81,26 +81,17 @@ export function ProductPurchasePanel({
     (!matchedVariant || matchedVariant.inventory == null);
 
   const inventoryQuery = useQuery({
-    queryKey: [
-      "product-inventory",
-      product.id,
-      propertyValueIds.join(","),
-      vendorCode,
-    ],
+    queryKey: ["product-inventory", product.id, propertyValueIdsKey, language],
     queryFn: () =>
       getProductInventory(
-        vendorCode,
         { productId: product.id, propertyValueIds },
-        language
+        language,
       ),
     enabled: needsInventoryApi,
   });
 
   const displayPrice =
-    matchedVariant?.price ??
-    priceQuery.data?.price ??
-    product.price ??
-    null;
+    matchedVariant?.price ?? priceQuery.data?.price ?? product.price ?? null;
 
   const compareAt = useMemo(() => {
     if (matchedVariant) {
@@ -109,8 +100,15 @@ export function ProductPurchasePanel({
     return product.oldPrice ?? undefined;
   }, [matchedVariant, product.oldPrice]);
 
-  const variantId =
-    matchedVariant?.id ?? priceQuery.data?.variantId ?? null;
+  const variantId = matchedVariant?.id ?? priceQuery.data?.variantId ?? null;
+
+  const variantSummary = useMemo(
+    () =>
+      complete && propertyValueIds.length > 0
+        ? formatCartVariantSummary(product, propertyValueIds)
+        : null,
+    [complete, product, propertyValueIds],
+  );
 
   const available = useMemo(() => {
     if (matchedVariant?.inventory) {
@@ -150,33 +148,6 @@ export function ProductPurchasePanel({
     <div className="flex flex-col gap-6">
       <Separator />
       <div className="flex flex-col gap-6 pt-2">
-        <ul className="grid gap-3 sm:grid-cols-3">
-          <li className="flex gap-2.5 rounded-xl border border-border/60 bg-muted/20 px-3 py-2.5 text-xs leading-snug text-muted-foreground">
-            <Package
-              className="mt-0.5 size-4 shrink-0 text-primary"
-              strokeWidth={1.5}
-              aria-hidden
-            />
-            <span>{t.product.trustShip}</span>
-          </li>
-          <li className="flex gap-2.5 rounded-xl border border-border/60 bg-muted/20 px-3 py-2.5 text-xs leading-snug text-muted-foreground">
-            <RotateCcw
-              className="mt-0.5 size-4 shrink-0 text-primary"
-              strokeWidth={1.5}
-              aria-hidden
-            />
-            <span>{t.product.trustReturn}</span>
-          </li>
-          <li className="flex gap-2.5 rounded-xl border border-border/60 bg-muted/20 px-3 py-2.5 text-xs leading-snug text-muted-foreground sm:col-span-1">
-            <ShieldCheck
-              className="mt-0.5 size-4 shrink-0 text-primary"
-              strokeWidth={1.5}
-              aria-hidden
-            />
-            <span>{t.product.trustAuthentic}</span>
-          </li>
-        </ul>
-
         {product.properties.length > 0 && (
           <VariantSelector
             product={product}
@@ -219,6 +190,7 @@ export function ProductPurchasePanel({
             imageUrl={imageUrl}
             unitPrice={displayPrice ?? 0}
             propertyValueIds={complete ? propertyValueIds : []}
+            variantSummary={variantSummary}
             quantity={qty}
             disabled={!canAdd}
             className="flex-1 sm:flex-none"

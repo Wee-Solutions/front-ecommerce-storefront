@@ -12,6 +12,8 @@ type Props = {
   imageUrl: string | null;
   unitPrice: number;
   propertyValueIds: string[];
+  /** Shown in cart; built from product properties + selection. */
+  variantSummary?: string | null;
   quantity: number;
   disabled?: boolean;
   className?: string;
@@ -24,6 +26,7 @@ export function AddToCart({
   imageUrl,
   unitPrice,
   propertyValueIds,
+  variantSummary,
   quantity,
   disabled,
   className,
@@ -49,6 +52,7 @@ export function AddToCart({
           quantity,
           unitPrice,
           propertyValueIds,
+          variantSummary: variantSummary ?? null,
         })
       }
     >

@@ -14,7 +14,7 @@ function resolveRequestLocale(request: NextRequest): Locale {
   const fromCookie = request.cookies.get(LOCALE_COOKIE)?.value;
   if (isLocale(fromCookie)) return fromCookie;
   return resolveLocaleFromAcceptLanguage(
-    request.headers.get("accept-language")
+    request.headers.get("accept-language"),
   );
 }
 
@@ -41,7 +41,6 @@ export function middleware(request: NextRequest) {
     return res;
   }
 
-  requestHeaders.set("x-sf-vendor-code", store.vendorCode);
   requestHeaders.set("x-sf-theme-id", store.themeId);
 
   const res = NextResponse.next({
@@ -56,11 +55,6 @@ export function middleware(request: NextRequest) {
     });
   }
 
-  res.cookies.set("sf-vendor-code", store.vendorCode, {
-    path: "/",
-    sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 30,
-  });
   res.cookies.set("sf-theme-id", store.themeId, {
     path: "/",
     sameSite: "lax",

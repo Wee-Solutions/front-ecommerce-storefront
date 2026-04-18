@@ -20,18 +20,15 @@ const REVALIDATE_LIST = 120;
 const REVALIDATE_PDP = 180;
 
 export async function searchProducts(
-  vendorCode: string,
   request: ProductSearchRequest,
-  language = "en"
+  language = "en",
 ) {
   if (isMockApiEnabled()) {
-    void vendorCode;
     void language;
     return mockSearchProducts(request);
   }
 
   const raw = await gatewayFetch<ProductSearchResponse>({
-    vendorCode,
     path: "/products/Search",
     method: "POST",
     body: request,
@@ -43,19 +40,13 @@ export async function searchProducts(
   return { totalCount, products };
 }
 
-export function getProductById(
-  vendorCode: string,
-  id: string,
-  language = "en"
-) {
+export function getProductById(id: string, language = "en") {
   if (isMockApiEnabled()) {
-    void vendorCode;
     void language;
     return Promise.resolve(mockGetProductById(id));
   }
 
   return gatewayFetch<ProductDetail>({
-    vendorCode,
     path: `/products/GetById/${id}`,
     method: "GET",
     language,
@@ -64,18 +55,15 @@ export function getProductById(
 }
 
 export function getProductPrice(
-  vendorCode: string,
   body: GetProductPriceRequest,
-  language = "en"
+  language = "en",
 ) {
   if (isMockApiEnabled()) {
-    void vendorCode;
     void language;
     return Promise.resolve(mockGetProductPrice(body));
   }
 
   return gatewayFetch<GetProductPriceResponse>({
-    vendorCode,
     path: "/products/GetPrice",
     method: "POST",
     body,
@@ -85,18 +73,15 @@ export function getProductPrice(
 }
 
 export function getProductInventory(
-  vendorCode: string,
   body: GetProductInventoryRequest,
-  language = "en"
+  language = "en",
 ) {
   if (isMockApiEnabled()) {
-    void vendorCode;
     void language;
     return Promise.resolve(mockGetProductInventory(body));
   }
 
   return gatewayFetch<GetProductInventoryResponse>({
-    vendorCode,
     path: "/products/GetInventory",
     method: "POST",
     body,

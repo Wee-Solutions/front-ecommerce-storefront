@@ -8,6 +8,8 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getServerLocale } from "@/lib/i18n/server-locale";
 import { getServerStoreContext } from "@/lib/tenant/server-store";
 import { getCategoryTree } from "@/services/categories.service";
+import { getStoreConfiguration } from "@/services/configuration.service";
+import type { StoreConfiguration } from "@/types/api/configuration";
 import { themeToCssVars, themes } from "@/tenants/registry";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -15,9 +17,19 @@ export async function generateMetadata(): Promise<Metadata> {
   if (!ctx) {
     return { title: "Storefront" };
   }
+  const locale = await getServerLocale();
   const theme = themes[ctx.themeId] ?? themes.store1;
+  let storeName = theme.name;
+  try {
+    const config = await getStoreConfiguration(locale);
+    if (config.name?.trim()) {
+      storeName = config.name.trim();
+    }
+  } catch {
+    // Fallback to local theme registry when config endpoint fails.
+  }
   return {
-    title: { default: theme.name, template: `%s · ${theme.name}` },
+    title: { default: storeName, template: `%s · ${storeName}` },
     description: "Multi-tenant commerce storefront",
   };
 }
@@ -38,25 +50,38 @@ export default async function StoreLayout({
   }
 
   const theme = themes[ctx.themeId] ?? themes.store1;
+  let storeConfig: StoreConfiguration | null = null;
+  let storeName = theme.name;
   let categories: Awaited<ReturnType<typeof getCategoryTree>>["categoriesTree"] =
     [];
+
   try {
-    const tree = await getCategoryTree(ctx.vendorCode, {}, locale);
+    storeConfig = await getStoreConfiguration(locale);
+    if (storeConfig.name?.trim()) {
+      storeName = storeConfig.name.trim();
+    }
+  } catch {
+    storeConfig = null;
+    storeName = theme.name;
+  }
+
+  try {
+    const tree = await getCategoryTree({}, locale);
     categories = tree.categoriesTree;
   } catch {
     categories = [];
   }
 
   return (
-    <AppProviders vendorCode={ctx.vendorCode} language={locale}>
+    <AppProviders language={locale} initialStoreConfig={storeConfig}>
       <LocaleProvider locale={locale} dict={dict}>
         <div
           style={themeToCssVars(theme)}
-          className="sf-boutique-canvas sf-grain flex min-h-screen flex-col bg-background text-foreground"
+          className="sf-boutique-canvas sf-grain flex min-h-screen w-full min-w-0 flex-col overflow-x-clip bg-background text-foreground"
         >
-          <div className="relative z-[1] flex min-h-screen flex-1 flex-col">
+          <div className="relative z-[1] flex min-h-screen w-full min-w-0 flex-1 flex-col">
           <StoreShell
-            storeName={theme.name}
+            storeName={storeName}
             categories={categories}
             currentLocale={locale}
           >

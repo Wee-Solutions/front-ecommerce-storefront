@@ -10,6 +10,8 @@ export type Dictionary = {
     cart: string;
     /** Slim top bar message, e.g. shipping promo */
     announcement: string;
+    /** Screen reader label for category submenus in the header */
+    subcategoriesMenu: string;
   };
   search: {
     placeholder: string;
@@ -161,6 +163,13 @@ export type Dictionary = {
     errResend: string;
     errLogin: string;
     errRegister: string;
+    verifyChannel: string;
+    phoneHint: string;
+    emailHint: string;
+    phonePlaceholder: string;
+    emailPlaceholder: string;
+    optionalShort: string;
+    codeHint: string;
   };
   pagination: {
     previous: string;
@@ -189,6 +198,7 @@ const en: Dictionary = {
     cart: "Cart",
     announcement:
       "Complimentary express shipping on orders over $200 · Easy 30-day returns",
+    subcategoriesMenu: "Subcategories",
   },
   search: {
     placeholder: "Search products…",
@@ -207,7 +217,8 @@ const en: Dictionary = {
     collections: "Collections",
     viewAll: "View all",
     featured: "Featured",
-    featuredSubtitle: "Editor's picks — the pieces our clients are wearing now.",
+    featuredSubtitle:
+      "Editor's picks — the pieces our clients are wearing now.",
     heroBadge: "New arrivals",
     heroTitle: "The art of dressing well",
     heroSubtitle:
@@ -342,6 +353,13 @@ const en: Dictionary = {
     errResend: "Could not resend.",
     errLogin: "Login failed.",
     errRegister: "Registration failed.",
+    verifyChannel: "Send my code via",
+    phoneHint: "Use the mobile number where you can receive SMS.",
+    emailHint: "We’ll send a one-time code to this inbox.",
+    phonePlaceholder: "555 010 2030",
+    emailPlaceholder: "you@example.com",
+    optionalShort: "optional",
+    codeHint: "Check your messages or inbox for the code.",
   },
   pagination: {
     previous: "Previous",
@@ -369,6 +387,7 @@ const he: Dictionary = {
     search: "חיפוש",
     cart: "עגלה",
     announcement: "משלוח מהיר חינם בהזמנות מעל $200 · החזרות עד 30 יום",
+    subcategoriesMenu: "תת־קטגוריות",
   },
   search: {
     placeholder: "חיפוש מוצרים…",
@@ -485,8 +504,7 @@ const he: Dictionary = {
   },
   orders: {
     title: "היסטוריית הזמנות",
-    subtitle:
-      "ממשק הזמנות ללקוח עדיין לא חשוף. הדף מוכן לחיבור עתידי.",
+    subtitle: "ממשק הזמנות ללקוח עדיין לא חשוף. הדף מוכן לחיבור עתידי.",
     empty: "אין הזמנות להצגה.",
     account: "חשבון",
   },
@@ -517,6 +535,13 @@ const he: Dictionary = {
     errResend: "לא ניתן לשלוח שוב.",
     errLogin: "הכניסה נכשלה.",
     errRegister: "ההרשמה נכשלה.",
+    verifyChannel: "שליחת הקוד דרך",
+    phoneHint: "השתמשו במספר הנייד שאליו ניתן לקבל SMS.",
+    emailHint: "נשלח קוד חד-פעמי לכתובת זו.",
+    phonePlaceholder: "050-123-4567",
+    emailPlaceholder: "your@email.com",
+    optionalShort: "אופציונלי",
+    codeHint: "בדקו את ההודעות או תיבת הדואר לקבלת הקוד.",
   },
   pagination: {
     previous: "הקודם",
@@ -543,8 +568,8 @@ const ar: Dictionary = {
     menu: "القائمة",
     search: "بحث",
     cart: "السلة",
-    announcement:
-      "شحن سريع مجاني للطلبات فوق 200$ · إرجاع خلال 30 يوماً",
+    announcement: "شحن سريع مجاني للطلبات فوق 200$ · إرجاع خلال 30 يوماً",
+    subcategoriesMenu: "الفئات الفرعية",
   },
   search: {
     placeholder: "ابحث عن المنتجات…",
@@ -647,7 +672,8 @@ const ar: Dictionary = {
     address: "العنوان",
     subtotal: "المجموع الفرعي",
     placeOrder: "تأكيد الطلب (تجريبي)",
-    thanks: "شكراً — هذا العرض التوضيحي لا ينشئ طلباً. اربط واجهة البرمجة لاحقاً.",
+    thanks:
+      "شكراً — هذا العرض التوضيحي لا ينشئ طلباً. اربط واجهة البرمجة لاحقاً.",
   },
   account: {
     title: "الحساب",
@@ -692,6 +718,13 @@ const ar: Dictionary = {
     errResend: "تعذر إعادة الإرسال.",
     errLogin: "فشل تسجيل الدخول.",
     errRegister: "فشل إنشاء الحساب.",
+    verifyChannel: "إرسال الرمز عبر",
+    phoneHint: "استخدموا رقم الجوال الذي يستقبل الرسائل النصية.",
+    emailHint: "سنرسل رمزاً لمرة واحدة إلى هذا البريد.",
+    phonePlaceholder: "501 234 567",
+    emailPlaceholder: "you@example.com",
+    optionalShort: "اختياري",
+    codeHint: "تحققوا من الرسائل أو البريد للحصول على الرمز.",
   },
   pagination: {
     previous: "السابق",

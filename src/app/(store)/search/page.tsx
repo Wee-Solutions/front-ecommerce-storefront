@@ -35,7 +35,6 @@ export default async function SearchPage({ searchParams }: Props) {
   const skip = (page - 1) * PAGE_SIZE;
 
   const result = await searchProducts(
-    ctx.vendorCode,
     {
       searchTerm: term || null,
       take: PAGE_SIZE,

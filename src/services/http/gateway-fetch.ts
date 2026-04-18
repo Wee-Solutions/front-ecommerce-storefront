@@ -1,11 +1,10 @@
-import { getGatewayBaseUrl } from "@/config/env";
+import { env, getGatewayBaseUrl } from "@/config/env";
 import { GatewayRequestError } from "@/types/api/gateway";
 import { parseClientJson, readJsonSafe } from "./parse-response";
 
 const API = "/api/v1/client";
 
 export type GatewayFetchOptions = {
-  vendorCode: string;
   path: string;
   method?: "GET" | "POST" | "PUT" | "DELETE";
   body?: unknown;
@@ -17,10 +16,9 @@ export type GatewayFetchOptions = {
 };
 
 export async function gatewayFetch<T>(
-  options: GatewayFetchOptions
+  options: GatewayFetchOptions,
 ): Promise<T> {
   const {
-    vendorCode,
     path,
     method = "GET",
     body,
@@ -34,9 +32,11 @@ export async function gatewayFetch<T>(
   const headers: Record<string, string> = {
     Accept: "application/json",
     "Accept-Language": language,
-    "Vendor-Code": vendorCode,
+    "Vendor-Code": env.vendorCode,
     "Frontend-Platform": "W",
     "Frontend-Platform-Version": "1",
+    "Tenant-Id": env.tenantId,
+    "Vendor-Id": env.vendorId,
   };
 
   if (body !== undefined) {
@@ -82,7 +82,7 @@ export async function gatewayFetch<T>(
     throw new GatewayRequestError(
       e instanceof Error ? e.message : "Invalid response",
       res.status,
-      raw
+      raw,
     );
   }
 }

@@ -81,6 +81,11 @@ export function CartDrawer() {
                       <p className="line-clamp-2 text-sm font-medium leading-snug text-foreground">
                         {line.title}
                       </p>
+                      {line.variantSummary ? (
+                        <p className="mt-0.5 line-clamp-2 text-xs leading-snug text-muted-foreground">
+                          {line.variantSummary}
+                        </p>
+                      ) : null}
                       <p className="mt-1 text-xs text-muted-foreground">
                         {formatMoney(line.unitPrice, { locale })} ×{" "}
                         {line.quantity}

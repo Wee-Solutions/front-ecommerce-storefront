@@ -12,7 +12,10 @@ function CategoryCard({
   cat: CategoryTreeItem;
   productsSuffix: string;
 }) {
-  const img = cat.mainImageURL || cat.iconImageURL;
+  const img =
+    cat.mainImageURL ||
+    cat.iconImageURL ||
+    cat.bannerImages?.[0];
   return (
     <Link
       href={`/c/${cat.id}`}

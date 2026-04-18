@@ -65,7 +65,10 @@ export function ProductGallery({ product, activeUrl, onActiveUrlChange }: Props)
         />
       </div>
       {displayList.length > 1 && (
-        <ul className="flex gap-2.5 overflow-x-auto pb-1" role="list">
+        <ul
+          className="flex max-w-full gap-2.5 overflow-x-auto overscroll-x-contain pb-1 [scrollbar-width:thin]"
+          role="list"
+        >
           {displayList.map((img, i) => (
             <li key={`${img.id}-${i}`}>
               <button

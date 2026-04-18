@@ -3,7 +3,6 @@
 import { createContext, useContext } from "react";
 
 export type VendorContextValue = {
-  vendorCode: string;
   language: string;
 };
 

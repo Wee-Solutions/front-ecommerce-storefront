@@ -23,11 +23,10 @@ export default async function HomePage() {
   const dict = getDictionary(locale);
 
   const [tree, featured] = await Promise.all([
-    getCategoryTree(ctx.vendorCode, {}, locale).catch(() => ({
+    getCategoryTree({}, locale).catch(() => ({
       categoriesTree: [],
     })),
     searchProducts(
-      ctx.vendorCode,
       { isHomePageProducts: true, take: 12, skip: 0 },
       locale,
     ).catch(() => ({ totalCount: 0, products: [] })),

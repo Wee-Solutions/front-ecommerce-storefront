@@ -313,6 +313,8 @@ body {
 
 .sf-hero-aurora {
   animation: sf-aurora 22s ease-in-out infinite;
+  overflow: hidden;
+  border-radius: inherit;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -333,10 +335,15 @@ body {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
+  /**
+   * Prevent horizontal page scroll from wide flex children, transforms,
+   * or `100vw`/`min-width: auto` chains. `clip` avoids breaking `position: sticky`
+   * in most cases vs `hidden`.
+   */
   html {
-    @apply font-sans;
+    @apply overflow-x-clip font-sans;
+  }
+  body {
+    @apply overflow-x-clip bg-background text-foreground;
   }
 }

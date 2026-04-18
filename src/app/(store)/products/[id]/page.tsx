@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const dict = getDictionary(locale);
   if (!ctx || !isGuid(id)) return { title: dict.product.pageFallback };
   try {
-    const product = await getProductById(ctx.vendorCode, id, locale);
+    const product = await getProductById(id, locale);
     const desc =
       product.subTitle ||
       (product.description?.includes("<")
@@ -46,7 +46,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
-  if (!isGuid(id)) notFound();
 
   const ctx = await getServerStoreContext();
   if (!ctx) return null;
@@ -56,7 +55,7 @@ export default async function ProductPage({ params }: Props) {
 
   let product;
   try {
-    product = await getProductById(ctx.vendorCode, id, locale);
+    product = await getProductById(id, locale);
   } catch (e) {
     if (e instanceof GatewayRequestError && e.status === 404) notFound();
     throw e;
@@ -113,9 +112,7 @@ export default async function ProductPage({ params }: Props) {
         title={dict.product.reviewsTitle}
         description={dict.product.reviewsPlaceholder}
         reviews={
-          isMockApiEnabled()
-            ? getMockReviewsForProduct(product.id)
-            : undefined
+          isMockApiEnabled() ? getMockReviewsForProduct(product.id) : undefined
         }
       />
 
@@ -125,7 +122,6 @@ export default async function ProductPage({ params }: Props) {
         }
       >
         <RelatedProducts
-          vendorCode={ctx.vendorCode}
           categoryIds={categoryIds}
           excludeProductId={product.id}
           language={locale}

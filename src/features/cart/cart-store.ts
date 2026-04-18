@@ -10,6 +10,8 @@ export type CartLine = {
   quantity: number;
   unitPrice: number;
   propertyValueIds: string[];
+  /** Resolved labels for selected options (e.g. "Size: M · Color: Navy"). */
+  variantSummary?: string | null;
 };
 
 type CartState = {

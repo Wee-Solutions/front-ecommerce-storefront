@@ -35,9 +35,11 @@ export type ResendVerificationCodeResponse = {
 export type LoginRequest = {
   verificationId: string;
   verificationCode: string;
-  phoneNumber?: string | null;
-  email?: string | null;
-  isPersistentLogin: boolean;
+  /**
+   * Backend expects `isPersistent`; keep `isPersistentLogin` for backwards compatibility.
+   */
+  isPersistent?: boolean;
+  isPersistentLogin?: boolean;
 };
 
 export type LoginResponse = {

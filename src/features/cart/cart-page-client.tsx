@@ -42,6 +42,11 @@ export function CartView() {
             <p className="font-semibold text-[var(--sf-color-primary)]">
               {line.title}
             </p>
+            {line.variantSummary ? (
+              <p className="mt-1 line-clamp-2 text-sm leading-snug text-[var(--sf-color-muted)]">
+                {line.variantSummary}
+              </p>
+            ) : null}
             <p className="mt-1 text-sm text-[var(--sf-color-muted)]">
               {formatMoney(line.unitPrice, { locale })} {t.cart.each}
             </p>

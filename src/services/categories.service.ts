@@ -9,26 +9,22 @@ import type {
 const REVALIDATE = 300;
 
 export async function getCategoryTree(
-  vendorCode: string,
   request: CategoryTreeRequest = {},
-  language = "en"
+  language = "en",
 ) {
   if (isMockApiEnabled()) {
-    void vendorCode;
     void request;
     void language;
     return mockGetCategoryTree();
   }
 
   const raw = await gatewayFetch<CategoryTreeResponse>({
-    vendorCode,
     path: "/categories/GetTree",
     method: "POST",
     body: request,
     language,
     next: { revalidate: REVALIDATE },
   });
-  const categoriesTree =
-    raw.categoriesTree ?? raw.CategoriesTree ?? [];
+  const categoriesTree = raw.categoriesTree ?? raw.CategoriesTree ?? [];
   return { categoriesTree };
 }

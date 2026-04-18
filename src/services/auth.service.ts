@@ -9,12 +9,10 @@ import type {
 } from "@/types/api/auth";
 
 export function sendVerificationCode(
-  vendorCode: string,
   body: SendVerificationCodeRequest,
-  language = "en"
+  language = "en",
 ) {
   return gatewayFetch<SendVerificationCodeResponse>({
-    vendorCode,
     path: "/auth/SendVerificationCode",
     method: "POST",
     body,
@@ -24,12 +22,10 @@ export function sendVerificationCode(
 }
 
 export function resendVerificationCode(
-  vendorCode: string,
   body: ResendVerificationCodeRequest,
-  language = "en"
+  language = "en",
 ) {
   return gatewayFetch<ResendVerificationCodeResponse>({
-    vendorCode,
     path: "/auth/ResendVerificationCode",
     method: "POST",
     body,
@@ -38,16 +34,17 @@ export function resendVerificationCode(
   });
 }
 
-export function loginCustomer(
-  vendorCode: string,
-  body: LoginRequest,
-  language = "en"
-) {
+export function loginCustomer(body: LoginRequest, language = "en") {
+  const normalizedBody = {
+    verificationId: body.verificationId,
+    verificationCode: body.verificationCode,
+    isPersistent: body.isPersistent ?? body.isPersistentLogin ?? true,
+  };
+
   return gatewayFetch<LoginResponse>({
-    vendorCode,
-    path: "/auth/Login",
+    path: "/auth/Token",
     method: "POST",
-    body,
+    body: normalizedBody,
     language,
     cache: "no-store",
   });

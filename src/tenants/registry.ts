@@ -35,25 +35,21 @@ export const themes: Record<string, StoreTheme> = {
 };
 
 export type StoreDefinition = {
-  vendorCode: string;
   themeId: string;
 };
 
 /**
- * Subdomain → store. Vendor codes should match Gateway `Vendor-Code` header.
- * Override per environment with NEXT_PUBLIC_VENDOR_CODE_*.
+ * Subdomain → storefront theme. Gateway `Vendor-Code` is set from
+ * `NEXT_PUBLIC_VENDOR_CODE` in env, not from the host.
  */
 const hostMap: Record<string, () => StoreDefinition> = {
   "store1.localhost": () => ({
-    vendorCode: process.env.NEXT_PUBLIC_VENDOR_CODE_STORE1 ?? env.defaultVendorCode,
     themeId: "store1",
   }),
   "store2.localhost": () => ({
-    vendorCode: process.env.NEXT_PUBLIC_VENDOR_CODE_STORE2 ?? `${env.defaultVendorCode}_2`,
     themeId: "store2",
   }),
   localhost: () => ({
-    vendorCode: env.defaultVendorCode,
     themeId: env.defaultThemeId,
   }),
 };

@@ -4,13 +4,11 @@ import type { ProductListItem } from "@/types/api/product";
 import type { Locale } from "@/lib/i18n/locale-config";
 
 export async function RelatedProducts({
-  vendorCode,
   categoryIds,
   excludeProductId,
   language,
   title,
 }: {
-  vendorCode: string;
   categoryIds: string[];
   excludeProductId: string;
   language: Locale;
@@ -21,7 +19,6 @@ export async function RelatedProducts({
   let items: ProductListItem[] = [];
   try {
     const res = await searchProducts(
-      vendorCode,
       {
         categoriesIds: [categoryIds[0]],
         take: 8,
