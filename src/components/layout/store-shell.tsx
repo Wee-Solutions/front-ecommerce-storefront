@@ -16,6 +16,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { CartDrawer } from "@/features/cart/cart-drawer";
+import { useCustomerSession } from "@/features/auth/customer-session";
 import { useStoreDisplayName } from "@/features/store-configuration/store-configuration-store";
 import {
   getCategoryIdFromPathname,
@@ -70,6 +71,9 @@ export function StoreShell({
   );
   const t = useTranslations();
   const displayName = useStoreDisplayName(storeName);
+  const accessToken = useCustomerSession((s) => s.accessToken);
+  const customerId = useCustomerSession((s) => s.customerId);
+  const isSignedIn = Boolean(accessToken && customerId);
   const pathname = usePathname() ?? "";
   const activeCategoryId = getCategoryIdFromPathname(pathname);
   const searchActive = pathname === "/search" || pathname.startsWith("/search?");
@@ -111,15 +115,17 @@ export function StoreShell({
             >
               {t.nav.account}
             </Link>
-            <Link
-              href="/login"
-              className={cn(
-                buttonVariants({ variant: "ghost", size: "sm" }),
-                "hidden rounded-full font-medium sm:inline-flex",
-              )}
-            >
-              {t.nav.signIn}
-            </Link>
+            {!isSignedIn ? (
+              <Link
+                href="/login"
+                className={cn(
+                  buttonVariants({ variant: "ghost", size: "sm" }),
+                  "hidden rounded-full font-medium sm:inline-flex",
+                )}
+              >
+                {t.nav.signIn}
+              </Link>
+            ) : null}
             <CartIconButton />
             <Button
               type="button"
@@ -288,16 +294,18 @@ export function StoreShell({
               >
                 {t.nav.account}
               </Link>
-              <Link
-                href="/login"
-                onClick={() => setMobileNav(false)}
-                className={cn(
-                  buttonVariants({ variant: "ghost" }),
-                  "h-11 w-full max-w-[18rem] justify-center rounded-xl px-3 font-normal sm:max-w-none sm:justify-start",
-                )}
-              >
-                {t.nav.signIn}
-              </Link>
+              {!isSignedIn ? (
+                <Link
+                  href="/login"
+                  onClick={() => setMobileNav(false)}
+                  className={cn(
+                    buttonVariants({ variant: "ghost" }),
+                    "h-11 w-full max-w-[18rem] justify-center rounded-xl px-3 font-normal sm:max-w-none sm:justify-start",
+                  )}
+                >
+                  {t.nav.signIn}
+                </Link>
+              ) : null}
             </div>
           </nav>
         </SheetContent>

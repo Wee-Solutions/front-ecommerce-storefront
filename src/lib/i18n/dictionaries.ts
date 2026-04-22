@@ -125,16 +125,59 @@ export type Dictionary = {
     subtitle: string;
     orders: string;
     cart: string;
+    shippingDetails: string;
+    soon: string;
+    sectionsLabel: string;
+    edit: string;
+    cancel: string;
+    saveProfile: string;
+    verifyAndUpdatePhone: string;
+    profileUpdated: string;
+    profileUpdateFailed: string;
+    phoneUpdated: string;
+    phoneUpdateFailed: string;
     signedOut: string;
     signedOutCta: string;
     signedInAs: string;
     signOut: string;
+    shippingSaved: string;
+    shippingSaveFailed: string;
+    shippingUpdated: string;
+    shippingUpdateFailed: string;
+    shippingDeleted: string;
+    shippingDeleteFailed: string;
+    shippingAddNew: string;
+    shippingEmpty: string;
+    shippingDelete: string;
+    shippingEditTitle: string;
+    shippingAddTitle: string;
+    shippingCity: string;
+    shippingZipCode: string;
+    shippingStreetRequired: string;
+    shippingStreetNumber: string;
+    shippingApartmentNumber: string;
+    shippingApartmentFloor: string;
+    shippingEntrance: string;
+    shippingEntranceCode: string;
+    shippingAdditionalEntranceCode: string;
+    shippingAddressNotes: string;
+    shippingUpdate: string;
+    shippingSave: string;
   };
   orders: {
     title: string;
     subtitle: string;
     empty: string;
     account: string;
+    loading: string;
+    status: string;
+    total: string;
+    statusPending: string;
+    statusApproved: string;
+    statusReady: string;
+    statusDelivered: string;
+    statusCancelled: string;
+    statusUnknown: string;
   };
   auth: {
     loginTitle: string;
@@ -314,10 +357,44 @@ const en: Dictionary = {
     subtitle: "Manage your profile and orders.",
     orders: "Order history",
     cart: "Cart",
+    shippingDetails: "Shipping details",
+    soon: "Soon",
+    sectionsLabel: "Account sections",
+    edit: "Edit",
+    cancel: "Cancel",
+    saveProfile: "Save profile",
+    verifyAndUpdatePhone: "Verify and update phone",
+    profileUpdated: "Profile updated.",
+    profileUpdateFailed: "Could not update profile.",
+    phoneUpdated: "Phone number updated.",
+    phoneUpdateFailed: "Could not update phone number.",
     signedOut: "You’re not signed in.",
     signedOutCta: "Sign in",
     signedInAs: "Signed in as customer",
     signOut: "Sign out",
+    shippingSaved: "Shipping details saved.",
+    shippingSaveFailed: "Could not save shipping details.",
+    shippingUpdated: "Shipping details updated.",
+    shippingUpdateFailed: "Could not update shipping details.",
+    shippingDeleted: "Shipping details removed.",
+    shippingDeleteFailed: "Could not delete shipping details.",
+    shippingAddNew: "Add new",
+    shippingEmpty: "No shipping details yet.",
+    shippingDelete: "Delete",
+    shippingEditTitle: "Edit shipping details",
+    shippingAddTitle: "Add shipping details",
+    shippingCity: "City",
+    shippingZipCode: "Zip code",
+    shippingStreetRequired: "Street *",
+    shippingStreetNumber: "Street number",
+    shippingApartmentNumber: "Apartment number",
+    shippingApartmentFloor: "Apartment floor",
+    shippingEntrance: "Entrance",
+    shippingEntranceCode: "Entrance code",
+    shippingAdditionalEntranceCode: "Additional entrance code",
+    shippingAddressNotes: "Address notes",
+    shippingUpdate: "Update",
+    shippingSave: "Save",
   },
   orders: {
     title: "Order history",
@@ -325,6 +402,15 @@ const en: Dictionary = {
       "Customer order APIs are not exposed yet. This page is ready for future wiring.",
     empty: "No orders to show.",
     account: "Account",
+    loading: "Loading orders...",
+    status: "Status",
+    total: "Total",
+    statusPending: "Pending",
+    statusApproved: "Approved",
+    statusReady: "Ready",
+    statusDelivered: "Delivered",
+    statusCancelled: "Cancelled",
+    statusUnknown: "Status",
   },
   auth: {
     loginTitle: "Sign in",
@@ -497,16 +583,59 @@ const he: Dictionary = {
     subtitle: "ניהול פרופיל והזמנות.",
     orders: "היסטוריית הזמנות",
     cart: "עגלה",
+    shippingDetails: "פרטי משלוח",
+    soon: "בקרוב",
+    sectionsLabel: "מדורי חשבון",
+    edit: "עריכה",
+    cancel: "ביטול",
+    saveProfile: "שמירת פרופיל",
+    verifyAndUpdatePhone: "אימות ועדכון טלפון",
+    profileUpdated: "הפרופיל עודכן.",
+    profileUpdateFailed: "לא ניתן לעדכן פרופיל.",
+    phoneUpdated: "מספר הטלפון עודכן.",
+    phoneUpdateFailed: "לא ניתן לעדכן מספר טלפון.",
     signedOut: "לא מחוברים.",
     signedOutCta: "כניסה",
     signedInAs: "מחובר כלקוח",
     signOut: "יציאה",
+    shippingSaved: "פרטי המשלוח נשמרו.",
+    shippingSaveFailed: "לא ניתן לשמור פרטי משלוח.",
+    shippingUpdated: "פרטי המשלוח עודכנו.",
+    shippingUpdateFailed: "לא ניתן לעדכן פרטי משלוח.",
+    shippingDeleted: "פרטי המשלוח הוסרו.",
+    shippingDeleteFailed: "לא ניתן למחוק פרטי משלוח.",
+    shippingAddNew: "הוספת כתובת",
+    shippingEmpty: "אין עדיין פרטי משלוח.",
+    shippingDelete: "מחיקה",
+    shippingEditTitle: "עריכת פרטי משלוח",
+    shippingAddTitle: "הוספת פרטי משלוח",
+    shippingCity: "עיר",
+    shippingZipCode: "מיקוד",
+    shippingStreetRequired: "רחוב *",
+    shippingStreetNumber: "מספר בית",
+    shippingApartmentNumber: "מספר דירה",
+    shippingApartmentFloor: "קומה",
+    shippingEntrance: "כניסה",
+    shippingEntranceCode: "קוד כניסה",
+    shippingAdditionalEntranceCode: "קוד כניסה נוסף",
+    shippingAddressNotes: "הערות לכתובת",
+    shippingUpdate: "עדכון",
+    shippingSave: "שמירה",
   },
   orders: {
     title: "היסטוריית הזמנות",
     subtitle: "ממשק הזמנות ללקוח עדיין לא חשוף. הדף מוכן לחיבור עתידי.",
     empty: "אין הזמנות להצגה.",
     account: "חשבון",
+    loading: "טוען הזמנות...",
+    status: "סטטוס",
+    total: "סה״כ",
+    statusPending: "ממתין",
+    statusApproved: "אושר",
+    statusReady: "מוכן",
+    statusDelivered: "נמסר",
+    statusCancelled: "בוטל",
+    statusUnknown: "סטטוס",
   },
   auth: {
     loginTitle: "כניסה",
@@ -680,16 +809,59 @@ const ar: Dictionary = {
     subtitle: "إدارة الملف والطلبات.",
     orders: "سجل الطلبات",
     cart: "السلة",
+    shippingDetails: "تفاصيل الشحن",
+    soon: "قريباً",
+    sectionsLabel: "أقسام الحساب",
+    edit: "تعديل",
+    cancel: "إلغاء",
+    saveProfile: "حفظ الملف",
+    verifyAndUpdatePhone: "تحقق وتحديث الهاتف",
+    profileUpdated: "تم تحديث الملف.",
+    profileUpdateFailed: "تعذر تحديث الملف.",
+    phoneUpdated: "تم تحديث رقم الهاتف.",
+    phoneUpdateFailed: "تعذر تحديث رقم الهاتف.",
     signedOut: "لم تقم بتسجيل الدخول.",
     signedOutCta: "تسجيل الدخول",
     signedInAs: "مسجل كعميل",
     signOut: "تسجيل الخروج",
+    shippingSaved: "تم حفظ تفاصيل الشحن.",
+    shippingSaveFailed: "تعذر حفظ تفاصيل الشحن.",
+    shippingUpdated: "تم تحديث تفاصيل الشحن.",
+    shippingUpdateFailed: "تعذر تحديث تفاصيل الشحن.",
+    shippingDeleted: "تمت إزالة تفاصيل الشحن.",
+    shippingDeleteFailed: "تعذر حذف تفاصيل الشحن.",
+    shippingAddNew: "إضافة عنوان",
+    shippingEmpty: "لا توجد تفاصيل شحن بعد.",
+    shippingDelete: "حذف",
+    shippingEditTitle: "تعديل تفاصيل الشحن",
+    shippingAddTitle: "إضافة تفاصيل الشحن",
+    shippingCity: "المدينة",
+    shippingZipCode: "الرمز البريدي",
+    shippingStreetRequired: "الشارع *",
+    shippingStreetNumber: "رقم الشارع",
+    shippingApartmentNumber: "رقم الشقة",
+    shippingApartmentFloor: "الطابق",
+    shippingEntrance: "المدخل",
+    shippingEntranceCode: "رمز المدخل",
+    shippingAdditionalEntranceCode: "رمز مدخل إضافي",
+    shippingAddressNotes: "ملاحظات العنوان",
+    shippingUpdate: "تحديث",
+    shippingSave: "حفظ",
   },
   orders: {
     title: "سجل الطلبات",
     subtitle: "واجهة طلبات العملاء غير متاحة بعد. الصفحة جاهزة للربط لاحقاً.",
     empty: "لا توجد طلبات.",
     account: "الحساب",
+    loading: "جاري تحميل الطلبات...",
+    status: "الحالة",
+    total: "الإجمالي",
+    statusPending: "قيد الانتظار",
+    statusApproved: "تمت الموافقة",
+    statusReady: "جاهز",
+    statusDelivered: "تم التسليم",
+    statusCancelled: "ملغي",
+    statusUnknown: "الحالة",
   },
   auth: {
     loginTitle: "تسجيل الدخول",

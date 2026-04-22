@@ -2,7 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { AuthChannelTabs } from "@/components/auth/auth-channel-tabs";
 import { AuthContactField } from "@/components/auth/auth-contact-field";
 import { AuthOtpField } from "@/components/auth/auth-otp-field";
@@ -21,6 +21,7 @@ import { useCustomerSession } from "./customer-session";
 
 const textFieldShell =
   "relative flex min-h-11 items-center rounded-xl border border-border bg-card/70 shadow-sm transition-[box-shadow,border-color] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/35";
+const RESEND_COOLDOWN_SECONDS = 30;
 
 export function RegisterForm() {
   const t = useTranslations();
@@ -30,7 +31,6 @@ export function RegisterForm() {
 
   const channelGroupLabelId = useId();
   const contactPanelId = useId();
-  const destinationFieldId = useId();
   const firstNameId = useId();
   const lastNameId = useId();
   const optionalEmailId = useId();
@@ -38,8 +38,9 @@ export function RegisterForm() {
   const codeFieldId = useId();
 
   const [channel, setChannel] = useState<"sms" | "email">("sms");
-  const [destination, setDestination] = useState("");
   const [verificationId, setVerificationId] = useState<string | null>(null);
+  const [codeLength, setCodeLength] = useState(6);
+  const [resendCountdown, setResendCountdown] = useState(0);
   const [code, setCode] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -50,9 +51,11 @@ export function RegisterForm() {
   const selectChannel = (next: "sms" | "email") => {
     if (next === channel) return;
     setChannel(next);
-    setDestination("");
     setMessage(null);
   };
+
+  const verificationDestination =
+    channel === "sms" ? phoneNumber.trim() : email.trim();
 
   const sendMutation = useMutation({
     mutationFn: async () => {
@@ -63,16 +66,17 @@ export function RegisterForm() {
         {
           type: VerificationType.CustomerRegistration,
           dispatchMethod,
-          destination: destination.trim(),
+          destination: verificationDestination,
         },
         language,
       );
     },
     onSuccess: (data) => {
       setVerificationId(data.verificationId);
+      setCodeLength(Math.max(4, data.codeLength || 6));
+      setCode("");
+      setResendCountdown(RESEND_COOLDOWN_SECONDS);
       setMessage(t.auth.msgCodeSent);
-      if (channel === "sms") setPhoneNumber(destination.trim());
-      if (channel === "email") setEmail(destination.trim());
     },
     onError: (e: unknown) => {
       setMessage(
@@ -86,13 +90,20 @@ export function RegisterForm() {
       if (!verificationId) return;
       return resendVerificationCode({ verificationId }, language);
     },
-    onSuccess: () => setMessage(t.auth.msgCodeResent),
     onError: (e: unknown) => {
       setMessage(
         e instanceof GatewayRequestError ? e.message : t.auth.errResend
       );
     },
   });
+
+  useEffect(() => {
+    if (resendCountdown <= 0) return;
+    const timer = setInterval(() => {
+      setResendCountdown((sec) => (sec > 0 ? sec - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [resendCountdown]);
 
   const registerMutation = useMutation({
     mutationFn: async () => {
@@ -131,6 +142,13 @@ export function RegisterForm() {
   const nameLabelClass =
     "block text-sm font-medium leading-snug text-foreground";
 
+  const canSendCode =
+    !sendMutation.isPending &&
+    Boolean(firstName.trim()) &&
+    Boolean(lastName.trim()) &&
+    Boolean(phoneNumber.trim()) &&
+    Boolean(verificationDestination);
+
   return (
     <div className="mx-auto max-w-md space-y-6">
       {!verificationId ? (
@@ -151,37 +169,10 @@ export function RegisterForm() {
             aria-labelledby={channelGroupLabelId}
             className="space-y-2"
           >
-            <AuthContactField
-              id={destinationFieldId}
-              label={
-                channel === "sms" ? t.auth.phone : t.auth.emailLabel
-              }
-              type={channel === "sms" ? "tel" : "email"}
-              value={destination}
-              onChange={setDestination}
-              placeholder={
-                channel === "sms"
-                  ? t.auth.phonePlaceholder
-                  : t.auth.emailPlaceholder
-              }
-              hint={
-                channel === "sms" ? t.auth.phoneHint : t.auth.emailHint
-              }
-              disabled={sendMutation.isPending}
-              autoComplete={channel === "sms" ? "tel" : "email"}
-            />
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              {channel === "sms" ? t.auth.phoneHint : t.auth.emailHint}
+            </p>
           </div>
-          <button
-            type="button"
-            disabled={sendMutation.isPending || !destination.trim()}
-            onClick={() => sendMutation.mutate()}
-            className={primaryClass}
-          >
-            {t.auth.sendCode}
-          </button>
-        </>
-      ) : (
-        <>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <label htmlFor={firstNameId} className={nameLabelClass}>
@@ -212,35 +203,49 @@ export function RegisterForm() {
               </div>
             </div>
           </div>
-          {channel === "sms" && (
-            <AuthContactField
-              id={optionalEmailId}
-              label={t.auth.emailOptional}
-              type="email"
-              value={email}
-              onChange={setEmail}
-              placeholder={t.auth.emailPlaceholder}
-              hint={t.auth.emailHint}
-              autoComplete="email"
-            />
-          )}
-          {channel === "email" && (
-            <AuthContactField
-              id={secondaryPhoneId}
-              label={t.auth.phone}
-              type="tel"
-              value={phoneNumber}
-              onChange={setPhoneNumber}
-              placeholder={t.auth.phonePlaceholder}
-              hint={t.auth.phoneHint}
-              autoComplete="tel"
-            />
-          )}
+          <AuthContactField
+            id={secondaryPhoneId}
+            label={t.auth.phone}
+            type="tel"
+            value={phoneNumber}
+            onChange={setPhoneNumber}
+            placeholder={t.auth.phonePlaceholder}
+            hint={t.auth.phoneHint}
+            autoComplete="tel"
+          />
+          <AuthContactField
+            id={optionalEmailId}
+            label={t.auth.emailOptional}
+            type="email"
+            value={email}
+            onChange={setEmail}
+            placeholder={t.auth.emailPlaceholder}
+            hint={t.auth.emailHint}
+            autoComplete="email"
+          />
+          <button
+            type="button"
+            disabled={!canSendCode}
+            onClick={() => sendMutation.mutate()}
+            className={primaryClass}
+          >
+            {t.auth.sendCode}
+          </button>
+        </>
+      ) : (
+        <>
+          <p className="rounded-xl border border-border bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
+            {channel === "sms" ? t.auth.phone : t.auth.emailLabel}:{" "}
+            <span className="font-medium text-foreground">
+              {verificationDestination}
+            </span>
+          </p>
           <AuthOtpField
             id={codeFieldId}
             label={t.auth.code}
             value={code}
             onChange={setCode}
+            codeLength={codeLength}
             hint={t.auth.codeHint}
             disabled={registerMutation.isPending}
           />
@@ -260,11 +265,20 @@ export function RegisterForm() {
           </button>
           <button
             type="button"
-            disabled={resendMutation.isPending}
-            onClick={() => resendMutation.mutate()}
+            disabled={resendMutation.isPending || resendCountdown > 0}
+            onClick={() => {
+              resendMutation.mutate(undefined, {
+                onSuccess: () => {
+                  setResendCountdown(RESEND_COOLDOWN_SECONDS);
+                  setMessage(t.auth.msgCodeResent);
+                },
+              });
+            }}
             className="w-full text-sm font-medium text-primary transition hover:underline"
           >
-            {t.auth.resend}
+            {resendCountdown > 0
+              ? `${t.auth.resend} (${resendCountdown}s)`
+              : t.auth.resend}
           </button>
         </>
       )}

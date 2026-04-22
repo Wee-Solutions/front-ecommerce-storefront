@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import {
   Cormorant_Garamond,
-  Noto_Sans_Arabic,
-  Plus_Jakarta_Sans,
-  Rubik,
+  Cairo,
+  Heebo,
+  Inter,
 } from "next/font/google";
 import { isLocale, isRtlLocale } from "@/lib/i18n/locale-config";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const plusJakarta = Plus_Jakarta_Sans({
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-ui",
   display: "swap",
@@ -23,13 +23,13 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
-const rubik = Rubik({
-  subsets: ["latin", "hebrew"],
-  variable: "--font-rubik",
+const heebo = Heebo({
+  subsets: ["hebrew"],
+  variable: "--font-hebrew",
   display: "swap",
 });
 
-const notoArabic = Noto_Sans_Arabic({
+const cairo = Cairo({
   subsets: ["arabic"],
   variable: "--font-arabic",
   weight: ["400", "500", "600", "700"],
@@ -62,10 +62,10 @@ export default async function RootLayout({
       dir={dir}
       className={cn(
         "h-full scroll-smooth font-sans",
-        plusJakarta.variable,
+        inter.variable,
         cormorant.variable,
-        rubik.variable,
-        notoArabic.variable
+        heebo.variable,
+        cairo.variable
       )}
     >
       <body className="min-h-full bg-background font-sans text-foreground antialiased selection:bg-primary/20 selection:text-foreground">

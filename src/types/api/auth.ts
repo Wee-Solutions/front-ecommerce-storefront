@@ -1,19 +1,19 @@
 /** Matches Ecommerce.Domain.Entities.Auth.Enums */
-export const VerificationType = {
-  CustomerRegistration: 1,
-  CustomerLogin: 2,
-  CustomerUpdatePhone: 3,
-  SystemUserLogin: 4,
-} as const;
+export enum VerificationType {
+  CustomerRegistration = 1,
+  CustomerLogin = 2,
+  CustomerUpdatePhone = 3,
+  SystemUserLogin = 4,
+}
 
-export const DispatchMethod = {
-  SMS: 0,
-  Email: 1,
-} as const;
+export enum DispatchMethod {
+  SMS = 0,
+  Email = 1,
+}
 
 export type SendVerificationCodeRequest = {
-  type: number;
-  dispatchMethod: number;
+  type: VerificationType;
+  dispatchMethod: DispatchMethod;
   destination: string;
 };
 
@@ -21,6 +21,7 @@ export type SendVerificationCodeResponse = {
   verificationId: string;
   expiresAt: string;
   isResendAvailable: boolean;
+  codeLength: number;
 };
 
 export type ResendVerificationCodeRequest = {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { useStoreConfiguration } from "@/features/store-configuration/store-configuration-store";
 import type { StoreConfiguration } from "@/types/api/configuration";
 
@@ -18,10 +18,11 @@ export function StoreConfigProvider({ initialConfig, children }: Props) {
   const serialized =
     initialConfig === null ? "null" : JSON.stringify(initialConfig);
 
-  if (serialized !== serializedRef.current) {
+  useEffect(() => {
+    if (serialized === serializedRef.current) return;
     serializedRef.current = serialized;
     useStoreConfiguration.setState({ config: initialConfig });
-  }
+  }, [initialConfig, serialized]);
 
   return <>{children}</>;
 }

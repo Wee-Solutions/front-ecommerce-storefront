@@ -36,7 +36,7 @@ const subPanel = cn(
 );
 
 const itemRow = cn(
-  "mx-0.5 flex min-h-8 cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm leading-tight outline-none",
+  "mx-0.5 flex min-h-8 cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm leading-snug outline-none",
   "transition-colors duration-100",
   "data-highlighted:bg-primary/10 data-highlighted:text-foreground",
 );
@@ -141,13 +141,13 @@ function pillParts(active: boolean) {
         : "border-border/60 bg-background/80 text-foreground",
     ),
     link: cn(
-      "inline-flex min-w-0 flex-1 items-center justify-center px-3.5 py-2 text-center text-[13px] font-medium leading-tight tracking-tight transition-colors sm:px-4 sm:text-sm",
+      "inline-flex min-w-0 flex-1 items-center justify-center px-3.5 py-2.5 text-center text-[13px] font-medium leading-snug tracking-tight transition-colors sm:px-4 sm:text-sm",
       active
         ? "text-primary-foreground hover:bg-primary/92"
         : "text-foreground hover:bg-primary/8",
     ),
     trigger: cn(
-      "inline-flex shrink-0 items-center justify-center border-s px-2.5 py-2 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+      "inline-flex shrink-0 items-center justify-center border-s px-2.5 py-2.5 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
       active
         ? "border-primary-foreground/25 bg-primary text-primary-foreground hover:bg-primary/88"
         : "border-border/55 bg-background/90 hover:bg-muted/60",
@@ -196,7 +196,7 @@ export function HeaderCategoryNav({
                   title={c.name}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "inline-flex max-w-[min(100%,14rem)] items-center justify-center rounded-full border px-3.5 py-2 text-center text-[13px] font-medium leading-tight tracking-tight shadow-sm",
+                    "inline-flex max-w-[min(100%,14rem)] items-center justify-center rounded-full border px-3.5 py-2.5 text-center text-[13px] font-medium leading-snug tracking-tight shadow-sm",
                     "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                     "sm:max-w-[16rem] sm:px-4 sm:text-sm",
                     active
@@ -204,7 +204,7 @@ export function HeaderCategoryNav({
                       : "border-border/60 bg-background/80 text-foreground hover:border-primary/35 hover:bg-primary/8",
                   )}
                 >
-                  <span className="line-clamp-2 text-pretty sm:line-clamp-1">
+                  <span className="line-clamp-2 pb-px text-pretty sm:line-clamp-1">
                     {c.name}
                   </span>
                   {c.productsCount > 0 ? (
@@ -234,7 +234,7 @@ export function HeaderCategoryNav({
                   aria-current={active ? "page" : undefined}
                   className={p.link}
                 >
-                  <span className="line-clamp-2 text-pretty sm:line-clamp-1">
+                  <span className="line-clamp-2 pb-px text-pretty sm:line-clamp-1">
                     {c.name}
                   </span>
                   {c.productsCount > 0 ? (
@@ -302,7 +302,7 @@ export function HeaderCategoryNav({
             href="/search"
             aria-current={searchActive ? "page" : undefined}
             className={cn(
-              "inline-flex items-center rounded-full border px-3.5 py-2 text-[13px] font-semibold sm:px-4 sm:text-sm",
+              "inline-flex items-center rounded-full border px-3.5 py-2.5 text-[13px] font-semibold leading-snug sm:px-4 sm:text-sm",
               "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
               searchActive
                 ? "border-primary bg-primary/12 text-primary shadow-sm ring-1 ring-primary/25 hover:bg-primary/18"

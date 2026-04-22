@@ -2,6 +2,7 @@
 
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+import { Toaster } from "sonner";
 import { StoreConfigProvider } from "@/components/providers/store-config-provider";
 import { VendorProvider } from "@/contexts/vendor-context";
 import { makeQueryClient } from "@/lib/query-client";
@@ -24,6 +25,7 @@ export function AppProviders({
         <StoreConfigProvider initialConfig={initialStoreConfig}>
           {children}
         </StoreConfigProvider>
+        <Toaster richColors position="top-right" />
       </VendorProvider>
     </QueryClientProvider>
   );

@@ -4,7 +4,8 @@ import type { Locale } from "@/lib/i18n/locale-config";
 const LOCALE_MAP: Record<Locale, string> = {
   en: "en-US",
   he: "he-IL",
-  ar: "ar-SA",
+  // Keep Latin digits/currency style for Arabic storefront pricing.
+  ar: "en-US",
 };
 
 export function formatMoney(

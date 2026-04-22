@@ -2,36 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { ArrowUpRight, Heart, Sparkles } from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import { useTranslations } from "@/contexts/locale-context";
-import { isLowStock, syntheticRating } from "@/lib/product-display";
+import { isLowStock } from "@/lib/product-display";
 import type { ProductListItem } from "@/types/api/product";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { PriceDisplay } from "./price-display";
-
-function StarRow({ value }: { value: number }) {
-  const rounded = Math.min(5, Math.max(0, Math.round(value)));
-  return (
-    <span
-      className="inline-flex items-center gap-px text-xs leading-none"
-      aria-hidden
-    >
-      {[1, 2, 3, 4, 5].map((i) => (
-        <span
-          key={i}
-          className={
-            i <= rounded ? "text-primary" : "text-muted-foreground/30"
-          }
-        >
-          ★
-        </span>
-      ))}
-    </span>
-  );
-}
 
 export function ProductCard({
   product,
@@ -41,7 +19,6 @@ export function ProductCard({
   className?: string;
 }) {
   const t = useTranslations();
-  const [saved, setSaved] = useState(false);
   const showFrom =
     Boolean(product.hasOptions && product.priceFrom != null);
   const displayPrice = showFrom
@@ -55,35 +32,12 @@ export function ProductCard({
     displayPrice != null &&
     displayCompare > displayPrice;
   const low = isLowStock(product);
-  const { value: ratingVal, count: ratingCount } = syntheticRating(product.id);
   const tagNew = product.tags?.some((x) => /new/i.test(x.name));
 
   return (
     <div
-      className={cn(
-        "group/card relative flex h-84 flex-col sm:h-88",
-        className
-      )}
+      className={cn("group/card relative flex h-80 flex-col sm:h-84", className)}
     >
-      <button
-        type="button"
-        aria-label={t.product.saveForLater}
-        aria-pressed={saved}
-        className={cn(
-          "absolute end-2 top-2 z-30 flex size-10 min-h-10 min-w-10 items-center justify-center rounded-full border border-border/60 bg-card/90 text-foreground shadow-sm backdrop-blur-sm transition hover:scale-105 hover:border-primary/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-          saved && "border-primary/50 text-primary"
-        )}
-        onClick={(e) => {
-          e.preventDefault();
-          setSaved((v) => !v);
-        }}
-      >
-        <Heart
-          className={cn("size-[18px]", saved && "fill-current")}
-          strokeWidth={1.75}
-        />
-      </button>
-
       <Link
         href={`/products/${product.id}`}
         className="flex h-full min-h-0 flex-1 flex-col outline-none transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -107,10 +61,10 @@ export function ProductCard({
               </div>
             )}
             <div
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-40 transition group-hover/card:opacity-70"
+              className="pointer-events-none absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent opacity-40 transition group-hover/card:opacity-70"
               aria-hidden
             />
-            <div className="absolute start-2 top-2 z-20 flex max-w-[calc(100%-3.25rem)] flex-wrap gap-1">
+            <div className="absolute inset-s-2 top-2 z-20 flex max-w-[calc(100%-1rem)] flex-wrap gap-1">
               {tagNew ? (
                 <Badge
                   variant="secondary"
@@ -144,30 +98,20 @@ export function ProductCard({
             </div>
           </div>
 
-          <CardContent className="shrink-0 space-y-1.5 border-t border-border/40 px-3 py-2 sm:px-3.5">
+          <CardContent className="shrink-0 space-y-1.5 border-t border-border/40 px-3 py-2.5 sm:px-3.5">
             <p className="line-clamp-2 font-heading text-sm font-medium leading-tight tracking-tight text-foreground">
               {product.title}
             </p>
+            {product.subTitle ? (
+              <p className="line-clamp-1 text-xs text-muted-foreground">
+                {product.subTitle}
+              </p>
+            ) : null}
 
-            <div className="flex items-end justify-between gap-2">
-              <div className="min-w-0 flex-1">
-                <span className="sr-only">
-                  {t.product.ratingReviews
-                    .replace("{{rating}}", ratingVal.toFixed(1))
-                    .replace("{{count}}", String(ratingCount))}
-                </span>
-                <span
-                  className="inline-flex max-w-full items-center gap-1 text-xs leading-tight tabular-nums text-muted-foreground"
-                  title={`${ratingVal.toFixed(1)} · ${ratingCount}`}
-                >
-                  <StarRow value={ratingVal} />
-                  <span className="font-medium text-foreground/90">
-                    {ratingVal.toFixed(1)}
-                  </span>
-                  <span className="text-muted-foreground">·</span>
-                  <span className="truncate">{ratingCount}</span>
-                </span>
-              </div>
+            <div className="flex items-end justify-between gap-3">
+              <span className="text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
+                {t.product.shopNow}
+              </span>
               <div className="shrink-0 text-end">
                 {showFrom ? (
                   <p className="mb-0.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
