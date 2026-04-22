@@ -94,6 +94,7 @@ export function AccountDashboard() {
           destination: newPhone.trim(),
         },
         language,
+        accessToken,
       ),
     onSuccess: (data) => {
       setVerificationId(data.verificationId);

@@ -11,12 +11,14 @@ import type {
 export function sendVerificationCode(
   body: SendVerificationCodeRequest,
   language = "en",
+  accessToken?: string | null,
 ) {
   return gatewayFetch<SendVerificationCodeResponse>({
     path: "/auth/SendVerificationCode",
     method: "POST",
     body,
     language,
+    accessToken,
     cache: "no-store",
   });
 }

@@ -32,6 +32,7 @@ const emptyForm: ShippingFormState = {
   additionalEnteranceCode: "",
   addressNotes: "",
   zipCode: "",
+  isDefault: false,
 };
 
 function fromShipment(info?: ShipmentInfo): ShippingFormState {
@@ -48,6 +49,7 @@ function fromShipment(info?: ShipmentInfo): ShippingFormState {
     additionalEnteranceCode: info.additionalEnteranceCode ?? "",
     addressNotes: info.addressNotes ?? "",
     zipCode: info.zipCode ?? "",
+    isDefault: Boolean(info.isDefault),
   };
 }
 
@@ -69,7 +71,9 @@ export function ShippingDetails() {
   });
 
   const records = shipmentInfosQuery.data?.records ?? [];
+  const activeRecords = records.filter((record) => record.isActive);
   const editingRecord = records.find((record) => record.id === editingId);
+  const hasReachedShippingLimit = activeRecords.length >= 3;
 
   const createMutation = useMutation({
     mutationFn: async (payload: UpsertShipmentInfoRequest) => {
@@ -162,6 +166,12 @@ export function ShippingDetails() {
   }
 
   function startCreate() {
+    if (hasReachedShippingLimit) {
+      const txt = t.account.shippingMaxReached;
+      setMessage(txt);
+      toast.error(txt);
+      return;
+    }
     setEditingId(null);
     setForm(emptyForm);
   }
@@ -180,6 +190,7 @@ export function ShippingDetails() {
       additionalEnteranceCode: form.additionalEnteranceCode.trim(),
       addressNotes: form.addressNotes.trim(),
       zipCode: form.zipCode.trim(),
+      isDefault: form.isDefault,
     };
 
     if (editingId && editingRecord) {
@@ -188,6 +199,13 @@ export function ShippingDetails() {
         payload,
         isActive: editingRecord.isActive,
       });
+      return;
+    }
+
+    if (hasReachedShippingLimit) {
+      const txt = t.account.shippingMaxReached;
+      setMessage(txt);
+      toast.error(txt);
       return;
     }
 
@@ -212,19 +230,29 @@ export function ShippingDetails() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="font-sans">{t.account.shippingDetails}</CardTitle>
-          <Button variant="outline" size="sm" onClick={startCreate}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={startCreate}
+            disabled={hasReachedShippingLimit && !editingId}
+          >
             {t.account.shippingAddNew}
           </Button>
         </CardHeader>
         <CardContent className="space-y-3">
+          {hasReachedShippingLimit ? (
+            <p className="rounded-xl border border-border/60 bg-muted/20 px-4 py-3 text-sm text-muted-foreground">
+              {t.account.shippingMaxReached}
+            </p>
+          ) : null}
           {shipmentInfosQuery.isLoading ? (
             <p className="text-sm text-muted-foreground">{t.orders.loading}</p>
-          ) : records.length === 0 ? (
+          ) : activeRecords.length === 0 ? (
             <p className="rounded-xl border border-dashed border-border/70 bg-muted/20 px-4 py-3 text-sm text-muted-foreground">
               {t.account.shippingEmpty}
             </p>
           ) : (
-            records.map((record) => (
+            activeRecords.map((record) => (
               <div
                 key={record.id}
                 className="flex flex-wrap items-start justify-between gap-3 rounded-xl border border-border/60 px-4 py-3"
@@ -234,6 +262,7 @@ export function ShippingDetails() {
                     {[record.cityDescription, record.street, record.streetNumber]
                       .filter(Boolean)
                       .join(", ")}
+                    {record.isDefault ? ` (${t.account.shippingDefaultTag})` : ""}
                   </p>
                   <p className="text-muted-foreground">
                     {[record.apartmentFloor, record.apartmentNumber, record.zipCode]
@@ -253,7 +282,10 @@ export function ShippingDetails() {
                     variant="ghost"
                     size="sm"
                     disabled={isBusy}
-                    onClick={() => deleteMutation.mutate(record.id)}
+                    onClick={() => {
+                      if (!window.confirm(t.account.shippingDeleteConfirm)) return;
+                      deleteMutation.mutate(record.id);
+                    }}
                   >
                     {t.account.shippingDelete}
                   </Button>
@@ -365,6 +397,17 @@ export function ShippingDetails() {
                 onChange={(e) => setForm((v) => ({ ...v, addressNotes: e.target.value }))}
               />
             </div>
+
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <input
+                type="checkbox"
+                checked={form.isDefault}
+                onChange={(e) =>
+                  setForm((v) => ({ ...v, isDefault: e.target.checked }))
+                }
+              />
+              {t.account.shippingIsDefault}
+            </label>
 
             <div className="flex gap-2">
               <Button type="submit" disabled={isBusy || !canSubmit}>

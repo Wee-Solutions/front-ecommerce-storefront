@@ -33,6 +33,7 @@ export type ShipmentInfo = {
   additionalEnteranceCode: string;
   addressNotes: string;
   zipCode: string;
+  isDefault: boolean;
   isActive: boolean;
 };
 
@@ -52,5 +53,6 @@ export type UpsertShipmentInfoRequest = {
   additionalEnteranceCode: string;
   addressNotes: string;
   zipCode: string;
+  isDefault: boolean;
 };
 

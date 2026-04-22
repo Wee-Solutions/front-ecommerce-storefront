@@ -163,6 +163,10 @@ export type Dictionary = {
     shippingAddressNotes: string;
     shippingUpdate: string;
     shippingSave: string;
+    shippingDeleteConfirm: string;
+    shippingIsDefault: string;
+    shippingDefaultTag: string;
+    shippingMaxReached: string;
   };
   orders: {
     title: string;
@@ -395,6 +399,10 @@ const en: Dictionary = {
     shippingAddressNotes: "Address notes",
     shippingUpdate: "Update",
     shippingSave: "Save",
+    shippingDeleteConfirm: "Are you sure you want to delete this shipping detail?",
+    shippingIsDefault: "Set as default shipping address",
+    shippingDefaultTag: "Default",
+    shippingMaxReached: "You can only keep up to 3 shipping details.",
   },
   orders: {
     title: "Order history",
@@ -621,6 +629,10 @@ const he: Dictionary = {
     shippingAddressNotes: "הערות לכתובת",
     shippingUpdate: "עדכון",
     shippingSave: "שמירה",
+    shippingDeleteConfirm: "בטוחים שברצונך למחוק את פרטי המשלוח האלה?",
+    shippingIsDefault: "הגדרה ככתובת משלוח ברירת מחדל",
+    shippingDefaultTag: "ברירת מחדל",
+    shippingMaxReached: "ניתן לשמור עד 3 פרטי משלוח בלבד.",
   },
   orders: {
     title: "היסטוריית הזמנות",
@@ -847,6 +859,10 @@ const ar: Dictionary = {
     shippingAddressNotes: "ملاحظات العنوان",
     shippingUpdate: "تحديث",
     shippingSave: "حفظ",
+    shippingDeleteConfirm: "هل أنت متأكد أنك تريد حذف تفاصيل الشحن هذه؟",
+    shippingIsDefault: "تعيين كالعنوان الأساسي",
+    shippingDefaultTag: "افتراضي",
+    shippingMaxReached: "يمكنك الاحتفاظ بحد أقصى 3 تفاصيل شحن فقط.",
   },
   orders: {
     title: "سجل الطلبات",
