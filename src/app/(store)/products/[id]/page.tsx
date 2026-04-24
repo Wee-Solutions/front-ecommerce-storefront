@@ -3,15 +3,12 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { RelatedProducts } from "@/components/catalog/related-products";
-import { ReviewSection } from "@/components/product/review-section";
 import { ProductDetailCommerce } from "@/features/catalog/product-detail-commerce";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getServerLocale } from "@/lib/i18n/server-locale";
 import { isGuid } from "@/lib/guards";
-import { isMockApiEnabled } from "@/config/mock-mode";
 import { detailHighlights } from "@/lib/product-display";
 import { getServerStoreContext } from "@/lib/tenant/server-store";
-import { getMockReviewsForProduct } from "@/mocks/mock-reviews";
 import { getProductById } from "@/services/products.service";
 import { GatewayRequestError } from "@/types/api/gateway";
 
@@ -107,18 +104,9 @@ export default async function ProductPage({ params }: Props) {
         }}
       />
 
-      <ReviewSection
-        productId={product.id}
-        title={dict.product.reviewsTitle}
-        description={dict.product.reviewsPlaceholder}
-        reviews={
-          isMockApiEnabled() ? getMockReviewsForProduct(product.id) : undefined
-        }
-      />
-
       <Suspense
         fallback={
-          <div className="sf-shimmer mt-16 h-40 rounded-[var(--sf-radius)]" />
+          <div className="sf-shimmer mt-16 h-40 rounded-(--sf-radius)" />
         }
       >
         <RelatedProducts

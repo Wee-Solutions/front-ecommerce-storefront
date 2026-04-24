@@ -197,13 +197,11 @@ export function ProductPurchasePanel({
           />
         </div>
 
-        <p className="text-xs font-medium text-muted-foreground">
-          {available > 0
-            ? `${available} ${t.product.available}`
-            : complete
-              ? t.product.outOfStock
-              : ""}
-        </p>
+        {complete && available <= 0 ? (
+          <p className="text-xs font-medium text-muted-foreground">
+            {t.product.outOfStock}
+          </p>
+        ) : null}
       </div>
     </div>
   );
