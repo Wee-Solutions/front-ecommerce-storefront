@@ -5,10 +5,10 @@ import {
 import { GatewayRequestError } from "@/types/api/gateway";
 import type { OrderGatewayContext } from "@/types/api/order";
 import type {
-  ParsedCheckoutForm,
   PlaceOrderFailure,
   PlaceOrderResult,
   PlaceOrderSuccess,
+  StorefrontOrderSubmission,
 } from "./checkout-flow.types";
 import {
   buildCreateOrderRequest,
@@ -21,7 +21,7 @@ function normalizePaymentFrameUrl(url: string | undefined): string {
 }
 
 type Params = {
-  form: ParsedCheckoutForm;
+  submission: StorefrontOrderSubmission;
   cartLines: CartLine[];
   gateway: OrderGatewayContext;
   genericErrorMessage: string;
@@ -30,20 +30,19 @@ type Params = {
 
 /**
  * Creates a storefront order and, for card payments, obtains the provider iframe URL.
- * Pure API orchestration — no cart or UI state.
  */
 export async function placeStorefrontOrder({
-  form,
+  submission,
   cartLines,
   gateway,
   genericErrorMessage,
   cardUnavailableMessage,
 }: Params): Promise<PlaceOrderResult> {
   try {
-    const payload = buildCreateOrderRequest(form, cartLines);
+    const payload = buildCreateOrderRequest(submission, cartLines);
     const created = await createOrder(payload, gateway);
 
-    if (!isOnlineCardCheckout(form.paymentMethod)) {
+    if (!isOnlineCardCheckout(submission.paymentMethod)) {
       const success: PlaceOrderSuccess = {
         nextStep: "confirmation",
         orderNumber: created.orderNumber,

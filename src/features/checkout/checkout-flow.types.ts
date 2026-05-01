@@ -1,4 +1,7 @@
-import type { PaymentMethodValue } from "@/types/api/order";
+import type {
+  OrderShippingMethodValue,
+  PaymentMethodValue,
+} from "@/types/api/order";
 
 /** Single screen in the checkout experience (not an API order status). */
 export type CheckoutStep =
@@ -15,13 +18,14 @@ export type CheckoutStep =
       paymentCapturedOnline: boolean;
     };
 
-export type ParsedCheckoutForm = {
-  email: string;
-  phone: string;
-  firstName: string;
-  lastName: string;
-  shippingAddressLine: string;
+/** Values collected on the details step before calling `Create`. */
+export type StorefrontOrderSubmission = {
   paymentMethod: PaymentMethodValue;
+  shippingMethod: OrderShippingMethodValue;
+  /** Required when `shippingMethod` is delivery; must be `null` for pickup. */
+  shippingAddressId: string | null;
+  customerNotes: string | null;
+  couponCode: string | null;
 };
 
 export type PlaceOrderSuccess =
@@ -35,7 +39,6 @@ export type PlaceOrderSuccess =
       nextStep: "confirmation";
       orderNumber: number;
       paymentCapturedOnline: boolean;
-      /** Shown when card UI could not be started though the order exists */
       userMessage?: string;
     };
 

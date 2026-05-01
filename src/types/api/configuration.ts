@@ -10,6 +10,15 @@ export enum VendorSocialMediaType {
   WhatsApp = 8,
 }
 
+/** Mirrors `Ecommerce.Domain.Entities.Payments.PaymentMethod` (numeric). */
+export type StoreBankInfo = {
+  bankName: string;
+  branchNumber: string;
+  accountNumber: string;
+  accountOwnerName: string;
+  iban?: string | null;
+};
+
 export type StoreConfiguration = {
   name: string;
   supportEmail: string;
@@ -27,4 +36,7 @@ export type StoreConfiguration = {
     link: string;
   }[];
   marqueeTexts: string[];
+  /** Enabled payment methods for this vendor (e.g. 1 cash, 2 card, 3 bank). */
+  supportedPaymentMethods: number[];
+  bankInfo?: StoreBankInfo | null;
 };

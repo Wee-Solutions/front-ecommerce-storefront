@@ -3,26 +3,14 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useCustomerSession } from "@/features/auth/customer-session";
 import type { CartLine } from "@/features/cart/cart-store";
-import { getOrCreateGuestIdentifier } from "@/lib/guest-identifier";
 import type { OrderGatewayContext } from "@/types/api/order";
-import type { CheckoutStep } from "./checkout-flow.types";
+import type { CheckoutStep, StorefrontOrderSubmission } from "./checkout-flow.types";
 import { isPlaceOrderFailure } from "./checkout-flow.types";
-import { parseCheckoutFormData } from "./checkout-order-builders";
+import { authenticatedOrderContext } from "./order-gateway-context";
 import { placeStorefrontOrder } from "./place-storefront-order";
 
 function interpolateOrderNumber(template: string, orderNumber: number): string {
   return template.replace(/\{\{orderNumber\}\}/g, String(orderNumber));
-}
-
-function orderGatewayContext(
-  locale: string,
-  accessToken: string | null,
-): OrderGatewayContext {
-  return {
-    language: locale,
-    accessToken,
-    guestIdentifier: accessToken ? null : getOrCreateGuestIdentifier(),
-  };
 }
 
 export type CheckoutFlowLabels = {
@@ -32,6 +20,7 @@ export type CheckoutFlowLabels = {
   paymentTimeout: string;
   successPaid: string;
   successPlaced: string;
+  loginRequired: string;
 };
 
 type Params = {
@@ -40,9 +29,6 @@ type Params = {
   clearCart: () => void;
 };
 
-/**
- * Checkout screen state + API orchestration. Presentation stays in `CheckoutForm`.
- */
 export function useCheckoutFlow({ locale, labels, clearCart }: Params) {
   const accessToken = useCustomerSession((s) => s.accessToken);
 
@@ -53,10 +39,10 @@ export function useCheckoutFlow({ locale, labels, clearCart }: Params) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const resolveGatewayContext = useCallback(
-    () => orderGatewayContext(locale, accessToken),
-    [locale, accessToken],
-  );
+  const resolveGatewayContext = useCallback((): OrderGatewayContext | null => {
+    if (!accessToken) return null;
+    return authenticatedOrderContext(locale, accessToken);
+  }, [locale, accessToken]);
 
   const exitEmbeddedPaymentWithMessage = useCallback(
     (template: string) => {
@@ -90,15 +76,20 @@ export function useCheckoutFlow({ locale, labels, clearCart }: Params) {
   }, [clearCart]);
 
   const submitDetailsStep = useCallback(
-    async (formData: FormData, cartLines: CartLine[]) => {
+    async (submission: StorefrontOrderSubmission, cartLines: CartLine[]) => {
       setErrorMessage(null);
+      const gateway = resolveGatewayContext();
+      if (!gateway) {
+        setErrorMessage(labels.loginRequired);
+        return;
+      }
+
       setIsSubmitting(true);
       try {
-        const parsed = parseCheckoutFormData(formData);
         const result = await placeStorefrontOrder({
-          form: parsed,
+          submission,
           cartLines,
-          gateway: resolveGatewayContext(),
+          gateway,
           genericErrorMessage: labels.errorGeneric,
           cardUnavailableMessage: labels.cardUnavailable,
         });
@@ -135,6 +126,7 @@ export function useCheckoutFlow({ locale, labels, clearCart }: Params) {
       clearCart,
       labels.cardUnavailable,
       labels.errorGeneric,
+      labels.loginRequired,
       resolveGatewayContext,
     ],
   );
@@ -152,6 +144,7 @@ export function useCheckoutFlow({ locale, labels, clearCart }: Params) {
     accessToken,
     isSubmitting,
     errorMessage,
+    setErrorMessage,
     submitDetailsStep,
     onEmbeddedPaymentSucceeded,
     onEmbeddedPaymentFailed,

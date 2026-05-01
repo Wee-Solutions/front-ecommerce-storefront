@@ -132,6 +132,39 @@ export type Dictionary = {
     paymentTimeout: string;
     cardUnavailable: string;
     submitting: string;
+    loginRequired: string;
+    loginCta: string;
+    shippingMethodTitle: string;
+    shippingDelivery: string;
+    shippingDeliveryHint: string;
+    shippingPickup: string;
+    shippingPickupHint: string;
+    deliveryAddress: string;
+    selectAddress: string;
+    noSavedAddresses: string;
+    manageAddresses: string;
+    orderNotes: string;
+    orderNotesPlaceholder: string;
+    coupon: string;
+    couponPlaceholder: string;
+    applyCoupon: string;
+    couponApplied: string;
+    couponInvalid: string;
+    validatingCoupon: string;
+    discount: string;
+    totalEstimate: string;
+    bankTransferDetails: string;
+    bankName: string;
+    bankBranch: string;
+    bankAccount: string;
+    bankAccountOwner: string;
+    bankIban: string;
+    defaultAddressTag: string;
+    bankTransferPanelTitle: string;
+    bankTransferPanelHint: string;
+    bankTransferReferenceHint: string;
+    bankCopy: string;
+    bankCopied: string;
   };
   account: {
     title: string;
@@ -189,12 +222,37 @@ export type Dictionary = {
     loading: string;
     status: string;
     total: string;
-    statusPending: string;
-    statusApproved: string;
-    statusReady: string;
-    statusDelivered: string;
-    statusCancelled: string;
     statusUnknown: string;
+    orderStatusPending: string;
+    orderStatusConfirmed: string;
+    orderStatusCancelled: string;
+    orderStatusDone: string;
+    payment: string;
+    paymentStatus: string;
+    paymentStatusUnpaid: string;
+    paymentStatusPaid: string;
+    paymentStatusFailed: string;
+    paymentStatusCreditJ5: string;
+    paymentStatusUnknown: string;
+    paymentMethodCash: string;
+    paymentMethodCard: string;
+    paymentMethodBank: string;
+    paymentMethodUnknown: string;
+    viewOrder: string;
+    backToOrders: string;
+    orderDetailTitle: string;
+    orderDetailSubtitle: string;
+    items: string;
+    quantityShort: string;
+    lineTotal: string;
+    placedOn: string;
+    lastUpdated: string;
+    subtotalBeforeTax: string;
+    tax: string;
+    customerNotes: string;
+    loadError: string;
+    notFound: string;
+    orderDetailsScreenTitle: string;
   };
   auth: {
     loginTitle: string;
@@ -355,7 +413,7 @@ const en: Dictionary = {
   },
   checkout: {
     title: "Checkout",
-    subtitle: "Complete your details and pay securely.",
+    subtitle: "Review shipping, payment, and coupons — then place your order.",
     empty: "Your cart is empty. Add items before checkout.",
     contact: "Contact",
     email: "Email",
@@ -366,7 +424,7 @@ const en: Dictionary = {
     subtotal: "Subtotal",
     placeOrder: "Place order",
     thanks: "Thank you for your order.",
-    paymentMethod: "Payment method",
+    paymentMethod: "Payment",
     paymentCard: "Card",
     paymentCash: "Cash on delivery",
     paymentBank: "Bank transfer",
@@ -384,6 +442,42 @@ const en: Dictionary = {
     cardUnavailable:
       "Card payment is not available right now. Try cash, bank transfer, or try again later.",
     submitting: "Submitting…",
+    loginRequired: "Sign in to complete checkout.",
+    loginCta: "Sign in",
+    shippingMethodTitle: "How do you want to receive your order?",
+    shippingDelivery: "Delivery",
+    shippingDeliveryHint: "We’ll ship to a saved address.",
+    shippingPickup: "Pickup",
+    shippingPickupHint: "Collect from the store — no shipping address needed.",
+    deliveryAddress: "Delivery address",
+    selectAddress: "Choose a saved address",
+    noSavedAddresses:
+      "You don’t have a delivery address yet. Add one in your account.",
+    manageAddresses: "Manage addresses",
+    orderNotes: "Order notes (optional)",
+    orderNotesPlaceholder: "Instructions for the seller…",
+    coupon: "Coupon",
+    couponPlaceholder: "Enter code",
+    applyCoupon: "Apply",
+    couponApplied: "Coupon applied",
+    couponInvalid: "This coupon could not be applied.",
+    validatingCoupon: "Checking…",
+    discount: "Discount",
+    totalEstimate: "Estimated total",
+    bankTransferDetails: "Pay by bank transfer using these details",
+    bankName: "Bank",
+    bankBranch: "Branch",
+    bankAccount: "Account",
+    bankAccountOwner: "Account holder",
+    bankIban: "IBAN",
+    defaultAddressTag: "Default",
+    bankTransferPanelTitle: "Pay by bank transfer",
+    bankTransferPanelHint:
+      "Use the details below in your banking app. Transfers usually take 1–2 business days.",
+    bankTransferReferenceHint:
+      "Important: include your name and order number in the transfer reference so we can match your payment.",
+    bankCopy: "Copy",
+    bankCopied: "Copied",
   },
   account: {
     title: "Account",
@@ -435,19 +529,43 @@ const en: Dictionary = {
   },
   orders: {
     title: "Order history",
-    subtitle:
-      "Customer order APIs are not exposed yet. This page is ready for future wiring.",
+    subtitle: "Track orders, payment, and fulfillment in one place.",
     empty: "No orders to show.",
     account: "Account",
     loading: "Loading orders...",
-    status: "Status",
+    status: "Order status",
     total: "Total",
-    statusPending: "Pending",
-    statusApproved: "Approved",
-    statusReady: "Ready",
-    statusDelivered: "Delivered",
-    statusCancelled: "Cancelled",
-    statusUnknown: "Status",
+    statusUnknown: "Unknown",
+    orderStatusPending: "Pending",
+    orderStatusConfirmed: "Confirmed",
+    orderStatusCancelled: "Cancelled",
+    orderStatusDone: "Done",
+    payment: "Payment",
+    paymentStatus: "Payment status",
+    paymentStatusUnpaid: "Unpaid",
+    paymentStatusPaid: "Paid",
+    paymentStatusFailed: "Failed",
+    paymentStatusCreditJ5: "Credit (J5)",
+    paymentStatusUnknown: "Unknown",
+    paymentMethodCash: "Cash",
+    paymentMethodCard: "Card",
+    paymentMethodBank: "Bank transfer",
+    paymentMethodUnknown: "Other",
+    viewOrder: "View details",
+    backToOrders: "Back to orders",
+    orderDetailTitle: "Order #{{orderNumber}}",
+    orderDetailSubtitle: "Items, totals, and status for this order.",
+    items: "Items",
+    quantityShort: "Qty",
+    lineTotal: "Line total",
+    placedOn: "Placed on",
+    lastUpdated: "Last updated",
+    subtotalBeforeTax: "Subtotal (before tax)",
+    tax: "Tax",
+    customerNotes: "Your notes",
+    loadError: "Could not load this order.",
+    notFound: "We couldn’t find this order.",
+    orderDetailsScreenTitle: "Order details",
   },
   auth: {
     loginTitle: "Sign in",
@@ -603,7 +721,7 @@ const he: Dictionary = {
   },
   checkout: {
     title: "תשלום",
-    subtitle: "מלאו פרטים ושלמו בצורה מאובטחת.",
+    subtitle: "בדקו משלוח, תשלום וקופון לפני שליחת ההזמנה.",
     empty: "העגלה ריקה. הוסיפו פריטים לפני התשלום.",
     contact: "פרטי קשר",
     email: "אימייל",
@@ -614,7 +732,7 @@ const he: Dictionary = {
     subtotal: "סיכום ביניים",
     placeOrder: "ביצוע הזמנה",
     thanks: "תודה על הזמנתכם.",
-    paymentMethod: "אמצעי תשלום",
+    paymentMethod: "תשלום",
     paymentCard: "כרטיס אשראי",
     paymentCash: "מזומן בעת המסירה",
     paymentBank: "העברה בנקאית",
@@ -630,6 +748,41 @@ const he: Dictionary = {
     cardUnavailable:
       "תשלום בכרטיס אינו זמין כרגע. נסו מזומן, העברה בנקאית, או נסו שוב מאוחר יותר.",
     submitting: "שולח…",
+    loginRequired: "התחברו כדי להשלים את התשלום.",
+    loginCta: "כניסה",
+    shippingMethodTitle: "איך תרצו לקבל את ההזמנה?",
+    shippingDelivery: "משלוח",
+    shippingDeliveryHint: "נשלח לכתובת שמורה.",
+    shippingPickup: "איסוף עצמי",
+    shippingPickupHint: "איסוף מהחנות — ללא כתובת משלוח.",
+    deliveryAddress: "כתובת למשלוח",
+    selectAddress: "בחרו כתובת שמורה",
+    noSavedAddresses: "אין עדיין כתובת משלוח. הוסיפו בחשבון.",
+    manageAddresses: "ניהול כתובות",
+    orderNotes: "הערות להזמנה (אופציונלי)",
+    orderNotesPlaceholder: "הנחיות לחנות…",
+    coupon: "קופון",
+    couponPlaceholder: "הזינו קוד",
+    applyCoupon: "החלה",
+    couponApplied: "הקופון הוחל",
+    couponInvalid: "לא ניתן להחיל קופון זה.",
+    validatingCoupon: "בודקים…",
+    discount: "הנחה",
+    totalEstimate: "סה״כ משוער",
+    bankTransferDetails: "שלמו בהעברה בנקאית לפי הפרטים",
+    bankName: "בנק",
+    bankBranch: "סניף",
+    bankAccount: "חשבון",
+    bankAccountOwner: "בעל החשבון",
+    bankIban: "מספר IBAN",
+    defaultAddressTag: "ברירת מחדל",
+    bankTransferPanelTitle: "תשלום בהעברה בנקאית",
+    bankTransferPanelHint:
+      "השתמשו בפרטים למטה באפליקציית הבנק. זיכויים בדרך כלל נקלטים תוך 1–2 ימי עסקים.",
+    bankTransferReferenceHint:
+      "חשוב: ציינו בשדה ההפניה את השם ומספר ההזמנה כדי שנוכל לזהות את התשלום.",
+    bankCopy: "העתקה",
+    bankCopied: "הועתק",
   },
   account: {
     title: "חשבון",
@@ -681,18 +834,43 @@ const he: Dictionary = {
   },
   orders: {
     title: "היסטוריית הזמנות",
-    subtitle: "ממשק הזמנות ללקוח עדיין לא חשוף. הדף מוכן לחיבור עתידי.",
+    subtitle: "מעקב אחר הזמנות, תשלום ואספקה.",
     empty: "אין הזמנות להצגה.",
     account: "חשבון",
     loading: "טוען הזמנות...",
-    status: "סטטוס",
+    status: "סטטוס הזמנה",
     total: "סה״כ",
-    statusPending: "ממתין",
-    statusApproved: "אושר",
-    statusReady: "מוכן",
-    statusDelivered: "נמסר",
-    statusCancelled: "בוטל",
-    statusUnknown: "סטטוס",
+    statusUnknown: "לא ידוע",
+    orderStatusPending: "ממתין",
+    orderStatusConfirmed: "מאושר",
+    orderStatusCancelled: "בוטל",
+    orderStatusDone: "הושלם",
+    payment: "תשלום",
+    paymentStatus: "סטטוס תשלום",
+    paymentStatusUnpaid: "לא שולם",
+    paymentStatusPaid: "שולם",
+    paymentStatusFailed: "נכשל",
+    paymentStatusCreditJ5: "זיכוי (J5)",
+    paymentStatusUnknown: "לא ידוע",
+    paymentMethodCash: "מזומן",
+    paymentMethodCard: "כרטיס",
+    paymentMethodBank: "העברה בנקאית",
+    paymentMethodUnknown: "אחר",
+    viewOrder: "פרטים",
+    backToOrders: "חזרה להזמנות",
+    orderDetailTitle: "הזמנה מס׳ {{orderNumber}}",
+    orderDetailSubtitle: "פריטים, סיכומים וסטטוס להזמנה זו.",
+    items: "פריטים",
+    quantityShort: "כמות",
+    lineTotal: "סה״כ שורה",
+    placedOn: "נוצר ב־",
+    lastUpdated: "עודכן לאחרונה",
+    subtotalBeforeTax: "סיכום לפני מע״מ",
+    tax: "מע״מ",
+    customerNotes: "הערות שלכם",
+    loadError: "לא ניתן לטעון את ההזמנה.",
+    notFound: "ההזמנה לא נמצאה.",
+    orderDetailsScreenTitle: "פרטי הזמנה",
   },
   auth: {
     loginTitle: "כניסה",
@@ -848,7 +1026,7 @@ const ar: Dictionary = {
   },
   checkout: {
     title: "الدفع",
-    subtitle: "أكمل بياناتك وادفع بأمان.",
+    subtitle: "راجع الشحن والدفع والقسيمة ثم أكّد الطلب.",
     empty: "سلتك فارغة. أضف منتجات قبل الدفع.",
     contact: "جهة الاتصال",
     email: "البريد الإلكتروني",
@@ -859,7 +1037,7 @@ const ar: Dictionary = {
     subtotal: "المجموع الفرعي",
     placeOrder: "تأكيد الطلب",
     thanks: "شكراً لطلبك.",
-    paymentMethod: "طريقة الدفع",
+    paymentMethod: "الدفع",
     paymentCard: "بطاقة",
     paymentCash: "نقداً عند الاستلام",
     paymentBank: "تحويل بنكي",
@@ -875,6 +1053,41 @@ const ar: Dictionary = {
     cardUnavailable:
       "دفع البطاقة غير متاح حالياً. جرّب النقد أو التحويل البنكي أو لاحقاً.",
     submitting: "جاري الإرسال…",
+    loginRequired: "سجّل الدخول لإتمام الدفع.",
+    loginCta: "تسجيل الدخول",
+    shippingMethodTitle: "كيف تريد استلام الطلب؟",
+    shippingDelivery: "توصيل",
+    shippingDeliveryHint: "الشحن إلى عنوان محفوظ.",
+    shippingPickup: "استلام من المتجر",
+    shippingPickupHint: "بدون عنوان شحن.",
+    deliveryAddress: "عنوان التوصيل",
+    selectAddress: "اختر عنواناً محفوظاً",
+    noSavedAddresses: "لا يوجد عنوان بعد. أضفه من الحساب.",
+    manageAddresses: "إدارة العناوين",
+    orderNotes: "ملاحظات الطلب (اختياري)",
+    orderNotesPlaceholder: "تعليمات للبائع…",
+    coupon: "قسيمة",
+    couponPlaceholder: "أدخل الرمز",
+    applyCoupon: "تطبيق",
+    couponApplied: "تم تطبيق القسيمة",
+    couponInvalid: "تعذر تطبيق هذه القسيمة.",
+    validatingCoupon: "جاري التحقق…",
+    discount: "الخصم",
+    totalEstimate: "الإجمالي التقديري",
+    bankTransferDetails: "ادفع بالتحويل البنكي باستخدام البيانات التالية",
+    bankName: "البنك",
+    bankBranch: "الفرع",
+    bankAccount: "الحساب",
+    bankAccountOwner: "صاحب الحساب",
+    bankIban: "رقم الآيبان",
+    defaultAddressTag: "افتراضي",
+    bankTransferPanelTitle: "الدفع بالتحويل البنكي",
+    bankTransferPanelHint:
+      "استخدم البيانات أدناه في تطبيق البنك. قد يستغرق ظهور التحويل يومي عمل.",
+    bankTransferReferenceHint:
+      "مهم: اذكر اسمك ورقم الطلب في بيانات التحويل ليتم ربط الدفع.",
+    bankCopy: "نسخ",
+    bankCopied: "تم النسخ",
   },
   account: {
     title: "الحساب",
@@ -926,18 +1139,43 @@ const ar: Dictionary = {
   },
   orders: {
     title: "سجل الطلبات",
-    subtitle: "واجهة طلبات العملاء غير متاحة بعد. الصفحة جاهزة للربط لاحقاً.",
+    subtitle: "تتبع الطلبات والدفع والتنفيذ.",
     empty: "لا توجد طلبات.",
     account: "الحساب",
     loading: "جاري تحميل الطلبات...",
-    status: "الحالة",
+    status: "حالة الطلب",
     total: "الإجمالي",
-    statusPending: "قيد الانتظار",
-    statusApproved: "تمت الموافقة",
-    statusReady: "جاهز",
-    statusDelivered: "تم التسليم",
-    statusCancelled: "ملغي",
-    statusUnknown: "الحالة",
+    statusUnknown: "غير معروف",
+    orderStatusPending: "قيد الانتظار",
+    orderStatusConfirmed: "مؤكد",
+    orderStatusCancelled: "ملغي",
+    orderStatusDone: "مكتمل",
+    payment: "الدفع",
+    paymentStatus: "حالة الدفع",
+    paymentStatusUnpaid: "غير مدفوع",
+    paymentStatusPaid: "مدفوع",
+    paymentStatusFailed: "فشل",
+    paymentStatusCreditJ5: "رصيد (J5)",
+    paymentStatusUnknown: "غير معروف",
+    paymentMethodCash: "نقداً",
+    paymentMethodCard: "بطاقة",
+    paymentMethodBank: "تحويل بنكي",
+    paymentMethodUnknown: "آخر",
+    viewOrder: "عرض التفاصيل",
+    backToOrders: "العودة للطلبات",
+    orderDetailTitle: "الطلب رقم {{orderNumber}}",
+    orderDetailSubtitle: "العناصر والمجاميع والحالة لهذا الطلب.",
+    items: "العناصر",
+    quantityShort: "الكمية",
+    lineTotal: "إجمالي السطر",
+    placedOn: "تاريخ الطلب",
+    lastUpdated: "آخر تحديث",
+    subtotalBeforeTax: "المجموع قبل الضريبة",
+    tax: "الضريبة",
+    customerNotes: "ملاحظاتك",
+    loadError: "تعذر تحميل هذا الطلب.",
+    notFound: "لم يُعثر على الطلب.",
+    orderDetailsScreenTitle: "تفاصيل الطلب",
   },
   auth: {
     loginTitle: "تسجيل الدخول",

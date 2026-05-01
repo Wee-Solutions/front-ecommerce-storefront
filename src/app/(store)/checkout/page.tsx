@@ -13,7 +13,7 @@ export default async function CheckoutPage() {
   const dict = getDictionary(await getServerLocale());
 
   return (
-    <div className="mx-auto max-w-lg">
+    <div className="mx-auto max-w-2xl px-1 sm:px-0">
       <h1 className="text-2xl font-semibold tracking-tight text-[var(--sf-color-primary)] md:text-3xl">
         {dict.checkout.title}
       </h1>

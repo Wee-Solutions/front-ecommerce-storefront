@@ -149,8 +149,8 @@ export function StoreShell({
     storeConfig?.marqueeTexts
       ?.map((item) => item.trim())
       .filter((item) => item.length > 0) ?? [];
-  const marqueeTexts =
-    configMarqueeTexts.length > 0 ? configMarqueeTexts : [t.nav.announcement];
+  const marqueeTexts = configMarqueeTexts.length > 0 ? configMarqueeTexts : [];
+  console.log(marqueeTexts);
   const socialLinks = (storeConfig?.socialMediaLinks ?? [])
     .map((item) => ({
       ...item,
@@ -170,7 +170,8 @@ export function StoreShell({
   const isSignedIn = Boolean(accessToken && customerId);
   const pathname = usePathname() ?? "";
   const activeCategoryId = getCategoryIdFromPathname(pathname);
-  const searchActive = pathname === "/search" || pathname.startsWith("/search?");
+  const searchActive =
+    pathname === "/search" || pathname.startsWith("/search?");
 
   return (
     <>
@@ -184,7 +185,9 @@ export function StoreShell({
                     key={`${dup}-${text}-${idx}`}
                     className="sf-marquee-pill inline-flex items-center whitespace-nowrap"
                   >
-                    {idx > 0 ? <span className="me-3 opacity-50">•</span> : null}
+                    {idx > 0 ? (
+                      <span className="me-3 opacity-50">•</span>
+                    ) : null}
                     {text}
                   </span>
                 ))}
@@ -357,7 +360,10 @@ export function StoreShell({
                       </button>
                     </div>
                     {expanded ? (
-                      <div id={`mobile-subcats-${c.id}`} className="mt-1 py-0.5">
+                      <div
+                        id={`mobile-subcats-${c.id}`}
+                        className="mt-1 py-0.5"
+                      >
                         <MobileCategorySubtree
                           items={subs}
                           activeCategoryId={activeCategoryId}
@@ -429,7 +435,7 @@ export function StoreShell({
               {displayName}
             </p>
             <p className="mt-3 max-w-sm text-pretty leading-relaxed">
-              {marqueeTexts[0] ?? t.nav.announcement}
+              {marqueeTexts[0]}
             </p>
           </div>
           <div>
@@ -446,10 +452,7 @@ export function StoreShell({
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/cart"
-                  className="transition hover:text-foreground"
-                >
+                <Link href="/cart" className="transition hover:text-foreground">
                   {t.nav.cart}
                 </Link>
               </li>
@@ -464,7 +467,9 @@ export function StoreShell({
             </ul>
           </div>
           <div>
-            <p className="sf-section-eyebrow mb-3 text-muted-foreground">{t.checkout.contact}</p>
+            <p className="sf-section-eyebrow mb-3 text-muted-foreground">
+              {t.checkout.contact}
+            </p>
             <div className="space-y-2">
               {supportEmail ? (
                 <a

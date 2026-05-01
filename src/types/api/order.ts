@@ -7,12 +7,63 @@ export const PaymentMethod = {
 
 export type PaymentMethodValue = (typeof PaymentMethod)[keyof typeof PaymentMethod];
 
+/** Mirrors `Ecommerce.Domain.Entities.Orders.OrderShippingMethod`. */
+export const OrderShippingMethod = {
+  Delivery: 0,
+  Pickup: 1,
+} as const;
+
+export type OrderShippingMethodValue =
+  (typeof OrderShippingMethod)[keyof typeof OrderShippingMethod];
+
 /** Mirrors `Ecommerce.Domain.Entities.Orders.OrderPaymentStatus`. */
 export const OrderPaymentStatus = {
   Unpaid: 0,
   Paid: 1,
   Failed: 2,
+  CreditJ5: 3,
 } as const;
+
+/** Mirrors `Ecommerce.Domain.Entities.Orders.OrderStatus`. */
+export const OrderStatus = {
+  Pending: 0,
+  Confirmed: 1,
+  Cancelled: 2,
+  Done: 3,
+} as const;
+
+export type CustomerOrderLineProperty = {
+  propertyName: string;
+  propertyValueName: string;
+};
+
+export type CustomerOrderLine = {
+  id: string;
+  productId: string;
+  mainImage?: string | null;
+  title: string;
+  quantity: number;
+  price: number;
+  totalPriceAfterTax: number;
+  customerNotes: string;
+  properties: CustomerOrderLineProperty[];
+};
+
+export type CustomerOrderDetail = {
+  id: string;
+  number: number;
+  taxRatePercentage: number;
+  totalPriceBeforeTax: number;
+  totalTaxAmount: number;
+  totalPriceAfterTax: number;
+  orderStatus: number;
+  paymentMethod: number;
+  paymentStatus: number;
+  customerNotes: string;
+  products: CustomerOrderLine[];
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type CreateOrderProductLine = {
   productId: string;
@@ -25,7 +76,11 @@ export type CreateOrderProductLine = {
 
 export type CreateOrderRequest = {
   paymentMethod: PaymentMethodValue;
+  shippingMethod: OrderShippingMethodValue;
+  shippingAddressId?: string | null;
   customerNotes?: string | null;
+  couponCode?: string | null;
+  tenantId?: string | null;
   firstName?: string | null;
   lastName?: string | null;
   phoneNumber?: string | null;
@@ -75,11 +130,6 @@ export type SearchCustomerOrdersResponse = {
 
 export type OrderGatewayContext = {
   language?: string;
-  accessToken?: string | null;
-  /**
-   * Required for guest checkout so `Create` and `GetPaymentEmbeddedFrame` resolve the same guest.
-   * Omit when `accessToken` is set (logged-in customer).
-   */
-  guestIdentifier?: string | null;
+  accessToken: string;
 };
 

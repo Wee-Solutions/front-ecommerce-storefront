@@ -5,6 +5,7 @@ import {
 import type {
   CreateOrderRequest,
   CreateOrderResponse,
+  CustomerOrderDetail,
   GetOrderPaymentStatusResponse,
   GetPaymentEmbeddedFrameRequest,
   GetPaymentEmbeddedFrameResponse,
@@ -15,12 +16,11 @@ import type {
 
 function orderFetchOptions(
   ctx: OrderGatewayContext,
-): Pick<GatewayFetchOptions, "language" | "accessToken" | "guestIdentifier"> {
-  const { language = "en", accessToken, guestIdentifier } = ctx;
+): Pick<GatewayFetchOptions, "language" | "accessToken"> {
+  const { language = "en", accessToken } = ctx;
   return {
     language,
-    accessToken: accessToken ?? undefined,
-    guestIdentifier: accessToken ? undefined : (guestIdentifier ?? undefined),
+    accessToken,
   };
 }
 
@@ -33,6 +33,20 @@ export function searchCustomerOrders(
     path: "/orders/Search",
     method: "POST",
     body,
+    language,
+    accessToken,
+    cache: "no-store",
+  });
+}
+
+export function getCustomerOrderById(
+  orderId: string,
+  accessToken: string,
+  language = "en",
+) {
+  return gatewayFetch<CustomerOrderDetail>({
+    path: `/orders/GetById/${orderId}`,
+    method: "GET",
     language,
     accessToken,
     cache: "no-store",

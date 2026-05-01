@@ -1,62 +1,12 @@
 import type { CartLine } from "@/features/cart/cart-store";
+import { env } from "@/config/env";
 import type { CreateOrderRequest } from "@/types/api/order";
-import { PaymentMethod, type PaymentMethodValue } from "@/types/api/order";
-import type { ParsedCheckoutForm } from "./checkout-flow.types";
-
-const SHIPPING_NOTE_PREFIX = "Address:";
-
-/** Normalizes a single "full name" field into API first/last parts. */
-export function splitCustomerFullName(fullName: string): {
-  firstName: string;
-  lastName: string;
-} {
-  const normalized = fullName.trim().replace(/\s+/g, " ");
-  const spaceIndex = normalized.indexOf(" ");
-  if (spaceIndex === -1) {
-    return { firstName: normalized, lastName: "" };
-  }
-  return {
-    firstName: normalized.slice(0, spaceIndex),
-    lastName: normalized.slice(spaceIndex + 1),
-  };
-}
-
-/** API has no structured address; persist it in order notes for fulfillment. */
-export function customerNotesFromShippingAddress(
-  shippingAddressLine: string,
-): string | undefined {
-  const trimmed = shippingAddressLine.trim();
-  if (!trimmed) return undefined;
-  return `${SHIPPING_NOTE_PREFIX} ${trimmed}`;
-}
-
-export function parsePaymentMethodFromForm(
-  raw: FormDataEntryValue | null,
-): PaymentMethodValue {
-  const value = Number(raw ?? PaymentMethod.CreditCard);
-  if (
-    value === PaymentMethod.Cash ||
-    value === PaymentMethod.CreditCard ||
-    value === PaymentMethod.BankTransfer
-  ) {
-    return value;
-  }
-  return PaymentMethod.CreditCard;
-}
-
-export function parseCheckoutFormData(formData: FormData): ParsedCheckoutForm {
-  const fullName = String(formData.get("name") ?? "").trim();
-  const { firstName, lastName } = splitCustomerFullName(fullName);
-
-  return {
-    email: String(formData.get("email") ?? "").trim(),
-    phone: String(formData.get("phone") ?? "").trim(),
-    firstName,
-    lastName,
-    shippingAddressLine: String(formData.get("address") ?? "").trim(),
-    paymentMethod: parsePaymentMethodFromForm(formData.get("paymentMethod")),
-  };
-}
+import {
+  OrderShippingMethod,
+  PaymentMethod,
+  type PaymentMethodValue,
+} from "@/types/api/order";
+import type { StorefrontOrderSubmission } from "./checkout-flow.types";
 
 export function buildOrderLinesFromCart(cartLines: CartLine[]) {
   return cartLines.map((line) => ({
@@ -69,16 +19,19 @@ export function buildOrderLinesFromCart(cartLines: CartLine[]) {
 }
 
 export function buildCreateOrderRequest(
-  form: ParsedCheckoutForm,
+  submission: StorefrontOrderSubmission,
   cartLines: CartLine[],
 ): CreateOrderRequest {
+  const isDelivery =
+    submission.shippingMethod === OrderShippingMethod.Delivery;
+
   return {
-    paymentMethod: form.paymentMethod,
-    customerNotes: customerNotesFromShippingAddress(form.shippingAddressLine),
-    firstName: form.firstName,
-    lastName: form.lastName,
-    phoneNumber: form.phone,
-    email: form.email,
+    paymentMethod: submission.paymentMethod,
+    shippingMethod: submission.shippingMethod,
+    shippingAddressId: isDelivery ? submission.shippingAddressId : null,
+    customerNotes: submission.customerNotes?.trim() || undefined,
+    couponCode: submission.couponCode?.trim() || undefined,
+    tenantId: env.tenantId,
     orderProducts: buildOrderLinesFromCart(cartLines),
   };
 }
@@ -92,4 +45,26 @@ export function sumCartLinesSubtotal(cartLines: CartLine[]): number {
     (sum, line) => sum + line.unitPrice * line.quantity,
     0,
   );
+}
+
+export function uniqueCartProductIds(cartLines: CartLine[]): string[] {
+  return [...new Set(cartLines.map((l) => l.productId))];
+}
+
+/** Payment methods the store supports and that exist in the domain enum. */
+export function filterSupportedPaymentMethods(
+  vendorMethods: number[],
+): PaymentMethodValue[] {
+  const allowed = new Set<number>([
+    PaymentMethod.Cash,
+    PaymentMethod.CreditCard,
+    PaymentMethod.BankTransfer,
+  ]);
+  const out: PaymentMethodValue[] = [];
+  for (const m of vendorMethods) {
+    if (!allowed.has(m)) continue;
+    const v = m as PaymentMethodValue;
+    if (!out.includes(v)) out.push(v);
+  }
+  return out;
 }

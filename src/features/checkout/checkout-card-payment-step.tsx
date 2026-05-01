@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { getOrderPaymentStatus } from "@/services/orders.service";
 import { OrderPaymentStatus } from "@/types/api/order";
+import type { OrderGatewayContext } from "@/types/api/order";
 
 const PAYMENT_STATUS_POLL_INTERVAL_MS = 2000;
 const MAX_PAYMENT_STATUS_POLL_ATTEMPTS = 90;
@@ -10,9 +11,7 @@ const MAX_PAYMENT_STATUS_POLL_ATTEMPTS = 90;
 type Props = {
   iframeUrl: string;
   orderId: string;
-  language: string;
-  accessToken: string | null;
-  guestIdentifier: string | null;
+  gateway: OrderGatewayContext;
   secureHint: string;
   waitingHint: string;
   onPaid: () => void;
@@ -23,9 +22,7 @@ type Props = {
 export function CheckoutCardPaymentStep({
   iframeUrl,
   orderId,
-  language,
-  accessToken,
-  guestIdentifier,
+  gateway,
   secureHint,
   waitingHint,
   onPaid,
@@ -57,11 +54,7 @@ export function CheckoutCardPaymentStep({
         return;
       }
       try {
-        const status = await getOrderPaymentStatus(orderId, {
-          language,
-          accessToken,
-          guestIdentifier,
-        });
+        const status = await getOrderPaymentStatus(orderId, gateway);
         if (cancelled) return;
         if (status.paymentStatus === OrderPaymentStatus.Paid) {
           if (intervalRef.id !== null) clearInterval(intervalRef.id);
@@ -71,7 +64,7 @@ export function CheckoutCardPaymentStep({
           onFailedRef.current();
         }
       } catch {
-        /* transient errors: keep polling until timeout */
+        /* keep polling */
       }
     };
 
@@ -85,7 +78,7 @@ export function CheckoutCardPaymentStep({
       cancelled = true;
       if (intervalRef.id !== null) clearInterval(intervalRef.id);
     };
-  }, [orderId, language, accessToken, guestIdentifier]);
+  }, [orderId, gateway]);
 
   return (
     <div className="space-y-4">
