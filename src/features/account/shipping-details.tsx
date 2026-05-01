@@ -58,6 +58,7 @@ export function ShippingDetails() {
   const { language } = useVendor();
   const { accessToken } = useCustomerSession();
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [form, setForm] = useState<ShippingFormState>(emptyForm);
 
@@ -84,6 +85,7 @@ export function ShippingDetails() {
       const txt = t.account.shippingSaved;
       setMessage(txt);
       toast.success(txt);
+      setShowForm(false);
       setEditingId(null);
       setForm(emptyForm);
       await shipmentInfosQuery.refetch();
@@ -118,6 +120,7 @@ export function ShippingDetails() {
       const txt = t.account.shippingUpdated;
       setMessage(txt);
       toast.success(txt);
+      setShowForm(false);
       setEditingId(null);
       setForm(emptyForm);
       await shipmentInfosQuery.refetch();
@@ -140,6 +143,7 @@ export function ShippingDetails() {
       setMessage(txt);
       toast.success(txt);
       if (editingId) {
+        setShowForm(false);
         setEditingId(null);
         setForm(emptyForm);
       }
@@ -161,6 +165,7 @@ export function ShippingDetails() {
   const canSubmit = Boolean(form.street.trim());
 
   function startEdit(record: ShipmentInfo) {
+    setShowForm(true);
     setEditingId(record.id);
     setForm(fromShipment(record));
   }
@@ -172,6 +177,7 @@ export function ShippingDetails() {
       toast.error(txt);
       return;
     }
+    setShowForm(true);
     setEditingId(null);
     setForm(emptyForm);
   }
@@ -296,16 +302,17 @@ export function ShippingDetails() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-sans">
-            {editingId
-              ? t.account.shippingEditTitle
-              : t.account.shippingAddTitle}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form className="space-y-4" onSubmit={onSubmit}>
+      {showForm ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-sans">
+              {editingId
+                ? t.account.shippingEditTitle
+                : t.account.shippingAddTitle}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form className="space-y-4" onSubmit={onSubmit}>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <label className="text-sm font-medium">{t.account.shippingCity}</label>
@@ -409,24 +416,26 @@ export function ShippingDetails() {
               {t.account.shippingIsDefault}
             </label>
 
-            <div className="flex gap-2">
-              <Button type="submit" disabled={isBusy || !canSubmit}>
-                {editingId ? t.account.shippingUpdate : t.account.shippingSave}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  setEditingId(null);
-                  setForm(emptyForm);
-                }}
-              >
-                {t.account.cancel}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+              <div className="flex gap-2">
+                <Button type="submit" disabled={isBusy || !canSubmit}>
+                  {editingId ? t.account.shippingUpdate : t.account.shippingSave}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setShowForm(false);
+                    setEditingId(null);
+                    setForm(emptyForm);
+                  }}
+                >
+                  {t.account.cancel}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      ) : null}
 
       {message ? <p className="text-sm text-muted-foreground">{message}</p> : null}
     </div>

@@ -79,9 +79,10 @@ export default async function StoreLayout({
           style={themeToCssVars(theme)}
           className="sf-boutique-canvas sf-grain flex min-h-screen w-full min-w-0 flex-col overflow-x-clip bg-background text-foreground"
         >
-          <div className="relative z-[1] flex min-h-screen w-full min-w-0 flex-1 flex-col">
+          <div className="relative z-1 flex min-h-screen w-full min-w-0 flex-1 flex-col">
           <StoreShell
             storeName={storeName}
+            storeConfig={storeConfig}
             categories={categories}
             currentLocale={locale}
           >

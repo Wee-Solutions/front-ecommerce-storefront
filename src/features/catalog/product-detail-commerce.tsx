@@ -22,7 +22,7 @@ export function ProductDetailCommerce({
 }) {
   const defaultHero = useMemo(
     () => product.mainImage?.url ?? product.images[0]?.url ?? null,
-    [product.id, product.mainImage?.url, product.images]
+    [product.mainImage?.url, product.images],
   );
 
   const [activeUrl, setActiveUrl] = useState<string | null>(defaultHero);

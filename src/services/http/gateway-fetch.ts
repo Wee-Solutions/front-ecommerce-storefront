@@ -11,6 +11,8 @@ export type GatewayFetchOptions = {
   language?: string;
   /** Customer Bearer token when required */
   accessToken?: string | null;
+  /** Sent as `Guest-Identifier` for anonymous storefront flows (orders, guests). */
+  guestIdentifier?: string | null;
   cache?: RequestCache;
   next?: { revalidate?: number; tags?: string[] };
 };
@@ -24,6 +26,7 @@ export async function gatewayFetch<T>(
     body,
     language = "en",
     accessToken,
+    guestIdentifier,
     cache,
     next,
   } = options;
@@ -45,6 +48,10 @@ export async function gatewayFetch<T>(
 
   if (accessToken) {
     headers.Authorization = `Bearer ${accessToken}`;
+  }
+
+  if (guestIdentifier?.trim()) {
+    headers["Guest-Identifier"] = guestIdentifier.trim();
   }
 
   const init: RequestInit = {

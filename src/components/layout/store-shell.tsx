@@ -3,8 +3,25 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useSyncExternalStore } from "react";
-import { ChevronDown, Menu } from "lucide-react";
+import {
+  AtSign,
+  ChevronDown,
+  Facebook,
+  Instagram,
+  Linkedin,
+  Link as LinkIcon,
+  Menu,
+  MessageCircle,
+  Music2,
+  Phone,
+  Send,
+  Youtube,
+} from "lucide-react";
 import type { CategoryTreeItem } from "@/types/api/category";
+import {
+  VendorSocialMediaType,
+  type StoreConfiguration,
+} from "@/types/api/configuration";
 import type { Locale } from "@/lib/i18n/locale-config";
 import { useTranslations } from "@/contexts/locale-context";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -17,7 +34,6 @@ import {
 } from "@/components/ui/sheet";
 import { CartDrawer } from "@/features/cart/cart-drawer";
 import { useCustomerSession } from "@/features/auth/customer-session";
-import { useStoreDisplayName } from "@/features/store-configuration/store-configuration-store";
 import {
   getCategoryIdFromPathname,
   isCategoryBranchActive,
@@ -40,13 +56,71 @@ function getDocumentDirRtl() {
   return document.documentElement.dir === "rtl";
 }
 
+function toExternalHref(raw: string) {
+  const value = raw.trim();
+  if (!value) return "";
+  if (value.startsWith("http://") || value.startsWith("https://")) return value;
+  return `https://${value}`;
+}
+
+function resolveSocialMediaType(
+  value: string | VendorSocialMediaType,
+): VendorSocialMediaType | null {
+  if (typeof value === "number" && VendorSocialMediaType[value] != null) {
+    return value;
+  }
+
+  const raw = String(value).trim();
+  if (!raw) return null;
+
+  const asNumber = Number(raw);
+  if (
+    Number.isInteger(asNumber) &&
+    VendorSocialMediaType[asNumber as VendorSocialMediaType] != null
+  ) {
+    return asNumber as VendorSocialMediaType;
+  }
+  return null;
+}
+
+function iconForSocialType(type: VendorSocialMediaType) {
+  switch (type) {
+    case VendorSocialMediaType.Instagram:
+      return Instagram;
+    case VendorSocialMediaType.Facebook:
+      return Facebook;
+    case VendorSocialMediaType.TikTok:
+      return Music2;
+    case VendorSocialMediaType.YouTube:
+      return Youtube;
+    case VendorSocialMediaType.X:
+      return AtSign;
+    case VendorSocialMediaType.LinkedIn:
+      return Linkedin;
+    case VendorSocialMediaType.Snapchat:
+      return MessageCircle;
+    case VendorSocialMediaType.Telegram:
+      return Send;
+    case VendorSocialMediaType.WhatsApp:
+      return MessageCircle;
+    default:
+      return LinkIcon;
+  }
+}
+
+function socialMediaTypeName(type: VendorSocialMediaType) {
+  return VendorSocialMediaType[type] ?? "Link";
+}
+
 export function StoreShell({
   storeName,
+  storeConfig,
   categories,
   currentLocale,
   children,
 }: {
   storeName: string;
+  storeConfig: StoreConfiguration | null;
   categories: CategoryTreeItem[];
   currentLocale: Locale;
   children: React.ReactNode;
@@ -70,7 +144,27 @@ export function StoreShell({
     () => false,
   );
   const t = useTranslations();
-  const displayName = useStoreDisplayName(storeName);
+  const displayName = storeConfig?.name?.trim() || storeName;
+  const configMarqueeTexts =
+    storeConfig?.marqueeTexts
+      ?.map((item) => item.trim())
+      .filter((item) => item.length > 0) ?? [];
+  const marqueeTexts =
+    configMarqueeTexts.length > 0 ? configMarqueeTexts : [t.nav.announcement];
+  const socialLinks = (storeConfig?.socialMediaLinks ?? [])
+    .map((item) => ({
+      ...item,
+      typeValue: resolveSocialMediaType(item.type),
+    }))
+    .filter(
+      (
+        item,
+      ): item is typeof item & {
+        typeValue: VendorSocialMediaType;
+      } => item.typeValue != null && Boolean(item.link?.trim()),
+    );
+  const supportEmail = storeConfig?.supportEmail?.trim() || null;
+  const supportPhoneNumber = storeConfig?.supportPhoneNumber?.trim() || null;
   const accessToken = useCustomerSession((s) => s.accessToken);
   const customerId = useCustomerSession((s) => s.customerId);
   const isSignedIn = Boolean(accessToken && customerId);
@@ -80,17 +174,31 @@ export function StoreShell({
 
   return (
     <>
-      <div className="border-b border-border/60 bg-primary/10 py-2 text-center text-[11px] font-medium tracking-[0.2em] text-foreground/80 uppercase">
-        <p className="mx-auto max-w-5xl px-4 leading-relaxed">
-          {t.nav.announcement}
-        </p>
+      <div className="sf-top-marquee border-b border-border/60 py-2 text-center text-[11px] font-semibold tracking-[0.16em] text-foreground/85 uppercase">
+        <div className="sf-marquee mx-auto max-w-7xl px-4 leading-relaxed">
+          <div className="sf-marquee-track">
+            {[0, 1].map((dup) => (
+              <div className="sf-marquee-group" key={dup}>
+                {marqueeTexts.map((text, idx) => (
+                  <span
+                    key={`${dup}-${text}-${idx}`}
+                    className="sf-marquee-pill inline-flex items-center whitespace-nowrap"
+                  >
+                    {idx > 0 ? <span className="me-3 opacity-50">•</span> : null}
+                    {text}
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-      <header className="sticky top-0 z-40 w-full min-w-0 border-b border-border/80 bg-background/90 shadow-sm backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-background/80">
+      <header className="sticky top-0 z-40 w-full min-w-0 border-b border-border/80 bg-background/90 shadow-sm backdrop-blur-xl backdrop-saturate-150 supports-backdrop-filter:bg-background/80">
         {/* Row 1: brand · search (centered) · actions */}
         <div className="mx-auto flex w-full min-w-0 max-w-7xl items-center gap-3 px-4 py-3.5 md:gap-4">
           <Link href="/" className="group block shrink-0 text-start transition">
             <span
-              className="mb-2 block h-px w-8 bg-gradient-to-r from-primary to-primary/30 transition-[width] duration-300 group-hover:w-11"
+              className="mb-2 block h-px w-8 bg-linear-to-r from-primary to-primary/30 transition-[width] duration-300 group-hover:w-11"
               aria-hidden
             />
             <span className="font-heading text-lg font-semibold tracking-[0.02em] text-foreground md:text-xl">
@@ -144,7 +252,7 @@ export function StoreShell({
 
         {/* Row 2: categories — desktop only, centered, multi-line wrap */}
         {categories.length > 0 ? (
-          <div className="hidden w-full min-w-0 border-t border-border/55 bg-gradient-to-b from-muted/25 to-muted/10 md:block">
+          <div className="hidden w-full min-w-0 border-t border-border/55 bg-linear-to-b from-muted/25 to-muted/10 md:block">
             <HeaderCategoryNav categories={categories} />
           </div>
         ) : null}
@@ -314,14 +422,14 @@ export function StoreShell({
       <main className="mx-auto w-full min-w-0 max-w-7xl flex-1 px-4 py-12 md:py-16">
         {children}
       </main>
-      <footer className="mt-auto border-t border-border bg-gradient-to-b from-muted/25 to-muted/40 py-14 text-sm text-muted-foreground">
+      <footer className="mt-auto border-t border-border bg-linear-to-b from-muted/25 to-muted/40 py-14 text-sm text-muted-foreground">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           <div className="lg:col-span-2">
             <p className="font-heading text-lg font-medium text-foreground">
               {displayName}
             </p>
             <p className="mt-3 max-w-sm text-pretty leading-relaxed">
-              {t.nav.announcement}
+              {marqueeTexts[0] ?? t.nav.announcement}
             </p>
           </div>
           <div>
@@ -356,15 +464,48 @@ export function StoreShell({
             </ul>
           </div>
           <div>
-            <p className="sf-section-eyebrow mb-3 text-muted-foreground">
-              {t.account.title}
-            </p>
-            <Link
-              href="/login"
-              className="font-medium text-foreground underline-offset-4 hover:underline"
-            >
-              {t.nav.signIn}
-            </Link>
+            <p className="sf-section-eyebrow mb-3 text-muted-foreground">{t.checkout.contact}</p>
+            <div className="space-y-2">
+              {supportEmail ? (
+                <a
+                  href={`mailto:${supportEmail}`}
+                  className="block transition hover:text-foreground"
+                >
+                  {supportEmail}
+                </a>
+              ) : null}
+              {supportPhoneNumber ? (
+                <a
+                  href={`tel:${supportPhoneNumber}`}
+                  className="inline-flex items-center gap-2 transition hover:text-foreground"
+                >
+                  <Phone className="size-3.5 opacity-70" />
+                  {supportPhoneNumber}
+                </a>
+              ) : null}
+            </div>
+            {socialLinks.length > 0 ? (
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                {socialLinks.map((item) => {
+                  const href = toExternalHref(item.link);
+                  const Icon = iconForSocialType(item.typeValue);
+                  const typeName = socialMediaTypeName(item.typeValue);
+                  return (
+                    <a
+                      key={`${item.type}-${item.link}`}
+                      href={href}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      aria-label={typeName}
+                      title={typeName}
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border/70 bg-background/60 text-foreground/80 transition hover:border-primary/35 hover:text-foreground"
+                    >
+                      <Icon className="size-4" />
+                    </a>
+                  );
+                })}
+              </div>
+            ) : null}
             <p className="mt-6 text-xs text-muted-foreground">
               © {new Date().getFullYear()} {displayName}
             </p>

@@ -1,3 +1,15 @@
+export enum VendorSocialMediaType {
+  Instagram = 0,
+  Facebook = 1,
+  TikTok = 2,
+  YouTube = 3,
+  X = 4,
+  LinkedIn = 5,
+  Snapchat = 6,
+  Telegram = 7,
+  WhatsApp = 8,
+}
+
 export type StoreConfiguration = {
   name: string;
   supportEmail: string;
@@ -11,7 +23,8 @@ export type StoreConfiguration = {
     isDefault: boolean;
   }[];
   socialMediaLinks: {
-    type: string;
+    type: VendorSocialMediaType | string;
     link: string;
   }[];
+  marqueeTexts: string[];
 };

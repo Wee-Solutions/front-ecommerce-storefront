@@ -2,18 +2,16 @@ import Link from "next/link";
 import { CategoryGrid } from "@/components/catalog/category-grid";
 import { CategoryRail } from "@/components/home/category-rail";
 import { EditorialSpotlight } from "@/components/home/editorial-spotlight";
-import { FabricExplorer } from "@/components/home/fabric-explorer";
 import { AnimatedHero } from "@/components/home/animated-hero";
 import { TrustStrip } from "@/components/home/trust-strip";
 import { Reveal } from "@/components/motion/reveal";
 import { ProductCard } from "@/components/product/product-card";
-import { buttonVariants } from "@/components/ui/button";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getServerLocale } from "@/lib/i18n/server-locale";
 import { getServerStoreContext } from "@/lib/tenant/server-store";
 import { getCategoryTree } from "@/services/categories.service";
+import { getStoreConfiguration } from "@/services/configuration.service";
 import { searchProducts } from "@/services/products.service";
-import { cn } from "@/lib/utils";
 
 export default async function HomePage() {
   const ctx = await getServerStoreContext();
@@ -22,7 +20,7 @@ export default async function HomePage() {
   const locale = await getServerLocale();
   const dict = getDictionary(locale);
 
-  const [tree, featured] = await Promise.all([
+  const [tree, featured, config] = await Promise.all([
     getCategoryTree({}, locale).catch(() => ({
       categoriesTree: [],
     })),
@@ -30,11 +28,13 @@ export default async function HomePage() {
       { isHomePageProducts: true, take: 12, skip: 0 },
       locale,
     ).catch(() => ({ totalCount: 0, products: [] })),
+    getStoreConfiguration(locale).catch(() => null),
   ]);
 
   const first = tree.categoriesTree[0];
   const spotlightProduct = featured.products[0];
   const featuredGrid = featured.products.slice(1);
+  console.log(config);
 
   return (
     <div className="space-y-14 md:space-y-20 lg:space-y-24">
@@ -43,6 +43,7 @@ export default async function HomePage() {
         title={dict.home.heroTitle}
         subtitle={dict.home.heroSubtitle}
         shopAllLabel={dict.home.shopAll}
+        heroImageUrl={config?.bannerImage ?? undefined}
         browseLabel={
           first ? `${dict.home.browse} ${first.name}` : dict.home.shopAll
         }
@@ -68,10 +69,6 @@ export default async function HomePage() {
           <EditorialSpotlight product={spotlightProduct} />
         </Reveal>
       ) : null}
-
-      <Reveal delay={0.05}>
-        <FabricExplorer dict={dict} />
-      </Reveal>
 
       {tree.categoriesTree.length > 0 && (
         <Reveal delay={0.07}>

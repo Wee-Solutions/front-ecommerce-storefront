@@ -336,6 +336,78 @@ body {
   color: color-mix(in srgb, var(--foreground) 45%, var(--muted-foreground));
 }
 
+.sf-marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+}
+
+.sf-marquee-track {
+  display: inline-flex;
+  min-width: 100%;
+  width: max-content;
+  align-items: center;
+  animation: sf-marquee-scroll 32s linear infinite;
+}
+
+.sf-marquee-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding-inline-end: 2.4rem;
+}
+
+.sf-top-marquee {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--primary) 14%, transparent),
+      color-mix(in srgb, var(--primary) 8%, transparent)
+    );
+}
+
+.sf-marquee-pill {
+  border: 1px solid color-mix(in srgb, var(--border) 72%, var(--primary));
+  background: color-mix(in srgb, var(--background) 72%, transparent);
+  border-radius: 999px;
+  padding: 0.22rem 0.72rem;
+  box-shadow: 0 1px 0 rgb(255 255 255 / 24%) inset;
+}
+
+@keyframes sf-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-marquee-track {
+    animation: none;
+    transform: none;
+  }
+
+  .sf-marquee {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

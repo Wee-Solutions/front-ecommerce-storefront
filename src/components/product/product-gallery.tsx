@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import clsx from "clsx";
 import type { ImageItem, ProductDetail } from "@/types/api/product";
 
@@ -26,15 +26,10 @@ export function ProductGallery({ product, activeUrl, onActiveUrlChange }: Props)
     return [{ id: "__variant-hero", url: activeUrl }, ...baseList];
   }, [baseList, activeUrl]);
 
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  useEffect(() => {
-    if (!activeUrl) {
-      setActiveIndex(0);
-      return;
-    }
+  const activeIndex = useMemo(() => {
+    if (!activeUrl) return 0;
     const i = displayList.findIndex((img) => img.url === activeUrl);
-    setActiveIndex(i >= 0 ? i : 0);
+    return i >= 0 ? i : 0;
   }, [activeUrl, displayList]);
 
   const current = displayList[activeIndex] ?? displayList[0];
@@ -74,7 +69,6 @@ export function ProductGallery({ product, activeUrl, onActiveUrlChange }: Props)
               <button
                 type="button"
                 onClick={() => {
-                  setActiveIndex(i);
                   onActiveUrlChange(img.url);
                 }}
                 className={clsx(

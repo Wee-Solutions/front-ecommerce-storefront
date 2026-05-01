@@ -14,10 +14,3 @@ export const useStoreConfiguration = create<StoreConfigurationState>((set) => ({
   setConfig: (config) => set({ config }),
   reset: () => set({ config: null }),
 }));
-
-/** Resolved store label for UI (empty if not loaded). */
-export function useStoreDisplayName(fallback: string) {
-  return useStoreConfiguration(
-    (s) => s.config?.name?.trim() || fallback
-  );
-}

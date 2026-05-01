@@ -119,6 +119,19 @@ export type Dictionary = {
     subtotal: string;
     placeOrder: string;
     thanks: string;
+    paymentMethod: string;
+    paymentCard: string;
+    paymentCash: string;
+    paymentBank: string;
+    paySecure: string;
+    payWaiting: string;
+    successPaid: string;
+    successPlaced: string;
+    errorGeneric: string;
+    paymentFailed: string;
+    paymentTimeout: string;
+    cardUnavailable: string;
+    submitting: string;
   };
   account: {
     title: string;
@@ -342,8 +355,7 @@ const en: Dictionary = {
   },
   checkout: {
     title: "Checkout",
-    subtitle:
-      "This is a UI shell. Connect payment and order APIs when available.",
+    subtitle: "Complete your details and pay securely.",
     empty: "Your cart is empty. Add items before checkout.",
     contact: "Contact",
     email: "Email",
@@ -352,9 +364,26 @@ const en: Dictionary = {
     fullName: "Full name",
     address: "Address",
     subtotal: "Subtotal",
-    placeOrder: "Place order (demo)",
-    thanks:
-      "Thanks — this demo does not place an order. Wire to your checkout API when ready.",
+    placeOrder: "Place order",
+    thanks: "Thank you for your order.",
+    paymentMethod: "Payment method",
+    paymentCard: "Card",
+    paymentCash: "Cash on delivery",
+    paymentBank: "Bank transfer",
+    paySecure: "Complete payment in the secure frame below.",
+    payWaiting: "We’ll confirm automatically when payment succeeds.",
+    successPaid:
+      "Payment received. Your order number is {{orderNumber}}. Thank you!",
+    successPlaced:
+      "Order {{orderNumber}} was placed successfully. Thank you!",
+    errorGeneric: "Something went wrong. Please try again.",
+    paymentFailed:
+      "Payment was not completed. You can return to checkout and try again.",
+    paymentTimeout:
+      "We could not confirm payment in time. If you were charged, contact support with your order number.",
+    cardUnavailable:
+      "Card payment is not available right now. Try cash, bank transfer, or try again later.",
+    submitting: "Submitting…",
   },
   account: {
     title: "Account",
@@ -574,7 +603,7 @@ const he: Dictionary = {
   },
   checkout: {
     title: "תשלום",
-    subtitle: "מעטפת ממשק. יש לחבר תשלום והזמנות כשיהיו זמינים.",
+    subtitle: "מלאו פרטים ושלמו בצורה מאובטחת.",
     empty: "העגלה ריקה. הוסיפו פריטים לפני התשלום.",
     contact: "פרטי קשר",
     email: "אימייל",
@@ -583,8 +612,24 @@ const he: Dictionary = {
     fullName: "שם מלא",
     address: "כתובת",
     subtotal: "סיכום ביניים",
-    placeOrder: "ביצוע הזמנה (הדגמה)",
-    thanks: "תודה — הדגמה זו אינה יוצרת הזמנה. חברו ל-API כשתהיו מוכנים.",
+    placeOrder: "ביצוע הזמנה",
+    thanks: "תודה על הזמנתכם.",
+    paymentMethod: "אמצעי תשלום",
+    paymentCard: "כרטיס אשראי",
+    paymentCash: "מזומן בעת המסירה",
+    paymentBank: "העברה בנקאית",
+    paySecure: "השלימו את התשלום במסגרת המאובטחת למטה.",
+    payWaiting: "נאשר אוטומטית כשהתשלום יושלם.",
+    successPaid:
+      "התשלום התקבל. מספר ההזמנה שלכם {{orderNumber}}. תודה!",
+    successPlaced: "ההזמנה {{orderNumber}} נוצרה בהצלחה. תודה!",
+    errorGeneric: "משהו השתבש. נסו שוב.",
+    paymentFailed: "התשלום לא הושלם. ניתן לחזור ולנסות שוב.",
+    paymentTimeout:
+      "לא הצלחנו לאשר את התשלום בזמן. אם חויבתם, פנו לשירות עם מספר ההזמנה.",
+    cardUnavailable:
+      "תשלום בכרטיס אינו זמין כרגע. נסו מזומן, העברה בנקאית, או נסו שוב מאוחר יותר.",
+    submitting: "שולח…",
   },
   account: {
     title: "חשבון",
@@ -803,7 +848,7 @@ const ar: Dictionary = {
   },
   checkout: {
     title: "الدفع",
-    subtitle: "واجهة تجريبية. اربط الدفع والطلبات عند توفرها.",
+    subtitle: "أكمل بياناتك وادفع بأمان.",
     empty: "سلتك فارغة. أضف منتجات قبل الدفع.",
     contact: "جهة الاتصال",
     email: "البريد الإلكتروني",
@@ -812,9 +857,24 @@ const ar: Dictionary = {
     fullName: "الاسم الكامل",
     address: "العنوان",
     subtotal: "المجموع الفرعي",
-    placeOrder: "تأكيد الطلب (تجريبي)",
-    thanks:
-      "شكراً — هذا العرض التوضيحي لا ينشئ طلباً. اربط واجهة البرمجة لاحقاً.",
+    placeOrder: "تأكيد الطلب",
+    thanks: "شكراً لطلبك.",
+    paymentMethod: "طريقة الدفع",
+    paymentCard: "بطاقة",
+    paymentCash: "نقداً عند الاستلام",
+    paymentBank: "تحويل بنكي",
+    paySecure: "أكمل الدفع في الإطار الآمن أدناه.",
+    payWaiting: "سنؤكد تلقائياً عند نجاح الدفع.",
+    successPaid:
+      "تم استلام الدفع. رقم طلبك {{orderNumber}}. شكراً لك!",
+    successPlaced: "تم إنشاء الطلب {{orderNumber}} بنجاح. شكراً لك!",
+    errorGeneric: "حدث خطأ. حاول مرة أخرى.",
+    paymentFailed: "لم يكتمل الدفع. يمكنك العودة والمحاولة مرة أخرى.",
+    paymentTimeout:
+      "تعذر تأكيد الدفع في الوقت المناسب. إذا تم الخصم، تواصل مع الدعم مع رقم الطلب.",
+    cardUnavailable:
+      "دفع البطاقة غير متاح حالياً. جرّب النقد أو التحويل البنكي أو لاحقاً.",
+    submitting: "جاري الإرسال…",
   },
   account: {
     title: "الحساب",

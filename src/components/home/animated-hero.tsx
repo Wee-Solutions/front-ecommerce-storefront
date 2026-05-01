@@ -10,6 +10,7 @@ type Props = {
   title: string;
   subtitle: string;
   shopAllLabel: string;
+  heroImageUrl?: string;
   browseLabel: string;
   browseHref?: string;
 };
@@ -38,6 +39,7 @@ export function AnimatedHero({
   title,
   subtitle,
   shopAllLabel,
+  heroImageUrl,
   browseLabel,
   browseHref,
 }: Props) {
@@ -85,6 +87,17 @@ export function AnimatedHero({
 
   return (
     <section className="relative isolate min-h-[min(88vh,40rem)] overflow-hidden rounded-[var(--sf-radius)] bg-[var(--sf-color-primary)] px-5 py-20 shadow-[var(--sf-shadow-lg)] sm:px-10 sm:py-28 md:min-h-[min(90vh,44rem)]">
+      {heroImageUrl ? (
+        <div
+          className="pointer-events-none absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url("${heroImageUrl}")` }}
+          aria-hidden
+        />
+      ) : null}
+      <div
+        className="pointer-events-none absolute inset-0 bg-[color-mix(in_srgb,var(--sf-color-primary)_72%,transparent)]"
+        aria-hidden
+      />
       <div
         className="sf-hero-mesh sf-hero-aurora pointer-events-none absolute inset-0 opacity-100"
         aria-hidden

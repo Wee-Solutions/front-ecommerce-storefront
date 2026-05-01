@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { useLocale, useTranslations } from "@/contexts/locale-context";
 import { formatMoney } from "@/lib/format-currency";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -17,19 +17,30 @@ import {
 } from "@/components/ui/sheet";
 import { cartLineCount, useCartStore } from "./cart-store";
 
+function subscribeDocumentDir(cb: () => void) {
+  const el = document.documentElement;
+  const mo = new MutationObserver(cb);
+  mo.observe(el, { attributes: true, attributeFilter: ["dir"] });
+  return () => mo.disconnect();
+}
+
+function getDocumentDirIsRtl() {
+  return document.documentElement.dir === "rtl";
+}
+
 export function CartDrawer() {
   const t = useTranslations();
   const locale = useLocale();
-  const [rtl, setRtl] = useState(false);
+  const rtl = useSyncExternalStore(
+    subscribeDocumentDir,
+    getDocumentDirIsRtl,
+    () => false,
+  );
   const open = useCartStore((s) => s.isOpen);
   const close = useCartStore((s) => s.close);
   const lines = useCartStore((s) => s.lines);
   const updateQty = useCartStore((s) => s.updateQty);
   const removeLine = useCartStore((s) => s.removeLine);
-
-  useEffect(() => {
-    setRtl(document.documentElement.dir === "rtl");
-  }, []);
 
   const subtotal = lines.reduce(
     (sum, l) => sum + l.unitPrice * l.quantity,

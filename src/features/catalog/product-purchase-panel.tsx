@@ -2,7 +2,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { Package, RotateCcw, ShieldCheck } from "lucide-react";
 import { useTranslations } from "@/contexts/locale-context";
 import { AddToCart } from "@/components/product/add-to-cart";
 import { PriceDisplay } from "@/components/product/price-display";
