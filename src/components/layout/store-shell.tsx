@@ -150,7 +150,6 @@ export function StoreShell({
       ?.map((item) => item.trim())
       .filter((item) => item.length > 0) ?? [];
   const marqueeTexts = configMarqueeTexts.length > 0 ? configMarqueeTexts : [];
-  console.log(marqueeTexts);
   const socialLinks = (storeConfig?.socialMediaLinks ?? [])
     .map((item) => ({
       ...item,

@@ -19,8 +19,7 @@ export function ProductCard({
   className?: string;
 }) {
   const t = useTranslations();
-  const showFrom =
-    Boolean(product.hasOptions && product.priceFrom != null);
+  const showFrom = Boolean(product.hasOptions && product.priceFrom != null);
   const displayPrice = showFrom
     ? (product.priceFrom ?? null)
     : (product.price ?? null);
@@ -36,7 +35,10 @@ export function ProductCard({
 
   return (
     <div
-      className={cn("group/card relative flex h-80 flex-col sm:h-84", className)}
+      className={cn(
+        "group/card relative flex h-80 flex-col sm:h-84",
+        className,
+      )}
     >
       <Link
         href={`/products/${product.id}`}
@@ -99,7 +101,7 @@ export function ProductCard({
           </div>
 
           <CardContent className="shrink-0 space-y-1.5 border-t border-border/40 px-3 py-2.5 sm:px-3.5">
-            <p className="line-clamp-2 font-heading text-sm font-medium leading-tight tracking-tight text-foreground">
+            <p className="line-clamp-2 text-sm font-medium leading-tight tracking-tight text-foreground">
               {product.title}
             </p>
             {product.subTitle ? (

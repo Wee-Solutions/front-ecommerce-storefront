@@ -34,7 +34,6 @@ export default async function HomePage() {
   const first = tree.categoriesTree[0];
   const spotlightProduct = featured.products[0];
   const featuredGrid = featured.products.slice(1);
-  console.log(config);
 
   return (
     <div className="space-y-14 md:space-y-20 lg:space-y-24">

@@ -5,7 +5,7 @@ import { getOrderPaymentStatus } from "@/services/orders.service";
 import { OrderPaymentStatus } from "@/types/api/order";
 import type { OrderGatewayContext } from "@/types/api/order";
 
-const PAYMENT_STATUS_POLL_INTERVAL_MS = 2000;
+const PAYMENT_STATUS_POLL_INTERVAL_MS = 5000;
 const MAX_PAYMENT_STATUS_POLL_ATTEMPTS = 90;
 
 type Props = {
