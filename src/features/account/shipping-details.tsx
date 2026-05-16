@@ -1,14 +1,16 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useCallback, useMemo, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { PaginatedSelectionList } from "@/components/ui/paginated-selection-list";
 import { useTranslations } from "@/contexts/locale-context";
 import { useVendor } from "@/contexts/vendor-context";
 import { useCustomerSession } from "@/features/auth/customer-session";
+import { getCitySelectionList } from "@/services/configuration.service";
 import {
   createCustomerShipmentInfo,
   deleteCustomerShipmentInfo,
@@ -162,7 +164,26 @@ export function ShippingDetails() {
     updateMutation.isPending ||
     deleteMutation.isPending;
 
-  const canSubmit = Boolean(form.street.trim());
+  const citySeedOption = useMemo(() => {
+    if (!form.cityId) return null;
+    return {
+      id: form.cityId,
+      name: form.cityDescription || form.cityId,
+    };
+  }, [form.cityDescription, form.cityId]);
+
+  const fetchCityPage = useCallback(
+    (params: { searchTerm?: string; take: number; skip: number }) => {
+      if (!accessToken) {
+        return Promise.resolve({ records: [], totalCount: 0 });
+      }
+      return getCitySelectionList(params, accessToken, language);
+    },
+    [accessToken, language],
+  );
+
+  const hasCity = Boolean(form.cityId || form.cityDescription.trim());
+  const canSubmit = Boolean(form.street.trim() && hasCity);
 
   function startEdit(record: ShipmentInfo) {
     setShowForm(true);
@@ -184,6 +205,12 @@ export function ShippingDetails() {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    if (!hasCity) {
+      const txt = t.account.shippingCityRequired;
+      setMessage(txt);
+      toast.error(txt);
+      return;
+    }
     const payload: UpsertShipmentInfoRequest = {
       cityId: form.cityId || null,
       cityDescription: form.cityDescription.trim(),
@@ -316,10 +343,35 @@ export function ShippingDetails() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <label className="text-sm font-medium">{t.account.shippingCity}</label>
-                <Input
-                  value={form.cityDescription}
-                  onChange={(e) =>
-                    setForm((v) => ({ ...v, cityDescription: e.target.value }))
+                <PaginatedSelectionList
+                  allowCustom
+                  value={form.cityId ?? null}
+                  customValue={form.cityId ? null : form.cityDescription}
+                  label={form.cityId ? form.cityDescription || undefined : undefined}
+                  seedOption={citySeedOption}
+                  queryKey={["city-selection", language, accessToken]}
+                  fetchPage={fetchCityPage}
+                  placeholder={t.account.shippingCityPlaceholder}
+                  searchPlaceholder={t.account.shippingCitySearchPlaceholder}
+                  emptyLabel={t.account.shippingCityEmpty}
+                  loadingLabel={t.account.shippingCityLoading}
+                  formatCustomLabel={(term) =>
+                    t.account.shippingCityUseCustom.replace("{term}", term)
+                  }
+                  disabled={isBusy}
+                  onChange={(cityId, item) =>
+                    setForm((v) => ({
+                      ...v,
+                      cityId,
+                      cityDescription: item?.name ?? v.cityDescription,
+                    }))
+                  }
+                  onCustomSelect={(term) =>
+                    setForm((v) => ({
+                      ...v,
+                      cityId: null,
+                      cityDescription: term,
+                    }))
                   }
                 />
               </div>

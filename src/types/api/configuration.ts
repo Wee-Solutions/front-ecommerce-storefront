@@ -19,6 +19,22 @@ export type StoreBankInfo = {
   iban?: string | null;
 };
 
+export type SelectionListItem = {
+  id: string;
+  name: string;
+};
+
+export type GetCitySelectionListRequest = {
+  searchTerm?: string;
+  take?: number;
+  skip?: number;
+};
+
+export type GetCitySelectionListResponse = {
+  records: SelectionListItem[];
+  totalCount: number;
+};
+
 export type StoreConfiguration = {
   name: string;
   supportEmail: string;

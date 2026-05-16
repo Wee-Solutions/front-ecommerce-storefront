@@ -198,6 +198,12 @@ export type Dictionary = {
     shippingEditTitle: string;
     shippingAddTitle: string;
     shippingCity: string;
+    shippingCityRequired: string;
+    shippingCityPlaceholder: string;
+    shippingCitySearchPlaceholder: string;
+    shippingCityEmpty: string;
+    shippingCityLoading: string;
+    shippingCityUseCustom: string;
     shippingZipCode: string;
     shippingStreetRequired: string;
     shippingStreetNumber: string;
@@ -510,7 +516,13 @@ const en: Dictionary = {
     shippingDelete: "Delete",
     shippingEditTitle: "Edit shipping details",
     shippingAddTitle: "Add shipping details",
-    shippingCity: "City",
+    shippingCity: "City *",
+    shippingCityRequired: "Please select a city.",
+    shippingCityPlaceholder: "Select city",
+    shippingCitySearchPlaceholder: "Search cities…",
+    shippingCityEmpty: "No cities found",
+    shippingCityLoading: "Loading cities…",
+    shippingCityUseCustom: 'Use "{term}"',
     shippingZipCode: "Zip code",
     shippingStreetRequired: "Street *",
     shippingStreetNumber: "Street number",
@@ -815,7 +827,13 @@ const he: Dictionary = {
     shippingDelete: "מחיקה",
     shippingEditTitle: "עריכת פרטי משלוח",
     shippingAddTitle: "הוספת פרטי משלוח",
-    shippingCity: "עיר",
+    shippingCity: "עיר *",
+    shippingCityRequired: "נא לבחור עיר.",
+    shippingCityPlaceholder: "בחירת עיר",
+    shippingCitySearchPlaceholder: "חיפוש ערים…",
+    shippingCityEmpty: "לא נמצאו ערים",
+    shippingCityLoading: "טוען ערים…",
+    shippingCityUseCustom: 'השתמש ב-"{term}"',
     shippingZipCode: "מיקוד",
     shippingStreetRequired: "רחוב *",
     shippingStreetNumber: "מספר בית",
@@ -1120,7 +1138,13 @@ const ar: Dictionary = {
     shippingDelete: "حذف",
     shippingEditTitle: "تعديل تفاصيل الشحن",
     shippingAddTitle: "إضافة تفاصيل الشحن",
-    shippingCity: "المدينة",
+    shippingCity: "المدينة *",
+    shippingCityRequired: "يرجى اختيار مدينة.",
+    shippingCityPlaceholder: "اختر المدينة",
+    shippingCitySearchPlaceholder: "البحث عن مدن…",
+    shippingCityEmpty: "لم يتم العثور على مدن",
+    shippingCityLoading: "جارٍ تحميل المدن…",
+    shippingCityUseCustom: 'استخدام "{term}"',
     shippingZipCode: "الرمز البريدي",
     shippingStreetRequired: "الشارع *",
     shippingStreetNumber: "رقم الشارع",
