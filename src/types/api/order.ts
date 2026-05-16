@@ -55,6 +55,7 @@ export type CustomerOrderDetail = {
   taxRatePercentage: number;
   totalPriceBeforeTax: number;
   totalTaxAmount: number;
+  discountAmount: number;
   totalPriceAfterTax: number;
   orderStatus: number;
   paymentMethod: number;

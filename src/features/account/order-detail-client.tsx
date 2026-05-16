@@ -203,6 +203,14 @@ export function OrderDetailClient({ orderId }: { orderId: string }) {
               {formatMoney(order.totalTaxAmount, { locale })}
             </span>
           </div>
+          {order.discountAmount > 0 ? (
+            <div className="flex justify-between text-emerald-700">
+              <span>{t.orders.discount}</span>
+              <span className="tabular-nums font-medium">
+                −{formatMoney(order.discountAmount, { locale })}
+              </span>
+            </div>
+          ) : null}
           <div className="flex justify-between border-t border-border/60 pt-2 font-semibold text-foreground">
             <span>{t.orders.total}</span>
             <span className="tabular-nums">

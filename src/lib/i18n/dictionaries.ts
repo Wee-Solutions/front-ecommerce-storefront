@@ -254,6 +254,7 @@ export type Dictionary = {
     lastUpdated: string;
     subtotalBeforeTax: string;
     tax: string;
+    discount: string;
     customerNotes: string;
     loadError: string;
     notFound: string;
@@ -572,6 +573,7 @@ const en: Dictionary = {
     lastUpdated: "Last updated",
     subtotalBeforeTax: "Subtotal (before tax)",
     tax: "Tax",
+    discount: "Discount",
     customerNotes: "Your notes",
     loadError: "Could not load this order.",
     notFound: "We couldn’t find this order.",
@@ -882,6 +884,7 @@ const he: Dictionary = {
     lastUpdated: "עודכן לאחרונה",
     subtotalBeforeTax: "סיכום לפני מע״מ",
     tax: "מע״מ",
+    discount: "הנחה",
     customerNotes: "הערות שלכם",
     loadError: "לא ניתן לטעון את ההזמנה.",
     notFound: "ההזמנה לא נמצאה.",
@@ -1192,6 +1195,7 @@ const ar: Dictionary = {
     lastUpdated: "آخر تحديث",
     subtotalBeforeTax: "المجموع قبل الضريبة",
     tax: "الضريبة",
+    discount: "الخصم",
     customerNotes: "ملاحظاتك",
     loadError: "تعذر تحميل هذا الطلب.",
     notFound: "لم يُعثر على الطلب.",
