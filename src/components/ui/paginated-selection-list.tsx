@@ -22,7 +22,10 @@ export type SelectionListPage = {
 type PaginatedSelectionListProps = {
   value: string | null;
   label?: string;
-  onChange: (value: string | null, item: { id: string; name: string } | null) => void;
+  onChange: (
+    value: string | null,
+    item: { id: string; name: string } | null,
+  ) => void;
   fetchPage: (params: {
     searchTerm?: string;
     take: number;
@@ -36,12 +39,8 @@ type PaginatedSelectionListProps = {
   disabled?: boolean;
   pageSize?: number;
   className?: string;
+  /** Ensures the current value is visible before the first page loads. */
   seedOption?: { id: string; name: string } | null;
-  /** When true, user can enter a value not in the API list. */
-  allowCustom?: boolean;
-  customValue?: string | null;
-  onCustomSelect?: (term: string) => void;
-  formatCustomLabel?: (term: string) => string;
 };
 
 const SCROLL_LOAD_THRESHOLD_PX = 48;
@@ -60,10 +59,6 @@ export function PaginatedSelectionList({
   pageSize = 20,
   className,
   seedOption,
-  allowCustom = false,
-  customValue,
-  onCustomSelect,
-  formatCustomLabel = (term) => `Use "${term}"`,
 }: PaginatedSelectionListProps) {
   const listId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -72,27 +67,25 @@ export function PaginatedSelectionList({
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search.trim(), 300);
 
-  const {
-    data,
-    isLoading,
-    isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage,
-  } = useInfiniteQuery({
-    queryKey: [...queryKey, debouncedSearch],
-    queryFn: ({ pageParam }) =>
-      fetchPage({
-        searchTerm: debouncedSearch || undefined,
-        take: pageSize,
-        skip: pageParam,
-      }),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages) => {
-      const loaded = allPages.reduce((sum, page) => sum + page.records.length, 0);
-      return loaded < lastPage.totalCount ? loaded : undefined;
-    },
-    enabled: open && !disabled,
-  });
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useInfiniteQuery({
+      queryKey: [...queryKey, debouncedSearch],
+      queryFn: ({ pageParam }) =>
+        fetchPage({
+          searchTerm: debouncedSearch || undefined,
+          take: pageSize,
+          skip: pageParam,
+        }),
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, allPages) => {
+        const loaded = allPages.reduce(
+          (sum, page) => sum + page.records.length,
+          0,
+        );
+        return loaded < lastPage.totalCount ? loaded : undefined;
+      },
+      enabled: open && !disabled,
+    });
 
   const options = useMemo(() => {
     const merged = data?.pages.flatMap((page) => page.records) ?? [];
@@ -107,15 +100,6 @@ export function PaginatedSelectionList({
     seedOption?.name ??
     "";
 
-  const closedDisplayValue = value ? selectedLabel : (customValue ?? "");
-
-  const showCustomOption =
-    allowCustom &&
-    Boolean(debouncedSearch) &&
-    !options.some(
-      (item) => item.name.toLowerCase() === debouncedSearch.toLowerCase(),
-    );
-
   const handleScroll = useCallback(() => {
     const el = listRef.current;
     if (!el || !hasNextPage || isFetchingNextPage) return;
@@ -127,36 +111,11 @@ export function PaginatedSelectionList({
     }
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  const selectCustom = useCallback(() => {
-    const term = search.trim();
-    if (!term) return;
-    onCustomSelect?.(term);
-    onChange(null, null);
-    setOpen(false);
-    setSearch("");
-  }, [onChange, onCustomSelect, search]);
-
-  const selectItem = useCallback(
-    (item: { id: string; name: string }) => {
-      onChange(item.id, item);
-      setOpen(false);
-      setSearch("");
-    },
-    [onChange],
-  );
-
-  const openPanel = useCallback(() => {
-    if (disabled) return;
-    setSearch(closedDisplayValue);
-    setOpen(true);
-  }, [closedDisplayValue, disabled]);
-
   useEffect(() => {
     if (!open) return;
     function onPointerDown(e: MouseEvent) {
       if (!rootRef.current?.contains(e.target as Node)) {
         setOpen(false);
-        setSearch("");
       }
     }
     document.addEventListener("mousedown", onPointerDown);
@@ -165,91 +124,42 @@ export function PaginatedSelectionList({
 
   return (
     <div ref={rootRef} className={cn("relative w-full", className)}>
-      {allowCustom ? (
-        <div className="relative">
-          <Input
-            value={open ? search : closedDisplayValue}
-            placeholder={placeholder}
-            disabled={disabled}
-            aria-expanded={open}
-            aria-haspopup="listbox"
-            aria-controls={open ? listId : undefined}
-            className="pe-9"
-            onFocus={openPanel}
-            onChange={(e) => {
-              const term = e.target.value;
-              setSearch(term);
-              if (!open) setOpen(true);
-              onChange(null, null);
-              onCustomSelect?.(term);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") {
-                setOpen(false);
-                setSearch("");
-              }
-              if (e.key === "Enter" && open && showCustomOption) {
-                e.preventDefault();
-                selectCustom();
-              }
-            }}
-          />
-          <button
-            type="button"
-            tabIndex={-1}
-            disabled={disabled}
-            aria-label={placeholder}
-            className="absolute end-0 top-0 flex h-9 w-9 items-center justify-center text-muted-foreground"
-            onClick={() => (open ? setOpen(false) : openPanel())}
-          >
-            <ChevronDownIcon
-              className={cn(
-                "size-4 transition-transform",
-                open && "rotate-180",
-              )}
-            />
-          </button>
-        </div>
-      ) : (
-        <button
-          type="button"
-          disabled={disabled}
-          aria-expanded={open}
-          aria-haspopup="listbox"
-          aria-controls={open ? listId : undefined}
+      <button
+        type="button"
+        disabled={disabled}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        aria-controls={open ? listId : undefined}
+        className={cn(
+          "flex h-9 w-full items-center justify-between gap-2 rounded-lg border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-colors outline-none",
+          "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          !selectedLabel && "text-muted-foreground",
+        )}
+        onClick={() => setOpen((prev) => !prev)}
+      >
+        <span className="truncate text-start">
+          {selectedLabel || placeholder}
+        </span>
+        <ChevronDownIcon
           className={cn(
-            "flex h-9 w-full items-center justify-between gap-2 rounded-lg border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-colors outline-none",
-            "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
-            "disabled:cursor-not-allowed disabled:opacity-50",
-            !closedDisplayValue && "text-muted-foreground",
+            "size-4 shrink-0 text-muted-foreground transition-transform",
+            open && "rotate-180",
           )}
-          onClick={() => (open ? setOpen(false) : openPanel())}
-        >
-          <span className="truncate text-start">
-            {closedDisplayValue || placeholder}
-          </span>
-          <ChevronDownIcon
-            className={cn(
-              "size-4 shrink-0 text-muted-foreground transition-transform",
-              open && "rotate-180",
-            )}
-          />
-        </button>
-      )}
+        />
+      </button>
 
       {open ? (
         <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-border bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10">
-          {!allowCustom ? (
-            <div className="border-b border-border/60 p-2">
-              <Input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder={searchPlaceholder}
-                autoFocus
-                className="h-8"
-              />
-            </div>
-          ) : null}
+          <div className="border-b border-border/60 p-2">
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={searchPlaceholder}
+              autoFocus
+              className="h-8"
+            />
+          </div>
 
           <div
             id={listId}
@@ -258,12 +168,12 @@ export function PaginatedSelectionList({
             className="max-h-60 overflow-y-auto p-1"
             onScroll={handleScroll}
           >
-            {isLoading && options.length === 0 && !showCustomOption ? (
+            {isLoading && options.length === 0 ? (
               <p className="flex items-center gap-2 px-2 py-3 text-sm text-muted-foreground">
                 <Loader2Icon className="size-4 animate-spin" />
                 {loadingLabel}
               </p>
-            ) : options.length === 0 && !showCustomOption ? (
+            ) : options.length === 0 ? (
               <p className="px-2 py-3 text-sm text-muted-foreground">
                 {emptyLabel}
               </p>
@@ -281,23 +191,17 @@ export function PaginatedSelectionList({
                       "hover:bg-accent hover:text-accent-foreground",
                       selected && "bg-accent text-accent-foreground",
                     )}
-                    onClick={() => selectItem(item)}
+                    onClick={() => {
+                      onChange(item.id, item);
+                      setOpen(false);
+                      setSearch("");
+                    }}
                   >
                     {item.name}
                   </button>
                 );
               })
             )}
-
-            {showCustomOption ? (
-              <button
-                type="button"
-                className="mt-1 flex w-full rounded-md border border-dashed border-border/80 px-2 py-1.5 text-start text-sm text-primary hover:bg-accent"
-                onClick={selectCustom}
-              >
-                {formatCustomLabel(debouncedSearch)}
-              </button>
-            ) : null}
 
             {isFetchingNextPage ? (
               <p className="flex items-center justify-center gap-2 py-2 text-xs text-muted-foreground">

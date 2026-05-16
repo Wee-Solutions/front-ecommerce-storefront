@@ -182,8 +182,7 @@ export function ShippingDetails() {
     [accessToken, language],
   );
 
-  const hasCity = Boolean(form.cityId || form.cityDescription.trim());
-  const canSubmit = Boolean(form.street.trim() && hasCity);
+  const canSubmit = Boolean(form.street.trim() && form.cityId);
 
   function startEdit(record: ShipmentInfo) {
     setShowForm(true);
@@ -205,14 +204,14 @@ export function ShippingDetails() {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!hasCity) {
+    if (!form.cityId) {
       const txt = t.account.shippingCityRequired;
       setMessage(txt);
       toast.error(txt);
       return;
     }
     const payload: UpsertShipmentInfoRequest = {
-      cityId: form.cityId || null,
+      cityId: form.cityId,
       cityDescription: form.cityDescription.trim(),
       street: form.street.trim(),
       streetNumber: form.streetNumber.trim(),
@@ -344,10 +343,8 @@ export function ShippingDetails() {
               <div className="space-y-2">
                 <label className="text-sm font-medium">{t.account.shippingCity}</label>
                 <PaginatedSelectionList
-                  allowCustom
                   value={form.cityId ?? null}
-                  customValue={form.cityId ? null : form.cityDescription}
-                  label={form.cityId ? form.cityDescription || undefined : undefined}
+                  label={form.cityDescription || undefined}
                   seedOption={citySeedOption}
                   queryKey={["city-selection", language, accessToken]}
                   fetchPage={fetchCityPage}
@@ -355,22 +352,12 @@ export function ShippingDetails() {
                   searchPlaceholder={t.account.shippingCitySearchPlaceholder}
                   emptyLabel={t.account.shippingCityEmpty}
                   loadingLabel={t.account.shippingCityLoading}
-                  formatCustomLabel={(term) =>
-                    t.account.shippingCityUseCustom.replace("{term}", term)
-                  }
                   disabled={isBusy}
                   onChange={(cityId, item) =>
                     setForm((v) => ({
                       ...v,
                       cityId,
-                      cityDescription: item?.name ?? v.cityDescription,
-                    }))
-                  }
-                  onCustomSelect={(term) =>
-                    setForm((v) => ({
-                      ...v,
-                      cityId: null,
-                      cityDescription: term,
+                      cityDescription: item?.name ?? "",
                     }))
                   }
                 />

@@ -203,7 +203,6 @@ export type Dictionary = {
     shippingCitySearchPlaceholder: string;
     shippingCityEmpty: string;
     shippingCityLoading: string;
-    shippingCityUseCustom: string;
     shippingZipCode: string;
     shippingStreetRequired: string;
     shippingStreetNumber: string;
@@ -522,7 +521,6 @@ const en: Dictionary = {
     shippingCitySearchPlaceholder: "Search cities…",
     shippingCityEmpty: "No cities found",
     shippingCityLoading: "Loading cities…",
-    shippingCityUseCustom: 'Use "{term}"',
     shippingZipCode: "Zip code",
     shippingStreetRequired: "Street *",
     shippingStreetNumber: "Street number",
@@ -833,7 +831,6 @@ const he: Dictionary = {
     shippingCitySearchPlaceholder: "חיפוש ערים…",
     shippingCityEmpty: "לא נמצאו ערים",
     shippingCityLoading: "טוען ערים…",
-    shippingCityUseCustom: 'השתמש ב-"{term}"',
     shippingZipCode: "מיקוד",
     shippingStreetRequired: "רחוב *",
     shippingStreetNumber: "מספר בית",
@@ -1144,7 +1141,6 @@ const ar: Dictionary = {
     shippingCitySearchPlaceholder: "البحث عن مدن…",
     shippingCityEmpty: "لم يتم العثور على مدن",
     shippingCityLoading: "جارٍ تحميل المدن…",
-    shippingCityUseCustom: 'استخدام "{term}"',
     shippingZipCode: "الرمز البريدي",
     shippingStreetRequired: "الشارع *",
     shippingStreetNumber: "رقم الشارع",
