@@ -4,10 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useTranslations } from "@/contexts/locale-context";
-import {
-  productCardHighlights,
-  syntheticRating,
-} from "@/lib/product-display";
+import { productCardHighlights, syntheticRating } from "@/lib/product-display";
 import type { ProductListItem } from "@/types/api/product";
 import { buttonVariants } from "@/components/ui/button";
 import { PriceDisplay } from "@/components/product/price-display";
@@ -91,7 +88,7 @@ export function EditorialSpotlight({ product }: { product: ProductListItem }) {
             href={`/products/${product.id}`}
             className={cn(
               buttonVariants({ size: "lg" }),
-              "group mt-2 w-fit rounded-full px-8 shadow-md transition hover:shadow-lg"
+              "group mt-2 w-fit rounded-full px-8 shadow-md transition hover:shadow-lg",
             )}
           >
             {t.product.shopNow}

@@ -2,11 +2,11 @@
 
 import { useTranslations } from "@/contexts/locale-context";
 import { Button } from "@/components/ui/button";
-import { cartLineCount, useCartStore } from "@/features/cart/cart-store";
+import { cartLineCount } from "@/features/cart/cart-types";
+import { useCart } from "@/features/cart/use-cart";
 
 export function CartIconButton() {
-  const open = useCartStore((s) => s.open);
-  const lines = useCartStore((s) => s.lines);
+  const { open, lines } = useCart();
   const count = cartLineCount(lines);
   const t = useTranslations();
 

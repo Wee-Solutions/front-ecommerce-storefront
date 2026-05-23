@@ -8,8 +8,8 @@ function randomId(): string {
 }
 
 /**
- * Stable anonymous id sent as `Guest-Identifier` for client order APIs.
- * Must stay the same across create order → payment iframe → webhooks on the backend.
+ * Stable anonymous id sent as `Guest-Identifier` on storefront client APIs.
+ * Persists across sessions so guest carts and orders stay linked until login merge.
  */
 export function getOrCreateGuestIdentifier(): string {
   if (typeof window === "undefined") {

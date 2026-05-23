@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 import { AuthChannelTabs } from "@/components/auth/auth-channel-tabs";
@@ -15,12 +15,15 @@ import {
 } from "@/services/auth.service";
 import { DispatchMethod, VerificationType } from "@/types/api/auth";
 import { GatewayRequestError } from "@/types/api/gateway";
+import { cartQueryKey, invalidateCartQueries } from "@/features/cart/cart-query";
+import { getCart } from "@/services/carts.service";
 import { useCustomerSession } from "./customer-session";
 
 export function LoginForm() {
   const t = useTranslations();
   const { language } = useVendor();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const setSession = useCustomerSession((s) => s.setSession);
   const channelGroupLabelId = useId();
   const contactPanelId = useId();
@@ -90,12 +93,18 @@ export function LoginForm() {
         language,
       );
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setSession({
         accessToken: data.accessToken,
         customerId: data.customerId,
         tokenExpiresAt: data.tokenExpiresAt,
       });
+      await queryClient.fetchQuery({
+        queryKey: cartQueryKey(language, data.accessToken),
+        queryFn: () =>
+          getCart({ language, accessToken: data.accessToken }),
+      });
+      await invalidateCartQueries(queryClient, language);
       router.push("/account");
       router.refresh();
     },

@@ -14,7 +14,7 @@ import {
   buildCreateOrderRequest,
   isOnlineCardCheckout,
 } from "./checkout-order-builders";
-import type { CartLine } from "@/features/cart/cart-store";
+import type { CartLine } from "@/features/cart/cart-types";
 
 function normalizePaymentFrameUrl(url: string | undefined): string {
   return url?.trim() ?? "";

@@ -12,15 +12,12 @@ function CategoryCard({
   cat: CategoryTreeItem;
   productsSuffix: string;
 }) {
-  const img =
-    cat.mainImageURL ||
-    cat.iconImageURL ||
-    cat.bannerImages?.[0];
+  const img = cat.mainImageURL || cat.iconImageURL || cat.bannerImages?.[0];
   return (
     <Link
       href={`/c/${cat.id}`}
       className={cn(
-        "group block h-full outline-none transition duration-500 ease-out hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        "group block h-full outline-none transition duration-500 ease-out hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
       )}
     >
       <Card className="sf-card-shine h-full gap-0 overflow-hidden rounded-2xl border-0 bg-card py-0 shadow-[0_2px_24px_-8px_rgba(61,47,53,0.12)] ring-1 ring-border/40 transition-[box-shadow,ring-color] duration-500 group-hover:shadow-[0_24px_56px_-14px_rgba(61,47,53,0.2)] group-hover:ring-primary/25">

@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useCustomerSession } from "@/features/auth/customer-session";
-import type { CartLine } from "@/features/cart/cart-store";
+import type { CartLine } from "@/features/cart/cart-types";
 import type { OrderGatewayContext } from "@/types/api/order";
 import type { CheckoutStep, StorefrontOrderSubmission } from "./checkout-flow.types";
 import { isPlaceOrderFailure } from "./checkout-flow.types";

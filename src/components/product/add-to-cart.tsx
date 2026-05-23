@@ -2,7 +2,7 @@
 
 import { useTranslations } from "@/contexts/locale-context";
 import { Button } from "@/components/ui/button";
-import { useCartStore } from "@/features/cart/cart-store";
+import { useCart } from "@/features/cart/use-cart";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -12,6 +12,7 @@ type Props = {
   imageUrl: string | null;
   unitPrice: number;
   propertyValueIds: string[];
+  isWeightBased?: boolean;
   /** Shown in cart; built from product properties + selection. */
   variantSummary?: string | null;
   quantity: number;
@@ -26,22 +27,23 @@ export function AddToCart({
   imageUrl,
   unitPrice,
   propertyValueIds,
+  isWeightBased = false,
   variantSummary,
   quantity,
   disabled,
   className,
 }: Props) {
-  const addLine = useCartStore((s) => s.addLine);
+  const { addLine, isMutating } = useCart();
   const t = useTranslations();
 
   return (
     <Button
       type="button"
-      disabled={disabled || unitPrice < 0}
+      disabled={disabled || unitPrice < 0 || isMutating}
       size="lg"
       className={cn(
         "min-h-11 min-w-[10rem] rounded-full px-8 font-semibold shadow-md transition hover:shadow-lg active:scale-[0.98]",
-        className
+        className,
       )}
       onClick={() =>
         addLine({
@@ -51,6 +53,7 @@ export function AddToCart({
           imageUrl,
           quantity,
           unitPrice,
+          isWeightBased,
           propertyValueIds,
           variantSummary: variantSummary ?? null,
         })

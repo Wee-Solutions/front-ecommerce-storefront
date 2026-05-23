@@ -172,8 +172,7 @@ export function OrderDetailClient({ orderId }: { orderId: string }) {
                 ) : null}
                 <p className="mt-2 text-xs text-muted-foreground">
                   {t.orders.quantityShort}: {p.quantity} ·{" "}
-                  {formatMoney(p.price, { locale })}{" "}
-                  {t.orders.lineTotal}:{" "}
+                  {formatMoney(p.price, { locale })} {t.orders.lineTotal}:{" "}
                   {formatMoney(p.totalPriceAfterTax, { locale })}
                 </p>
                 {p.customerNotes ? (

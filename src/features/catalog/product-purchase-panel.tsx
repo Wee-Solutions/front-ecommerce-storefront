@@ -188,6 +188,7 @@ export function ProductPurchasePanel({
             title={product.title}
             imageUrl={imageUrl}
             unitPrice={displayPrice ?? 0}
+            isWeightBased={product.isWeightBased}
             propertyValueIds={complete ? propertyValueIds : []}
             variantSummary={variantSummary}
             quantity={qty}

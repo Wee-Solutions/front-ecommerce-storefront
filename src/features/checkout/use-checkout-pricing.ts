@@ -2,7 +2,7 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
-import type { CartLine } from "@/features/cart/cart-store";
+import type { CartLine } from "@/features/cart/cart-types";
 import {
   buildCheckoutOrderRequest,
   cartLinesQueryKey,

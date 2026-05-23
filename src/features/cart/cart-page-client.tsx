@@ -3,23 +3,28 @@
 import Image from "next/image";
 import { useLocale, useTranslations } from "@/contexts/locale-context";
 import { formatMoney } from "@/lib/format-currency";
-import { useCartStore } from "./cart-store";
+import { useCart } from "./use-cart";
 
 export function CartView() {
   const t = useTranslations();
   const locale = useLocale();
-  const lines = useCartStore((s) => s.lines);
-  const updateQty = useCartStore((s) => s.updateQty);
-  const removeLine = useCartStore((s) => s.removeLine);
+  const { lines, updateQty, removeLine, isLoading, isMutating } = useCart();
 
-  const subtotal = lines.reduce(
-    (sum, l) => sum + l.unitPrice * l.quantity,
-    0
-  );
+  const subtotal = lines.reduce((sum, l) => sum + l.unitPrice * l.quantity, 0);
+
+  if (isLoading) {
+    return (
+      <p className="mt-10 text-sm text-[var(--sf-color-muted)]">
+        …
+      </p>
+    );
+  }
 
   if (lines.length === 0) {
     return (
-      <p className="mt-10 text-sm text-[var(--sf-color-muted)]">{t.cart.empty}</p>
+      <p className="mt-10 text-sm text-[var(--sf-color-muted)]">
+        {t.cart.empty}
+      </p>
     );
   }
 
@@ -58,6 +63,7 @@ export function CartView() {
                   min={1}
                   max={99}
                   value={line.quantity}
+                  disabled={isMutating}
                   onChange={(e) =>
                     updateQty(line.id, parseInt(e.target.value, 10) || 1)
                   }
@@ -80,7 +86,9 @@ export function CartView() {
       ))}
       <li className="flex justify-between py-8 text-base font-semibold text-[var(--sf-color-primary)]">
         <span>{t.cart.subtotal}</span>
-        <span className="tabular-nums">{formatMoney(subtotal, { locale })}</span>
+        <span className="tabular-nums">
+          {formatMoney(subtotal, { locale })}
+        </span>
       </li>
     </ul>
   );

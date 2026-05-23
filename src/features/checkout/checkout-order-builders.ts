@@ -1,4 +1,4 @@
-import type { CartLine } from "@/features/cart/cart-store";
+import type { CartLine } from "@/features/cart/cart-types";
 import { env } from "@/config/env";
 import type { CheckoutOrderRequest, CreateOrderRequest } from "@/types/api/order";
 import {
@@ -13,7 +13,7 @@ export function buildOrderLinesFromCart(cartLines: CartLine[]) {
     productId: line.productId,
     quantity: line.quantity,
     price: line.unitPrice,
-    isWeightBased: false as const,
+    isWeightBased: line.isWeightBased,
     propertyValueIds: line.propertyValueIds,
   }));
 }

@@ -1,4 +1,5 @@
 import { env, getGatewayBaseUrl } from "@/config/env";
+import { getOrCreateGuestIdentifier } from "@/lib/guest-identifier";
 import { GatewayRequestError } from "@/types/api/gateway";
 import { parseClientJson, readJsonSafe } from "./parse-response";
 
@@ -11,8 +12,13 @@ export type GatewayFetchOptions = {
   language?: string;
   /** Customer Bearer token when required */
   accessToken?: string | null;
-  /** Sent as `Guest-Identifier` for anonymous storefront flows (orders, guests). */
+  /**
+   * Overrides the default `Guest-Identifier` header.
+   * When omitted in the browser, a persisted anonymous id is sent automatically.
+   */
   guestIdentifier?: string | null;
+  /** When true, do not attach `Guest-Identifier` even in the browser. */
+  skipGuestIdentifier?: boolean;
   cache?: RequestCache;
   next?: { revalidate?: number; tags?: string[] };
 };
@@ -27,6 +33,7 @@ export async function gatewayFetch<T>(
     language = "en",
     accessToken,
     guestIdentifier,
+    skipGuestIdentifier = false,
     cache,
     next,
   } = options;
@@ -50,8 +57,15 @@ export async function gatewayFetch<T>(
     headers.Authorization = `Bearer ${accessToken}`;
   }
 
-  if (guestIdentifier?.trim()) {
-    headers["Guest-Identifier"] = guestIdentifier.trim();
+  if (!skipGuestIdentifier) {
+    const guestHeader =
+      guestIdentifier?.trim() ||
+      (typeof window !== "undefined"
+        ? getOrCreateGuestIdentifier().trim()
+        : "");
+    if (guestHeader) {
+      headers["Guest-Identifier"] = guestHeader;
+    }
   }
 
   const init: RequestInit = {

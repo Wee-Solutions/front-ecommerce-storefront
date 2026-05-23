@@ -12,7 +12,7 @@ import { filterSupportedPaymentMethods } from "@/features/checkout/checkout-orde
 import { CheckoutPricingSummary } from "@/features/checkout/checkout-pricing-summary";
 import { useCheckoutFlow } from "@/features/checkout/use-checkout-flow";
 import { useCheckoutPricing } from "@/features/checkout/use-checkout-pricing";
-import { useCartStore } from "@/features/cart/cart-store";
+import { useCart } from "@/features/cart/use-cart";
 import { useStoreConfiguration } from "@/features/store-configuration/store-configuration-store";
 import { formatMoney } from "@/lib/format-currency";
 import { getCustomerShipmentInfos } from "@/services/customers.service";
@@ -46,8 +46,7 @@ function PaymentMethodIcon({ method }: { method: PaymentMethodValue }) {
 export function CheckoutForm() {
   const t = useTranslations();
   const locale = useLocale();
-  const lines = useCartStore((s) => s.lines);
-  const clearCart = useCartStore((s) => s.clear);
+  const { lines, clear: clearCart } = useCart();
   const accessToken = useCustomerSession((s) => s.accessToken);
   const storeConfig = useStoreConfiguration((s) => s.config);
 

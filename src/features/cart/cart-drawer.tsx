@@ -15,7 +15,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { cartLineCount, useCartStore } from "./cart-store";
+import { cartLineCount } from "./cart-types";
+import { useCart } from "./use-cart";
 
 function subscribeDocumentDir(cb: () => void) {
   const el = document.documentElement;
@@ -36,16 +37,16 @@ export function CartDrawer() {
     getDocumentDirIsRtl,
     () => false,
   );
-  const open = useCartStore((s) => s.isOpen);
-  const close = useCartStore((s) => s.close);
-  const lines = useCartStore((s) => s.lines);
-  const updateQty = useCartStore((s) => s.updateQty);
-  const removeLine = useCartStore((s) => s.removeLine);
+  const {
+    isOpen: open,
+    close,
+    lines,
+    updateQty,
+    removeLine,
+    isMutating,
+  } = useCart();
 
-  const subtotal = lines.reduce(
-    (sum, l) => sum + l.unitPrice * l.quantity,
-    0
-  );
+  const subtotal = lines.reduce((sum, l) => sum + l.unitPrice * l.quantity, 0);
 
   return (
     <Sheet
@@ -70,7 +71,9 @@ export function CartDrawer() {
 
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4">
           {lines.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t.cart.emptyDrawer}</p>
+            <p className="text-sm text-muted-foreground">
+              {t.cart.emptyDrawer}
+            </p>
           ) : (
             <ul className="flex flex-col gap-0">
               {lines.map((line, i) => (
@@ -109,6 +112,7 @@ export function CartDrawer() {
                             size="icon-xs"
                             className="rounded-full"
                             aria-label="Decrease quantity"
+                            disabled={isMutating}
                             onClick={() =>
                               updateQty(line.id, line.quantity - 1)
                             }
@@ -124,6 +128,7 @@ export function CartDrawer() {
                             size="icon-xs"
                             className="rounded-full"
                             aria-label="Increase quantity"
+                            disabled={isMutating}
                             onClick={() =>
                               updateQty(line.id, line.quantity + 1)
                             }
@@ -136,6 +141,7 @@ export function CartDrawer() {
                           variant="ghost"
                           size="xs"
                           className="ms-auto text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          disabled={isMutating}
                           onClick={() => removeLine(line.id)}
                         >
                           {t.cart.remove}
@@ -162,7 +168,7 @@ export function CartDrawer() {
             onClick={close}
             className={cn(
               buttonVariants({ variant: "outline", size: "lg" }),
-              "h-11 w-full rounded-full justify-center no-underline"
+              "h-11 w-full rounded-full justify-center no-underline",
             )}
           >
             {t.cart.viewCart}
@@ -172,7 +178,7 @@ export function CartDrawer() {
             onClick={close}
             className={cn(
               buttonVariants({ variant: "default", size: "lg" }),
-              "h-11 w-full rounded-full justify-center shadow-sm no-underline"
+              "h-11 w-full rounded-full justify-center shadow-sm no-underline",
             )}
           >
             {t.cart.checkout}

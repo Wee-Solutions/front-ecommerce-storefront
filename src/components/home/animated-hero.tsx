@@ -65,7 +65,7 @@ export function AnimatedHero({
           href="/search"
           className={cn(
             buttonVariants({ variant: "default", size: "lg" }),
-            "min-h-12 rounded-full border-0 bg-[var(--sf-color-accent)] px-10 text-[15px] font-semibold text-[var(--sf-color-accent-fg)] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.45)] transition hover:brightness-[1.06] hover:shadow-[0_24px_60px_-12px_rgba(0,0,0,0.5)] active:scale-[0.98]"
+            "min-h-12 rounded-full border-0 bg-[var(--sf-color-accent)] px-10 text-[15px] font-semibold text-[var(--sf-color-accent-fg)] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.45)] transition hover:brightness-[1.06] hover:shadow-[0_24px_60px_-12px_rgba(0,0,0,0.5)] active:scale-[0.98]",
           )}
         >
           {shopAllLabel}
@@ -75,7 +75,7 @@ export function AnimatedHero({
             href={browseHref}
             className={cn(
               buttonVariants({ variant: "outline", size: "lg" }),
-              "min-h-12 rounded-full border-[var(--sf-color-primary-fg)]/40 bg-[var(--sf-color-primary-fg)]/[0.07] px-10 text-[15px] text-[var(--sf-color-primary-fg)] backdrop-blur-md hover:bg-[var(--sf-color-primary-fg)]/14 active:scale-[0.98]"
+              "min-h-12 rounded-full border-[var(--sf-color-primary-fg)]/40 bg-[var(--sf-color-primary-fg)]/[0.07] px-10 text-[15px] text-[var(--sf-color-primary-fg)] backdrop-blur-md hover:bg-[var(--sf-color-primary-fg)]/14 active:scale-[0.98]",
             )}
           >
             {browseLabel}
@@ -147,7 +147,7 @@ export function AnimatedHero({
                 href="/search"
                 className={cn(
                   buttonVariants({ variant: "default", size: "lg" }),
-                  "min-h-12 rounded-full border-0 bg-[var(--sf-color-accent)] px-10 text-[15px] font-semibold text-[var(--sf-color-accent-fg)] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.45)] transition hover:brightness-[1.06] hover:shadow-[0_24px_60px_-12px_rgba(0,0,0,0.5)] active:scale-[0.98]"
+                  "min-h-12 rounded-full border-0 bg-[var(--sf-color-accent)] px-10 text-[15px] font-semibold text-[var(--sf-color-accent-fg)] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.45)] transition hover:brightness-[1.06] hover:shadow-[0_24px_60px_-12px_rgba(0,0,0,0.5)] active:scale-[0.98]",
                 )}
               >
                 {shopAllLabel}
@@ -157,7 +157,7 @@ export function AnimatedHero({
                   href={browseHref}
                   className={cn(
                     buttonVariants({ variant: "outline", size: "lg" }),
-                    "min-h-12 rounded-full border-[var(--sf-color-primary-fg)]/40 bg-[var(--sf-color-primary-fg)]/[0.07] px-10 text-[15px] text-[var(--sf-color-primary-fg)] backdrop-blur-md hover:bg-[var(--sf-color-primary-fg)]/14 active:scale-[0.98]"
+                    "min-h-12 rounded-full border-[var(--sf-color-primary-fg)]/40 bg-[var(--sf-color-primary-fg)]/[0.07] px-10 text-[15px] text-[var(--sf-color-primary-fg)] backdrop-blur-md hover:bg-[var(--sf-color-primary-fg)]/14 active:scale-[0.98]",
                   )}
                 >
                   {browseLabel}

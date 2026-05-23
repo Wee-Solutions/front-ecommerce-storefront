@@ -18,7 +18,11 @@ type Props = {
   onActiveUrlChange: (url: string) => void;
 };
 
-export function ProductGallery({ product, activeUrl, onActiveUrlChange }: Props) {
+export function ProductGallery({
+  product,
+  activeUrl,
+  onActiveUrlChange,
+}: Props) {
   const baseList = useMemo(() => buildImageList(product), [product]);
   const displayList = useMemo(() => {
     if (!activeUrl) return baseList;
@@ -75,7 +79,7 @@ export function ProductGallery({ product, activeUrl, onActiveUrlChange }: Props)
                   "relative h-[4.5rem] w-[4.5rem] shrink-0 overflow-hidden rounded-xl border-2 bg-muted/30 shadow-sm transition",
                   i === activeIndex
                     ? "border-primary ring-2 ring-primary/25"
-                    : "border-transparent opacity-75 hover:opacity-100"
+                    : "border-transparent opacity-75 hover:opacity-100",
                 )}
                 aria-label={`Show image ${i + 1}`}
               >
