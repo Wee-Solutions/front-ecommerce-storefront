@@ -152,7 +152,12 @@ export type Dictionary = {
     couponInvalid: string;
     validatingCoupon: string;
     discount: string;
+    totalInclTax: string;
+    totalSaved: string;
+    finalTotal: string;
     totalEstimate: string;
+    pricingLoadError: string;
+    loadingTotals: string;
     bankTransferDetails: string;
     bankName: string;
     bankBranch: string;
@@ -469,7 +474,12 @@ const en: Dictionary = {
     couponInvalid: "This coupon could not be applied.",
     validatingCoupon: "Checking…",
     discount: "Discount",
+    totalInclTax: "Total (incl. tax)",
+    totalSaved: "You saved",
+    finalTotal: "Total to pay",
     totalEstimate: "Estimated total",
+    pricingLoadError: "Could not load order totals. Please try again.",
+    loadingTotals: "Calculating totals…",
     bankTransferDetails: "Pay by bank transfer using these details",
     bankName: "Bank",
     bankBranch: "Branch",
@@ -780,7 +790,12 @@ const he: Dictionary = {
     couponInvalid: "לא ניתן להחיל קופון זה.",
     validatingCoupon: "בודקים…",
     discount: "הנחה",
+    totalInclTax: "סה״כ (כולל מע״מ)",
+    totalSaved: "חסכתם",
+    finalTotal: "לתשלום",
     totalEstimate: "סה״כ משוער",
+    pricingLoadError: "לא ניתן לטעון את סיכום ההזמנה. נסו שוב.",
+    loadingTotals: "מחשבים סיכום…",
     bankTransferDetails: "שלמו בהעברה בנקאית לפי הפרטים",
     bankName: "בנק",
     bankBranch: "סניף",
@@ -1091,7 +1106,12 @@ const ar: Dictionary = {
     couponInvalid: "تعذر تطبيق هذه القسيمة.",
     validatingCoupon: "جاري التحقق…",
     discount: "الخصم",
+    totalInclTax: "المجموع (شامل الضريبة)",
+    totalSaved: "وفرت",
+    finalTotal: "المبلغ المستحق",
     totalEstimate: "الإجمالي التقديري",
+    pricingLoadError: "تعذر تحميل ملخص الطلب. حاول مرة أخرى.",
+    loadingTotals: "جاري حساب المجموع…",
     bankTransferDetails: "ادفع بالتحويل البنكي باستخدام البيانات التالية",
     bankName: "البنك",
     bankBranch: "الفرع",

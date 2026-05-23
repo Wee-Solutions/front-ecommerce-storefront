@@ -1,6 +1,6 @@
 import type { CartLine } from "@/features/cart/cart-store";
 import { env } from "@/config/env";
-import type { CreateOrderRequest } from "@/types/api/order";
+import type { CheckoutOrderRequest, CreateOrderRequest } from "@/types/api/order";
 import {
   OrderShippingMethod,
   PaymentMethod,
@@ -16,6 +16,25 @@ export function buildOrderLinesFromCart(cartLines: CartLine[]) {
     isWeightBased: false as const,
     propertyValueIds: line.propertyValueIds,
   }));
+}
+
+export function buildCheckoutOrderRequest(
+  cartLines: CartLine[],
+  couponCode?: string | null,
+): CheckoutOrderRequest {
+  return {
+    couponCode: couponCode?.trim() || undefined,
+    orderProducts: buildOrderLinesFromCart(cartLines),
+  };
+}
+
+export function cartLinesQueryKey(cartLines: CartLine[]): string {
+  return cartLines
+    .map(
+      (l) =>
+        `${l.productId}:${l.quantity}:${l.unitPrice}:${l.propertyValueIds.join(",")}`,
+    )
+    .join("|");
 }
 
 export function buildCreateOrderRequest(

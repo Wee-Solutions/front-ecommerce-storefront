@@ -1,29 +1,20 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import {
-  Banknote,
-  Building2,
-  CreditCard,
-  Package,
-  Truck,
-} from "lucide-react";
+import { Banknote, Building2, CreditCard, Package, Truck } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "@/contexts/locale-context";
 import { useCustomerSession } from "@/features/auth/customer-session";
 import { BankTransferPanel } from "@/features/checkout/bank-transfer-panel";
 import { CheckoutCardPaymentStep } from "@/features/checkout/checkout-card-payment-step";
-import {
-  filterSupportedPaymentMethods,
-  sumCartLinesSubtotal,
-  uniqueCartProductIds,
-} from "@/features/checkout/checkout-order-builders";
+import { filterSupportedPaymentMethods } from "@/features/checkout/checkout-order-builders";
+import { CheckoutPricingSummary } from "@/features/checkout/checkout-pricing-summary";
 import { useCheckoutFlow } from "@/features/checkout/use-checkout-flow";
+import { useCheckoutPricing } from "@/features/checkout/use-checkout-pricing";
 import { useCartStore } from "@/features/cart/cart-store";
 import { useStoreConfiguration } from "@/features/store-configuration/store-configuration-store";
 import { formatMoney } from "@/lib/format-currency";
-import { validateCoupon } from "@/services/coupons.service";
 import { getCustomerShipmentInfos } from "@/services/customers.service";
 import { authenticatedOrderContext } from "@/features/checkout/order-gateway-context";
 import {
@@ -35,12 +26,9 @@ import type { ShipmentInfo } from "@/types/api/customer";
 import type { StorefrontOrderSubmission } from "./checkout-flow.types";
 
 function shipmentSummaryLine(s: ShipmentInfo): string {
-  const parts = [
-    s.street,
-    s.streetNumber,
-    s.cityDescription,
-    s.zipCode,
-  ].filter(Boolean);
+  const parts = [s.street, s.streetNumber, s.cityDescription, s.zipCode].filter(
+    Boolean,
+  );
   return parts.join(", ");
 }
 
@@ -87,10 +75,9 @@ export function CheckoutForm() {
   );
   const [orderNotes, setOrderNotes] = useState("");
   const [couponInput, setCouponInput] = useState("");
-  const [appliedCoupon, setAppliedCoupon] = useState<{
-    code: string;
-    discountAmount: number;
-  } | null>(null);
+  const [appliedCouponCode, setAppliedCouponCode] = useState<string | null>(
+    null,
+  );
   const [couponError, setCouponError] = useState<string | null>(null);
   const [couponBusy, setCouponBusy] = useState(false);
 
@@ -120,24 +107,27 @@ export function CheckoutForm() {
   });
 
   const activeShipments = useMemo(
-    () =>
-      (shipmentData?.records ?? []).filter(
-        (r) => r.isActive !== false,
-      ),
+    () => (shipmentData?.records ?? []).filter((r) => r.isActive !== false),
     [shipmentData?.records],
   );
 
   useEffect(() => {
     if (shippingMethod !== OrderShippingMethod.Delivery) return;
     if (shippingAddressId) return;
-    const def =
-      activeShipments.find((s) => s.isDefault) ?? activeShipments[0];
+    const def = activeShipments.find((s) => s.isDefault) ?? activeShipments[0];
     if (def) setShippingAddressId(def.id);
   }, [activeShipments, shippingAddressId, shippingMethod]);
 
-  const subtotal = sumCartLinesSubtotal(lines);
-  const discountAmount = appliedCoupon?.discountAmount ?? 0;
-  const estimatedTotal = Math.max(0, subtotal - discountAmount);
+  const { pricingQuery, refreshPricing } = useCheckoutPricing({
+    cartLines: lines,
+    accessToken,
+    locale,
+    appliedCouponCode,
+  });
+
+  const pricing = pricingQuery.data;
+  const isPricingBusy =
+    pricingQuery.isLoading || pricingQuery.isFetching || couponBusy;
 
   const orderGateway = useMemo(() => {
     if (!accessToken) return null;
@@ -150,27 +140,20 @@ export function CheckoutForm() {
     setCouponError(null);
     setCouponBusy(true);
     try {
-      const result = await validateCoupon(
-        {
-          couponCode: code,
-          orderAmount: subtotal,
-          productIds: uniqueCartProductIds(lines),
-        },
-        accessToken,
-        locale,
-      );
-      setAppliedCoupon({
-        code: result.couponCode,
-        discountAmount: result.discountAmount,
-      });
-      setCouponInput(result.couponCode);
+      const result = await refreshPricing(code);
+      if (result.discountAmount <= 0 && result.totalSaved <= 0) {
+        setCouponError(t.checkout.couponInvalid);
+        return;
+      }
+      setAppliedCouponCode(code);
+      setCouponInput(code);
     } catch {
-      setAppliedCoupon(null);
+      setAppliedCouponCode(null);
       setCouponError(t.checkout.couponInvalid);
     } finally {
       setCouponBusy(false);
     }
-  }, [accessToken, couponInput, lines, locale, subtotal, t.checkout.couponInvalid]);
+  }, [accessToken, couponInput, refreshPricing, t.checkout.couponInvalid]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -188,7 +171,7 @@ export function CheckoutForm() {
           ? shippingAddressId
           : null,
       customerNotes: orderNotes.trim() || null,
-      couponCode: appliedCoupon?.code ?? null,
+      couponCode: appliedCouponCode,
     };
 
     void checkout.submitDetailsStep(submission, lines);
@@ -448,10 +431,10 @@ export function CheckoutForm() {
         {couponError ? (
           <p className="mt-2 text-xs text-red-600">{couponError}</p>
         ) : null}
-        {appliedCoupon ? (
+        {appliedCouponCode && pricing && pricing.totalSaved > 0 ? (
           <p className="mt-2 text-xs font-medium text-emerald-700">
-            {t.checkout.couponApplied}: {appliedCoupon.code} (−
-            {formatMoney(appliedCoupon.discountAmount, { locale })})
+            {t.checkout.couponApplied}: {appliedCouponCode} (−
+            {formatMoney(pricing.totalSaved, { locale })})
           </p>
         ) : null}
       </section>
@@ -470,27 +453,12 @@ export function CheckoutForm() {
         />
       </section>
 
-      <div className="space-y-2 rounded-[var(--sf-radius)] border border-[var(--sf-color-border)] bg-white p-5 text-sm shadow-[var(--sf-shadow-sm)]">
-        <div className="flex justify-between text-[var(--sf-color-muted)]">
-          <span>{t.checkout.subtotal}</span>
-          <span className="tabular-nums font-medium text-[var(--sf-color-primary)]">
-            {formatMoney(subtotal, { locale })}
-          </span>
-        </div>
-        {discountAmount > 0 ? (
-          <div className="flex justify-between text-emerald-700">
-            <span>{t.checkout.discount}</span>
-            <span className="tabular-nums font-medium">
-              −{formatMoney(discountAmount, { locale })}
-            </span>
-          </div>
-        ) : null}
-        <div className="flex justify-between border-t border-[var(--sf-color-border)] pt-2 font-semibold text-[var(--sf-color-primary)]">
-          <span>{t.checkout.totalEstimate}</span>
-          <span className="tabular-nums">
-            {formatMoney(estimatedTotal, { locale })}
-          </span>
-        </div>
+      <div className="rounded-[var(--sf-radius)] border border-[var(--sf-color-border)] bg-white p-5 shadow-[var(--sf-shadow-sm)]">
+        <CheckoutPricingSummary
+          pricing={pricing}
+          isLoading={isPricingBusy}
+          hasError={pricingQuery.isError}
+        />
       </div>
 
       <button
@@ -498,6 +466,9 @@ export function CheckoutForm() {
         disabled={
           checkout.isSubmitting ||
           lines.length === 0 ||
+          isPricingBusy ||
+          pricingQuery.isError ||
+          !pricing ||
           (shippingMethod === OrderShippingMethod.Delivery &&
             (!shippingAddressId || activeShipments.length === 0))
         }

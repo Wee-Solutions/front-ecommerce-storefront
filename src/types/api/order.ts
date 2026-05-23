@@ -75,6 +75,24 @@ export type CreateOrderProductLine = {
   propertyValueIds: string[];
 };
 
+export type CheckoutOrderRequest = {
+  couponCode?: string | null;
+  orderProducts: CreateOrderProductLine[];
+};
+
+export type CheckoutOrderResponse = {
+  taxPercentage: number;
+  totalPriceBeforeTax: number;
+  totalPriceBeforeTaxWithDiscount: number;
+  discountAmount: number;
+  totalTaxAmount: number;
+  /** Catalog total after tax (before coupon). */
+  totalPriceAfterTax: number;
+  totalSaved: number;
+  /** Amount due after discounts. */
+  finalPrice: number;
+};
+
 export type CreateOrderRequest = {
   paymentMethod: PaymentMethodValue;
   shippingMethod: OrderShippingMethodValue;

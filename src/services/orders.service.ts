@@ -3,6 +3,8 @@ import {
   type GatewayFetchOptions,
 } from "@/services/http/gateway-fetch";
 import type {
+  CheckoutOrderRequest,
+  CheckoutOrderResponse,
   CreateOrderRequest,
   CreateOrderResponse,
   CustomerOrderDetail,
@@ -47,6 +49,21 @@ export function getCustomerOrderById(
   return gatewayFetch<CustomerOrderDetail>({
     path: `/orders/GetById/${orderId}`,
     method: "GET",
+    language,
+    accessToken,
+    cache: "no-store",
+  });
+}
+
+export function checkoutOrder(
+  body: CheckoutOrderRequest,
+  accessToken: string,
+  language = "en",
+) {
+  return gatewayFetch<CheckoutOrderResponse>({
+    path: "/orders/Checkout",
+    method: "POST",
+    body,
     language,
     accessToken,
     cache: "no-store",
