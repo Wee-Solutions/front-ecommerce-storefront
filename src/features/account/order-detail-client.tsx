@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLocale, useTranslations } from "@/contexts/locale-context";
 import { useCustomerSession } from "@/features/auth/customer-session";
@@ -14,6 +15,8 @@ import {
   paymentStatusLabel,
 } from "@/lib/order-status-labels";
 import { formatMoney } from "@/lib/format-currency";
+import { OrderPricingSummary } from "@/features/account/order-pricing-summary";
+import { OrderShipmentSection } from "@/features/account/order-shipment-section";
 import { getCustomerOrderById } from "@/services/orders.service";
 import { cn } from "@/lib/utils";
 
@@ -85,6 +88,7 @@ export function OrderDetailClient({ orderId }: { orderId: string }) {
   }
 
   const statusTone = orderStatusTone(order.orderStatus);
+  const couponCode = order.coupon?.code?.trim();
 
   return (
     <div className="mt-8 space-y-8">
@@ -171,9 +175,8 @@ export function OrderDetailClient({ orderId }: { orderId: string }) {
                   </p>
                 ) : null}
                 <p className="mt-2 text-xs text-muted-foreground">
-                  {t.orders.quantityShort}: {p.quantity} ·{" "}
-                  {formatMoney(p.price, { locale })} {t.orders.lineTotal}:{" "}
-                  {formatMoney(p.totalPriceAfterTax, { locale })}
+                  {t.orders.quantityShort}: {p.quantity} · {t.orders.lineTotal}:{" "}
+                  {formatMoney(p.finalPrice, { locale })}
                 </p>
                 {p.customerNotes ? (
                   <p className="mt-1 text-xs italic text-muted-foreground">
@@ -186,38 +189,26 @@ export function OrderDetailClient({ orderId }: { orderId: string }) {
         </ul>
       </section>
 
+      {order.shipment ? (
+        <OrderShipmentSection shipment={order.shipment} />
+      ) : null}
+
+      <div className="space-y-3">
       <Card className="border-border/60">
-        <CardContent className="space-y-2 p-5 text-sm">
-          <div className="flex justify-between text-muted-foreground">
-            <span>{t.orders.subtotalBeforeTax}</span>
-            <span className="tabular-nums font-medium text-foreground">
-              {formatMoney(order.totalPriceBeforeTax, { locale })}
-            </span>
-          </div>
-          <div className="flex justify-between text-muted-foreground">
-            <span>
-              {t.orders.tax} ({order.taxRatePercentage.toFixed(0)}%)
-            </span>
-            <span className="tabular-nums font-medium text-foreground">
-              {formatMoney(order.totalTaxAmount, { locale })}
-            </span>
-          </div>
-          {order.discountAmount > 0 ? (
-            <div className="flex justify-between text-emerald-700">
-              <span>{t.orders.discount}</span>
-              <span className="tabular-nums font-medium">
-                −{formatMoney(order.discountAmount, { locale })}
-              </span>
-            </div>
-          ) : null}
-          <div className="flex justify-between border-t border-border/60 pt-2 font-semibold text-foreground">
-            <span>{t.orders.total}</span>
-            <span className="tabular-nums">
-              {formatMoney(order.finalPrice, { locale })}
-            </span>
-          </div>
+        <CardContent className="p-5">
+          <OrderPricingSummary order={order} />
         </CardContent>
       </Card>
+
+      {couponCode ? (
+        <Badge
+          variant="secondary"
+          className="border-emerald-200/80 bg-emerald-50 font-semibold tracking-wide text-emerald-950 uppercase"
+        >
+          {t.orders.couponUsed}: {couponCode}
+        </Badge>
+      ) : null}
+      </div>
 
       {order.customerNotes?.trim() ? (
         <section className="rounded-xl border border-border/60 bg-muted/20 p-4">

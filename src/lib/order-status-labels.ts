@@ -1,8 +1,11 @@
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import {
+  OrderShipmentStatus,
+  OrderShippingMethod,
   OrderStatus,
   OrderPaymentStatus,
   PaymentMethod,
+  SHIPMENT_PROGRESS_STATUSES,
 } from "@/types/api/order";
 
 type OrdersDict = Dictionary["orders"];
@@ -48,6 +51,48 @@ export function paymentMethodLabel(method: number, o: OrdersDict): string {
     default:
       return `${o.paymentMethodUnknown} (${method})`;
   }
+}
+
+export function shippingMethodLabel(method: number, o: OrdersDict): string {
+  switch (method) {
+    case OrderShippingMethod.Delivery:
+      return o.shippingDelivery;
+    case OrderShippingMethod.Pickup:
+      return o.shippingPickup;
+    default:
+      return `${o.shippingMethodUnknown} (${method})`;
+  }
+}
+
+/** Mirrors backend `OrderShipmentStatus` when known; extend as API documents values. */
+export function shipmentStatusLabel(status: number, o: OrdersDict): string {
+  switch (status) {
+    case OrderShipmentStatus.Pending:
+      return o.shipmentStatusPending;
+    case OrderShipmentStatus.InTransit:
+      return o.shipmentStatusInTransit;
+    case OrderShipmentStatus.Delivered:
+      return o.shipmentStatusDelivered;
+    case OrderShipmentStatus.Cancelled:
+      return o.shipmentStatusCancelled;
+    default:
+      return `${o.shipmentStatusUnknown} (${status})`;
+  }
+}
+
+export function shipmentProgressStepLabels(o: OrdersDict): string[] {
+  return SHIPMENT_PROGRESS_STATUSES.map((value) => shipmentStatusLabel(value, o));
+}
+
+/** Index into `SHIPMENT_PROGRESS_STATUSES`, or -1 when cancelled / unknown. */
+export function shipmentProgressStepIndex(status: number): number {
+  if (status === OrderShipmentStatus.Cancelled) return -1;
+  const idx = SHIPMENT_PROGRESS_STATUSES.indexOf(
+    status as (typeof SHIPMENT_PROGRESS_STATUSES)[number],
+  );
+  if (idx >= 0) return idx;
+  if (status > OrderShipmentStatus.Delivered) return -1;
+  return 0;
 }
 
 export function orderStatusTone(

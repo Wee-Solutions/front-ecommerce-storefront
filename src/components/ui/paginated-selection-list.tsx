@@ -30,7 +30,10 @@ type PaginatedSelectionListProps = {
     searchTerm?: string;
     take: number;
     skip: number;
+    selectedIds?: string[];
   }) => Promise<SelectionListPage>;
+  /** Passed on each page request so the API can return the current selection. */
+  selectedIds?: string[];
   queryKey: readonly unknown[];
   placeholder?: string;
   searchPlaceholder?: string;
@@ -59,6 +62,7 @@ export function PaginatedSelectionList({
   pageSize = 20,
   className,
   seedOption,
+  selectedIds,
 }: PaginatedSelectionListProps) {
   const listId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -67,14 +71,22 @@ export function PaginatedSelectionList({
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search.trim(), 300);
 
+  const selectedIdsKey = selectedIds?.length ? selectedIds.join(",") : "";
+
+  const shouldPrefetchSelected =
+    !disabled &&
+    value != null &&
+    (selectedIds?.includes(value) ?? false);
+
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteQuery({
-      queryKey: [...queryKey, debouncedSearch],
+      queryKey: [...queryKey, debouncedSearch, selectedIdsKey],
       queryFn: ({ pageParam }) =>
         fetchPage({
           searchTerm: debouncedSearch || undefined,
           take: pageSize,
           skip: pageParam,
+          selectedIds: selectedIds?.length ? selectedIds : undefined,
         }),
       initialPageParam: 0,
       getNextPageParam: (lastPage, allPages) => {
@@ -84,7 +96,7 @@ export function PaginatedSelectionList({
         );
         return loaded < lastPage.totalCount ? loaded : undefined;
       },
-      enabled: open && !disabled,
+      enabled: (!disabled && open) || shouldPrefetchSelected,
     });
 
   const options = useMemo(() => {
@@ -94,11 +106,21 @@ export function PaginatedSelectionList({
     return [seedOption, ...merged];
   }, [data, seedOption]);
 
+  const seedLabel =
+    seedOption &&
+    seedOption.id === value &&
+    seedOption.name !== value
+      ? seedOption.name
+      : undefined;
+
   const selectedLabel =
     label ??
     options.find((item) => item.id === value)?.name ??
-    seedOption?.name ??
+    seedLabel ??
     "";
+
+  const isResolvingLabel =
+    shouldPrefetchSelected && isLoading && !selectedLabel && Boolean(value);
 
   const handleScroll = useCallback(() => {
     const el = listRef.current;
@@ -138,8 +160,15 @@ export function PaginatedSelectionList({
         )}
         onClick={() => setOpen((prev) => !prev)}
       >
-        <span className="truncate text-start">
-          {selectedLabel || placeholder}
+        <span className="flex min-w-0 items-center gap-2 truncate text-start">
+          {isResolvingLabel ? (
+            <>
+              <Loader2Icon className="size-4 shrink-0 animate-spin" />
+              {loadingLabel}
+            </>
+          ) : (
+            selectedLabel || placeholder
+          )}
         </span>
         <ChevronDownIcon
           className={cn(

@@ -28,6 +28,8 @@ export type GetCitySelectionListRequest = {
   searchTerm?: string;
   take?: number;
   skip?: number;
+  /** Ensures these cities are included in results (e.g. current selection when editing). */
+  selectedIds?: string[];
 };
 
 export type GetCitySelectionListResponse = {

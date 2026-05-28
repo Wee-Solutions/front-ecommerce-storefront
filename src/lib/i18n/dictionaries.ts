@@ -153,6 +153,7 @@ export type Dictionary = {
     validatingCoupon: string;
     discount: string;
     totalInclTax: string;
+    productsTotalAfterTax: string;
     shippingCost: string;
     totalSaved: string;
     finalTotal: string;
@@ -261,6 +262,25 @@ export type Dictionary = {
     subtotalBeforeTax: string;
     tax: string;
     discount: string;
+    productsTotalAfterTax: string;
+    shippingCost: string;
+    totalSaved: string;
+    finalTotal: string;
+    couponUsed: string;
+    shipmentTitle: string;
+    shippingMethodLabel: string;
+    shippingMethodUnknown: string;
+    shippingDelivery: string;
+    shippingPickup: string;
+    shippingPickupHint: string;
+    shipmentStatusLabel: string;
+    shipmentStatusPending: string;
+    shipmentStatusInTransit: string;
+    shipmentStatusDelivered: string;
+    shipmentStatusCancelled: string;
+    shipmentStatusUnknown: string;
+    shippingCostLabel: string;
+    deliveryAddress: string;
     customerNotes: string;
     loadError: string;
     notFound: string;
@@ -476,6 +496,7 @@ const en: Dictionary = {
     validatingCoupon: "Checking…",
     discount: "Discount",
     totalInclTax: "Total (incl. tax)",
+    productsTotalAfterTax: "Products (incl. tax)",
     shippingCost: "Shipping",
     totalSaved: "You saved",
     finalTotal: "Total to pay",
@@ -586,6 +607,25 @@ const en: Dictionary = {
     subtotalBeforeTax: "Subtotal (before tax)",
     tax: "Tax",
     discount: "Discount",
+    productsTotalAfterTax: "Products (incl. tax)",
+    shippingCost: "Shipping",
+    totalSaved: "You saved",
+    finalTotal: "Total to pay",
+    couponUsed: "Coupon",
+    shipmentTitle: "Shipping",
+    shippingMethodLabel: "Method",
+    shippingMethodUnknown: "Unknown method",
+    shippingDelivery: "Delivery",
+    shippingPickup: "Pickup",
+    shippingPickupHint: "Collect from the store — no delivery address.",
+    shipmentStatusLabel: "Shipment status",
+    shipmentStatusPending: "Pending",
+    shipmentStatusInTransit: "In transit",
+    shipmentStatusDelivered: "Delivered",
+    shipmentStatusCancelled: "Cancelled",
+    shipmentStatusUnknown: "Unknown status",
+    shippingCostLabel: "Shipping cost",
+    deliveryAddress: "Delivery address",
     customerNotes: "Your notes",
     loadError: "Could not load this order.",
     notFound: "We couldn’t find this order.",
@@ -793,6 +833,7 @@ const he: Dictionary = {
     validatingCoupon: "בודקים…",
     discount: "הנחה",
     totalInclTax: "סה״כ (כולל מע״מ)",
+    productsTotalAfterTax: "מוצרים (כולל מע״מ)",
     shippingCost: "משלוח",
     totalSaved: "חסכתם",
     finalTotal: "לתשלום",
@@ -903,6 +944,25 @@ const he: Dictionary = {
     subtotalBeforeTax: "סיכום לפני מע״מ",
     tax: "מע״מ",
     discount: "הנחה",
+    productsTotalAfterTax: "מוצרים (כולל מע״מ)",
+    shippingCost: "משלוח",
+    totalSaved: "חסכתם",
+    finalTotal: "לתשלום",
+    couponUsed: "קופון",
+    shipmentTitle: "משלוח",
+    shippingMethodLabel: "שיטה",
+    shippingMethodUnknown: "שיטה לא ידועה",
+    shippingDelivery: "משלוח",
+    shippingPickup: "איסוף עצמי",
+    shippingPickupHint: "איסוף מהחנות — ללא כתובת משלוח.",
+    shipmentStatusLabel: "סטטוס משלוח",
+    shipmentStatusPending: "ממתין",
+    shipmentStatusInTransit: "בדרך",
+    shipmentStatusDelivered: "נמסר",
+    shipmentStatusCancelled: "בוטל",
+    shipmentStatusUnknown: "סטטוס לא ידוע",
+    shippingCostLabel: "עלות משלוח",
+    deliveryAddress: "כתובת משלוח",
     customerNotes: "הערות שלכם",
     loadError: "לא ניתן לטעון את ההזמנה.",
     notFound: "ההזמנה לא נמצאה.",
@@ -1110,6 +1170,7 @@ const ar: Dictionary = {
     validatingCoupon: "جاري التحقق…",
     discount: "الخصم",
     totalInclTax: "المجموع (شامل الضريبة)",
+    productsTotalAfterTax: "المنتجات (شامل الضريبة)",
     shippingCost: "الشحن",
     totalSaved: "وفرت",
     finalTotal: "المبلغ المستحق",
@@ -1220,6 +1281,25 @@ const ar: Dictionary = {
     subtotalBeforeTax: "المجموع قبل الضريبة",
     tax: "الضريبة",
     discount: "الخصم",
+    productsTotalAfterTax: "المنتجات (شامل الضريبة)",
+    shippingCost: "الشحن",
+    totalSaved: "وفرت",
+    finalTotal: "المبلغ المستحق",
+    couponUsed: "قسيمة",
+    shipmentTitle: "الشحن",
+    shippingMethodLabel: "الطريقة",
+    shippingMethodUnknown: "طريقة غير معروفة",
+    shippingDelivery: "توصيل",
+    shippingPickup: "استلام",
+    shippingPickupHint: "الاستلام من المتجر — بدون عنوان توصيل.",
+    shipmentStatusLabel: "حالة الشحن",
+    shipmentStatusPending: "قيد الانتظار",
+    shipmentStatusInTransit: "قيد النقل",
+    shipmentStatusDelivered: "تم التسليم",
+    shipmentStatusCancelled: "ملغي",
+    shipmentStatusUnknown: "حالة غير معروفة",
+    shippingCostLabel: "تكلفة الشحن",
+    deliveryAddress: "عنوان التوصيل",
     customerNotes: "ملاحظاتك",
     loadError: "تعذر تحميل هذا الطلب.",
     notFound: "لم يُعثر على الطلب.",

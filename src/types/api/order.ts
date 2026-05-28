@@ -32,6 +32,24 @@ export const OrderStatus = {
   Done: 3,
 } as const;
 
+/** Mirrors backend `OrderShipmentStatus`. */
+export const OrderShipmentStatus = {
+  Pending: 0,
+  InTransit: 1,
+  Delivered: 2,
+  Cancelled: 3,
+} as const;
+
+export type OrderShipmentStatusValue =
+  (typeof OrderShipmentStatus)[keyof typeof OrderShipmentStatus];
+
+/** Linear progress steps shown in order shipment UI (excludes cancelled). */
+export const SHIPMENT_PROGRESS_STATUSES = [
+  OrderShipmentStatus.Pending,
+  OrderShipmentStatus.InTransit,
+  OrderShipmentStatus.Delivered,
+] as const;
+
 export type CustomerOrderLineProperty = {
   propertyName: string;
   propertyValueName: string;
@@ -44,19 +62,44 @@ export type CustomerOrderLine = {
   title: string;
   quantity: number;
   price: number;
-  totalPriceAfterTax: number;
+  finalPrice: number;
   customerNotes: string;
   properties: CustomerOrderLineProperty[];
+};
+
+export type CustomerOrderCoupon = {
+  code: string;
+};
+
+export type CustomerOrderShipment = {
+  shippingMethod: number;
+  shipmentStatus: number;
+  finalPrice: number;
+  requiresAddress: boolean;
+  customerShippingAddressId?: string | null;
+  cityId?: string | null;
+  cityName?: string | null;
+  areaId?: string | null;
+  areaName?: string | null;
+  street?: string | null;
+  streetNumber?: string | null;
+  apartmentNumber?: string | null;
+  apartmentFloor?: string | null;
+  apartmentEntrance?: string | null;
+  apartmentEntranceCode?: string | null;
+  additionalEntranceCode?: string | null;
+  addressNotes?: string | null;
+  zipCode?: string | null;
 };
 
 export type CustomerOrderDetail = {
   id: string;
   number: number;
-  taxRatePercentage: number;
-  totalPriceBeforeTax: number;
-  totalTaxAmount: number;
-  discountAmount: number;
+  productsTotalPriceAfterTax: number;
+  totalSaved: number;
   finalPrice: number;
+  coupon?: CustomerOrderCoupon | null;
+  shipment?: CustomerOrderShipment | null;
   orderStatus: number;
   paymentMethod: number;
   paymentStatus: number;
@@ -83,8 +126,16 @@ export type CheckoutOrderRequest = {
 };
 
 export type CheckoutOrderResponse = {
-  totalPriceAfterTax: number;
-  shippingCostPrice: number;
+  taxPercentage: number;
+  productsTotalPriceBeforeTax: number;
+  productsTotalPriceAfterTax: number;
+  productsTotalPriceBeforeTaxWithDiscount: number;
+  totalPriceBeforeTax: number;
+  totalPriceBeforeTaxWithDiscount: number;
+  discountAmount: number;
+  totalTaxAmount: number;
+  /** Shipping amount included in checkout total (API: `shippingFinalPrice`). */
+  shippingFinalPrice: number;
   totalSaved: number;
   finalPrice: number;
 };

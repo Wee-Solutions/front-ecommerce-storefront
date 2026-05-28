@@ -145,7 +145,7 @@ export function CheckoutForm() {
     setCouponBusy(true);
     try {
       const result = await refreshPricing(code);
-      if (result.totalSaved <= 0) {
+      if (result.totalSaved <= 0 && result.discountAmount <= 0) {
         setCouponError(t.checkout.couponInvalid);
         return;
       }

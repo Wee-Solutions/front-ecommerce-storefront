@@ -164,16 +164,58 @@ export function ShippingDetails() {
     updateMutation.isPending ||
     deleteMutation.isPending;
 
+  const citySelectedIds = useMemo(
+    () => (form.cityId ? [form.cityId] : undefined),
+    [form.cityId],
+  );
+
+  const needsCityLabelResolve = Boolean(
+    showForm &&
+      form.cityId &&
+      (!form.cityDescription.trim() || form.cityDescription.trim() === form.cityId),
+  );
+
+  const selectedCityQuery = useQuery({
+    queryKey: ["city-selection", "resolve", language, accessToken, form.cityId],
+    queryFn: async () => {
+      if (!accessToken || !form.cityId) return null;
+      const result = await getCitySelectionList(
+        { take: 20, skip: 0, selectedIds: [form.cityId] },
+        accessToken,
+        language,
+      );
+      return result.records.find((city) => city.id === form.cityId) ?? null;
+    },
+    enabled: Boolean(accessToken && needsCityLabelResolve),
+  });
+
+  const resolvedCityDescription = useMemo(() => {
+    const trimmed = form.cityDescription.trim();
+    if (form.cityId && trimmed && trimmed !== form.cityId) return trimmed;
+    const fromQuery = selectedCityQuery.data?.name?.trim();
+    if (form.cityId && fromQuery && selectedCityQuery.data?.id === form.cityId) {
+      return fromQuery;
+    }
+    return trimmed;
+  }, [form.cityDescription, form.cityId, selectedCityQuery.data]);
+
+  const cityDisplayLabel =
+    form.cityId && resolvedCityDescription && resolvedCityDescription !== form.cityId
+      ? resolvedCityDescription
+      : undefined;
+
   const citySeedOption = useMemo(() => {
-    if (!form.cityId) return null;
-    return {
-      id: form.cityId,
-      name: form.cityDescription || form.cityId,
-    };
-  }, [form.cityDescription, form.cityId]);
+    if (!form.cityId || !cityDisplayLabel) return null;
+    return { id: form.cityId, name: cityDisplayLabel };
+  }, [form.cityId, cityDisplayLabel]);
 
   const fetchCityPage = useCallback(
-    (params: { searchTerm?: string; take: number; skip: number }) => {
+    (params: {
+      searchTerm?: string;
+      take: number;
+      skip: number;
+      selectedIds?: string[];
+    }) => {
       if (!accessToken) {
         return Promise.resolve({ records: [], totalCount: 0 });
       }
@@ -212,7 +254,7 @@ export function ShippingDetails() {
     }
     const payload: UpsertShipmentInfoRequest = {
       cityId: form.cityId,
-      cityDescription: form.cityDescription.trim(),
+      cityDescription: resolvedCityDescription,
       street: form.street.trim(),
       streetNumber: form.streetNumber.trim(),
       apartmentNumber: form.apartmentNumber.trim(),
@@ -344,8 +386,9 @@ export function ShippingDetails() {
                 <label className="text-sm font-medium">{t.account.shippingCity}</label>
                 <PaginatedSelectionList
                   value={form.cityId ?? null}
-                  label={form.cityDescription || undefined}
+                  label={cityDisplayLabel}
                   seedOption={citySeedOption}
+                  selectedIds={citySelectedIds}
                   queryKey={["city-selection", language, accessToken]}
                   fetchPage={fetchCityPage}
                   placeholder={t.account.shippingCityPlaceholder}
