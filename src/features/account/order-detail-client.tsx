@@ -213,7 +213,7 @@ export function OrderDetailClient({ orderId }: { orderId: string }) {
           <div className="flex justify-between border-t border-border/60 pt-2 font-semibold text-foreground">
             <span>{t.orders.total}</span>
             <span className="tabular-nums">
-              {formatMoney(order.totalPriceAfterTax, { locale })}
+              {formatMoney(order.finalPrice, { locale })}
             </span>
           </div>
         </CardContent>

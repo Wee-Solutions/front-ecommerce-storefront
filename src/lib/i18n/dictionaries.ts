@@ -153,6 +153,7 @@ export type Dictionary = {
     validatingCoupon: string;
     discount: string;
     totalInclTax: string;
+    shippingCost: string;
     totalSaved: string;
     finalTotal: string;
     totalEstimate: string;
@@ -475,6 +476,7 @@ const en: Dictionary = {
     validatingCoupon: "Checking…",
     discount: "Discount",
     totalInclTax: "Total (incl. tax)",
+    shippingCost: "Shipping",
     totalSaved: "You saved",
     finalTotal: "Total to pay",
     totalEstimate: "Estimated total",
@@ -791,6 +793,7 @@ const he: Dictionary = {
     validatingCoupon: "בודקים…",
     discount: "הנחה",
     totalInclTax: "סה״כ (כולל מע״מ)",
+    shippingCost: "משלוח",
     totalSaved: "חסכתם",
     finalTotal: "לתשלום",
     totalEstimate: "סה״כ משוער",
@@ -1107,6 +1110,7 @@ const ar: Dictionary = {
     validatingCoupon: "جاري التحقق…",
     discount: "الخصم",
     totalInclTax: "المجموع (شامل الضريبة)",
+    shippingCost: "الشحن",
     totalSaved: "وفرت",
     finalTotal: "المبلغ المستحق",
     totalEstimate: "الإجمالي التقديري",

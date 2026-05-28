@@ -20,10 +20,19 @@ export function buildOrderLinesFromCart(cartLines: CartLine[]) {
 
 export function buildCheckoutOrderRequest(
   cartLines: CartLine[],
-  couponCode?: string | null,
+  options: {
+    couponCode?: string | null;
+    shippingMethod: (typeof OrderShippingMethod)[keyof typeof OrderShippingMethod];
+    shippingAddressId: string | null;
+  },
 ): CheckoutOrderRequest {
+  const isDelivery =
+    options.shippingMethod === OrderShippingMethod.Delivery;
+
   return {
-    couponCode: couponCode?.trim() || undefined,
+    couponCode: options.couponCode?.trim() || undefined,
+    shippingMethod: options.shippingMethod,
+    shippingAddressId: isDelivery ? options.shippingAddressId : null,
     orderProducts: buildOrderLinesFromCart(cartLines),
   };
 }
