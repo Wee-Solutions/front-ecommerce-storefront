@@ -117,16 +117,21 @@ export function CheckoutForm() {
     if (def) setShippingAddressId(def.id);
   }, [activeShipments, shippingAddressId, shippingMethod]);
 
-  const { pricingQuery, refreshPricing } = useCheckoutPricing({
+  const { pricingQuery, refreshPricing, shippingReady } = useCheckoutPricing({
     cartLines: lines,
     accessToken,
     locale,
     appliedCouponCode,
+    shippingMethod,
+    shippingAddressId,
   });
 
   const pricing = pricingQuery.data;
   const isPricingBusy =
-    pricingQuery.isLoading || pricingQuery.isFetching || couponBusy;
+    !shippingReady ||
+    pricingQuery.isLoading ||
+    pricingQuery.isFetching ||
+    couponBusy;
 
   const orderGateway = useMemo(() => {
     if (!accessToken) return null;
@@ -140,7 +145,7 @@ export function CheckoutForm() {
     setCouponBusy(true);
     try {
       const result = await refreshPricing(code);
-      if (result.discountAmount <= 0 && result.totalSaved <= 0) {
+      if (result.totalSaved <= 0) {
         setCouponError(t.checkout.couponInvalid);
         return;
       }

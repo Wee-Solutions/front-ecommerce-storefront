@@ -66,7 +66,7 @@ export function getCustomerShipmentInfos(
   language = "en",
 ) {
   return gatewayFetch<GetShipmentInfosResponse>({
-    path: "/customers/GetShipmentInfos",
+    path: "/customers/GetShippingAddresses",
     method: "GET",
     language,
     accessToken,
@@ -80,7 +80,7 @@ export function createCustomerShipmentInfo(
   language = "en",
 ) {
   return gatewayFetch<{ id: string }>({
-    path: "/customers/CreateShipmentInfo",
+    path: "/customers/CreateShippingAddress",
     method: "POST",
     body,
     language,
@@ -96,7 +96,7 @@ export function updateCustomerShipmentInfo(
   language = "en",
 ) {
   return gatewayFetch<Record<string, never>>({
-    path: `/customers/UpdateShipmentInfo/${shipmentInfoId}`,
+    path: `/customers/UpdateShippingAddress/${shipmentInfoId}`,
     method: "PUT",
     body,
     language,
@@ -111,7 +111,7 @@ export function deleteCustomerShipmentInfo(
   language = "en",
 ) {
   return gatewayFetch<Record<string, never>>({
-    path: `/customers/DeleteShipmentInfo/${shipmentInfoId}`,
+    path: `/customers/DeleteShippingAddress/${shipmentInfoId}`,
     method: "DELETE",
     language,
     accessToken,

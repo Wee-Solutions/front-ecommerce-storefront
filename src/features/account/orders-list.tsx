@@ -115,7 +115,7 @@ export function OrdersList() {
                       {t.orders.total}
                     </p>
                     <p className="text-sm font-semibold tabular-nums text-foreground">
-                      {formatMoney(o.totalPriceAfterTax, { locale })}
+                      {formatMoney(o.finalPrice, { locale })}
                     </p>
                   </div>
                   <Link

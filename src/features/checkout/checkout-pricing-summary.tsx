@@ -24,7 +24,9 @@ export function CheckoutPricingSummary({ pricing, isLoading, hasError }: Props) 
 
   if (isLoading && !pricing) {
     return (
-      <p className="text-sm text-[var(--sf-color-muted)]">{t.checkout.loadingTotals}</p>
+      <p className="text-sm text-[var(--sf-color-muted)]">
+        {t.checkout.loadingTotals}
+      </p>
     );
   }
 
@@ -34,22 +36,16 @@ export function CheckoutPricingSummary({ pricing, isLoading, hasError }: Props) 
 
   return (
     <div className="space-y-2 text-sm">
-      <div
-        className={`flex justify-between ${
-          hasSavings
-            ? "text-[var(--sf-color-muted)]"
-            : "font-semibold text-[var(--sf-color-primary)]"
-        }`}
-      >
+      <div className="flex justify-between text-[var(--sf-color-muted)]">
         <span>{t.checkout.totalInclTax}</span>
-        <span
-          className={`tabular-nums ${
-            hasSavings
-              ? "font-medium line-through decoration-[var(--sf-color-muted)]"
-              : ""
-          }`}
-        >
+        <span className="tabular-nums font-medium text-[var(--sf-color-primary)]">
           {formatMoney(pricing.totalPriceAfterTax, { locale })}
+        </span>
+      </div>
+      <div className="flex justify-between text-[var(--sf-color-muted)]">
+        <span>{t.checkout.shippingCost}</span>
+        <span className="tabular-nums font-medium text-[var(--sf-color-primary)]">
+          {formatMoney(pricing.shippingCostPrice, { locale })}
         </span>
       </div>
       {hasSavings ? (
@@ -60,14 +56,12 @@ export function CheckoutPricingSummary({ pricing, isLoading, hasError }: Props) 
           </span>
         </div>
       ) : null}
-      {hasSavings ? (
-        <div className="flex justify-between border-t border-[var(--sf-color-border)] pt-2 font-semibold text-[var(--sf-color-primary)]">
-          <span>{t.checkout.finalTotal}</span>
-          <span className="tabular-nums">
-            {formatMoney(pricing.finalPrice, { locale })}
-          </span>
-        </div>
-      ) : null}
+      <div className="flex justify-between border-t border-[var(--sf-color-border)] pt-2 font-semibold text-[var(--sf-color-primary)]">
+        <span>{t.checkout.finalTotal}</span>
+        <span className="tabular-nums">
+          {formatMoney(pricing.finalPrice, { locale })}
+        </span>
+      </div>
     </div>
   );
 }
