@@ -94,10 +94,17 @@ export function PaginatedSelectionList({
     return [seedOption, ...merged];
   }, [data, seedOption]);
 
+  const seedLabel =
+    seedOption &&
+    seedOption.id === value &&
+    seedOption.name !== value
+      ? seedOption.name
+      : undefined;
+
   const selectedLabel =
     label ??
     options.find((item) => item.id === value)?.name ??
-    seedOption?.name ??
+    seedLabel ??
     "";
 
   const handleScroll = useCallback(() => {

@@ -37,15 +37,15 @@ export function CheckoutPricingSummary({ pricing, isLoading, hasError }: Props) 
   return (
     <div className="space-y-2 text-sm">
       <div className="flex justify-between text-[var(--sf-color-muted)]">
-        <span>{t.checkout.totalInclTax}</span>
+        <span>{t.checkout.productsTotalAfterTax}</span>
         <span className="tabular-nums font-medium text-[var(--sf-color-primary)]">
-          {formatMoney(pricing.totalPriceAfterTax, { locale })}
+          {formatMoney(pricing.productsTotalPriceAfterTax, { locale })}
         </span>
       </div>
       <div className="flex justify-between text-[var(--sf-color-muted)]">
         <span>{t.checkout.shippingCost}</span>
         <span className="tabular-nums font-medium text-[var(--sf-color-primary)]">
-          {formatMoney(pricing.shippingCostPrice, { locale })}
+          {formatMoney(pricing.shippingFinalPrice, { locale })}
         </span>
       </div>
       {hasSavings ? (

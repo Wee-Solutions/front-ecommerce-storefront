@@ -8,9 +8,7 @@ import { useTranslations } from "@/contexts/locale-context";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -265,25 +263,15 @@ export function HeaderCategoryNav({
                     sideOffset={6}
                     className={menuPanel}
                   >
-                    <DropdownMenuGroup>
-                      <DropdownMenuLabel className="border-b border-border/40 px-3 py-2 text-start">
-                        <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                          {t.category.browse}
-                        </span>
-                        <span className="mt-0.5 block truncate font-heading text-sm font-medium tracking-tight text-foreground">
-                          {c.name}
-                        </span>
-                      </DropdownMenuLabel>
-                      <DropdownMenuItem
-                        className={cn(
-                          "mx-1 my-1 flex cursor-pointer items-center rounded-md px-2 py-1.5 text-xs font-medium text-primary",
-                          "data-highlighted:bg-primary/12",
-                        )}
-                        onClick={() => router.push(`/c/${c.id}`)}
-                      >
-                        {t.home.viewAll}
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
+                    <DropdownMenuItem
+                      className={cn(
+                        "mx-1 my-1 flex cursor-pointer items-center rounded-md px-2 py-1.5 text-xs font-medium text-primary",
+                        "data-highlighted:bg-primary/12",
+                      )}
+                      onClick={() => router.push(`/c/${c.id}`)}
+                    >
+                      {t.home.viewAll}
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator className="mx-0 my-0 h-px bg-border/50" />
                     {renderCategoryMenuLevel(
                       subs,

@@ -13,6 +13,7 @@ import {
   paymentStatusLabel,
 } from "@/lib/order-status-labels";
 import { formatMoney } from "@/lib/format-currency";
+import { formatDateDDMMYYYY } from "@/lib/format-date";
 import { cn } from "@/lib/utils";
 import { searchCustomerOrders } from "@/services/orders.service";
 
@@ -99,9 +100,7 @@ export function OrdersList() {
                     </span>
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {new Date(o.createdAt).toLocaleDateString(locale, {
-                      dateStyle: "medium",
-                    })}
+                    {formatDateDDMMYYYY(o.createdAt)}
                   </p>
                   <p className="mt-2 text-xs text-muted-foreground">
                     {paymentMethodLabel(o.paymentMethod, t.orders)}
