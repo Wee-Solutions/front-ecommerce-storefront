@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { useLocale, useTranslations } from "@/contexts/locale-context";
 import { formatMoney } from "@/lib/format-currency";
 import type { CustomerOrderDetail } from "@/types/api/order";
@@ -9,15 +10,17 @@ type Props = {
     CustomerOrderDetail,
     "productsTotalPriceAfterTax" | "totalSaved" | "finalPrice" | "shipment"
   >;
+  couponCode?: string | null;
 };
 
-export function OrderPricingSummary({ order }: Props) {
+export function OrderPricingSummary({ order, couponCode }: Props) {
   const t = useTranslations();
   const locale = useLocale();
   const o = t.orders;
 
   const shippingFinalPrice = order.shipment?.finalPrice ?? 0;
   const hasSavings = order.totalSaved > 0;
+  const showSavingsRow = hasSavings || Boolean(couponCode);
 
   return (
     <div className="space-y-2 text-sm">
@@ -33,12 +36,24 @@ export function OrderPricingSummary({ order }: Props) {
           {formatMoney(shippingFinalPrice, { locale })}
         </span>
       </div>
-      {hasSavings ? (
-        <div className="flex justify-between text-emerald-700">
-          <span>{o.totalSaved}</span>
-          <span className="tabular-nums font-medium">
-            −{formatMoney(order.totalSaved, { locale })}
-          </span>
+      {showSavingsRow ? (
+        <div className="flex items-start justify-between gap-2 text-emerald-700">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <span>{o.totalSaved}</span>
+            {couponCode ? (
+              <Badge
+                variant="secondary"
+                className="border-emerald-200/80 bg-emerald-50 font-semibold tracking-wide text-emerald-950 uppercase"
+              >
+                {o.couponUsed}: {couponCode}
+              </Badge>
+            ) : null}
+          </div>
+          {hasSavings ? (
+            <span className="shrink-0 tabular-nums font-medium">
+              −{formatMoney(order.totalSaved, { locale })}
+            </span>
+          ) : null}
         </div>
       ) : null}
       <div className="flex justify-between border-t border-border/60 pt-2 font-semibold text-foreground">

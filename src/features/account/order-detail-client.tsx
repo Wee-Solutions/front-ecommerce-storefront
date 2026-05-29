@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLocale, useTranslations } from "@/contexts/locale-context";
 import { useCustomerSession } from "@/features/auth/customer-session";
@@ -193,22 +192,11 @@ export function OrderDetailClient({ orderId }: { orderId: string }) {
         <OrderShipmentSection shipment={order.shipment} />
       ) : null}
 
-      <div className="space-y-3">
       <Card className="border-border/60">
         <CardContent className="p-5">
-          <OrderPricingSummary order={order} />
+          <OrderPricingSummary order={order} couponCode={couponCode} />
         </CardContent>
       </Card>
-
-      {couponCode ? (
-        <Badge
-          variant="secondary"
-          className="border-emerald-200/80 bg-emerald-50 font-semibold tracking-wide text-emerald-950 uppercase"
-        >
-          {t.orders.couponUsed}: {couponCode}
-        </Badge>
-      ) : null}
-      </div>
 
       {order.customerNotes?.trim() ? (
         <section className="rounded-xl border border-border/60 bg-muted/20 p-4">
