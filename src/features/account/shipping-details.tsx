@@ -20,11 +20,14 @@ import {
 import type { ShipmentInfo, UpsertShipmentInfoRequest } from "@/types/api/customer";
 import { GatewayRequestError } from "@/types/api/gateway";
 
-type ShippingFormState = UpsertShipmentInfoRequest;
+type ShippingFormState = UpsertShipmentInfoRequest & {
+  /** Display label for the city dropdown; not sent to the API. */
+  cityName: string;
+};
 
 const emptyForm: ShippingFormState = {
   cityId: null,
-  cityDescription: "",
+  cityName: "",
   street: "",
   streetNumber: "",
   apartmentNumber: "",
@@ -41,7 +44,7 @@ function fromShipment(info?: ShipmentInfo): ShippingFormState {
   if (!info) return emptyForm;
   return {
     cityId: info.cityId ?? null,
-    cityDescription: info.cityDescription ?? "",
+    cityName: info.cityName?.trim() ?? "",
     street: info.street ?? "",
     streetNumber: info.streetNumber ?? "",
     apartmentNumber: info.apartmentNumber ?? "",
@@ -165,10 +168,8 @@ export function ShippingDetails() {
     deleteMutation.isPending;
 
   const cityDisplayLabel =
-    form.cityId &&
-    form.cityDescription.trim() &&
-    form.cityDescription.trim() !== form.cityId
-      ? form.cityDescription.trim()
+    form.cityId && form.cityName.trim() && form.cityName.trim() !== form.cityId
+      ? form.cityName.trim()
       : undefined;
 
   const citySeedOption = useMemo(() => {
@@ -216,7 +217,6 @@ export function ShippingDetails() {
     }
     const payload: UpsertShipmentInfoRequest = {
       cityId: form.cityId,
-      cityDescription: form.cityDescription.trim(),
       street: form.street.trim(),
       streetNumber: form.streetNumber.trim(),
       apartmentNumber: form.apartmentNumber.trim(),
@@ -295,7 +295,7 @@ export function ShippingDetails() {
               >
                 <div className="space-y-1 text-sm">
                   <p className="font-medium">
-                    {[record.cityDescription, record.street, record.streetNumber]
+                    {[record.cityName, record.street, record.streetNumber]
                       .filter(Boolean)
                       .join(", ")}
                     {record.isDefault ? ` (${t.account.shippingDefaultTag})` : ""}
@@ -361,7 +361,7 @@ export function ShippingDetails() {
                     setForm((v) => ({
                       ...v,
                       cityId,
-                      cityDescription: item?.name ?? "",
+                      cityName: item?.name ?? "",
                     }))
                   }
                 />

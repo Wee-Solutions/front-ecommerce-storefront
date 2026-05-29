@@ -23,7 +23,7 @@ export type UpdateCustomerPhoneRequest = {
 export type ShipmentInfo = {
   id: string;
   cityId?: string | null;
-  cityDescription: string;
+  cityName: string;
   street: string;
   streetNumber: string;
   apartmentNumber: string;
@@ -43,7 +43,6 @@ export type GetShipmentInfosResponse = {
 
 export type UpsertShipmentInfoRequest = {
   cityId?: string | null;
-  cityDescription: string;
   street: string;
   streetNumber: string;
   apartmentNumber: string;

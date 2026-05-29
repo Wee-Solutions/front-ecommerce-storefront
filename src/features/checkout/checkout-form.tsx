@@ -26,7 +26,7 @@ import type { ShipmentInfo } from "@/types/api/customer";
 import type { StorefrontOrderSubmission } from "./checkout-flow.types";
 
 function shipmentSummaryLine(s: ShipmentInfo): string {
-  const parts = [s.street, s.streetNumber, s.cityDescription, s.zipCode].filter(
+  const parts = [s.street, s.streetNumber, s.cityName, s.zipCode].filter(
     Boolean,
   );
   return parts.join(", ");
