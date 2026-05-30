@@ -66,6 +66,7 @@ export function OrderShipmentSection({
                 <p className="text-muted-foreground">{o.shipmentStatusLabel}</p>
                 <OrderShipmentStatusStepper
                   shipmentStatus={shipment.shipmentStatus}
+                  shippingMethod={shipment.shippingMethod}
                 />
               </div>
             </div>

@@ -35,20 +35,43 @@ export const OrderStatus = {
 /** Mirrors backend `OrderShipmentStatus`. */
 export const OrderShipmentStatus = {
   Pending: 0,
-  InTransit: 1,
-  Delivered: 2,
-  Cancelled: 3,
+  Prepared: 1,
+  ReadyForPickup: 2,
+  OutForDelivery: 3,
+  Delivered: 4,
 } as const;
 
 export type OrderShipmentStatusValue =
   (typeof OrderShipmentStatus)[keyof typeof OrderShipmentStatus];
 
-/** Linear progress steps shown in order shipment UI (excludes cancelled). */
-export const SHIPMENT_PROGRESS_STATUSES = [
+/** Delivery: Pending → Prepared → Out for delivery → Delivered. */
+export const SHIPMENT_PROGRESS_STATUSES_DELIVERY = [
   OrderShipmentStatus.Pending,
-  OrderShipmentStatus.InTransit,
+  OrderShipmentStatus.Prepared,
+  OrderShipmentStatus.OutForDelivery,
   OrderShipmentStatus.Delivered,
 ] as const;
+
+/** Pickup: Pending → Prepared → Ready for pickup → Delivered. */
+export const SHIPMENT_PROGRESS_STATUSES_PICKUP = [
+  OrderShipmentStatus.Pending,
+  OrderShipmentStatus.Prepared,
+  OrderShipmentStatus.ReadyForPickup,
+  OrderShipmentStatus.Delivered,
+] as const;
+
+export type ShipmentProgressStatus =
+  | (typeof SHIPMENT_PROGRESS_STATUSES_DELIVERY)[number]
+  | (typeof SHIPMENT_PROGRESS_STATUSES_PICKUP)[number];
+
+/** Progress steps for the order shipment stepper (depends on shipping method). */
+export function getShipmentProgressStatuses(
+  shippingMethod: number,
+): readonly ShipmentProgressStatus[] {
+  return shippingMethod === OrderShippingMethod.Pickup
+    ? SHIPMENT_PROGRESS_STATUSES_PICKUP
+    : SHIPMENT_PROGRESS_STATUSES_DELIVERY;
+}
 
 export type CustomerOrderLineProperty = {
   propertyName: string;

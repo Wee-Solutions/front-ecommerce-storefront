@@ -275,9 +275,10 @@ export type Dictionary = {
     shippingPickupHint: string;
     shipmentStatusLabel: string;
     shipmentStatusPending: string;
-    shipmentStatusInTransit: string;
+    shipmentStatusPrepared: string;
+    shipmentStatusReadyForPickup: string;
+    shipmentStatusOutForDelivery: string;
     shipmentStatusDelivered: string;
-    shipmentStatusCancelled: string;
     shipmentStatusUnknown: string;
     shippingCostLabel: string;
     deliveryAddress: string;
@@ -620,9 +621,10 @@ const en: Dictionary = {
     shippingPickupHint: "Collect from the store — no delivery address.",
     shipmentStatusLabel: "Shipment status",
     shipmentStatusPending: "Pending",
-    shipmentStatusInTransit: "In transit",
+    shipmentStatusPrepared: "Prepared",
+    shipmentStatusReadyForPickup: "Ready for pickup",
+    shipmentStatusOutForDelivery: "Out for delivery",
     shipmentStatusDelivered: "Delivered",
-    shipmentStatusCancelled: "Cancelled",
     shipmentStatusUnknown: "Unknown status",
     shippingCostLabel: "Shipping cost",
     deliveryAddress: "Delivery address",
@@ -957,9 +959,10 @@ const he: Dictionary = {
     shippingPickupHint: "איסוף מהחנות — ללא כתובת משלוח.",
     shipmentStatusLabel: "סטטוס משלוח",
     shipmentStatusPending: "ממתין",
-    shipmentStatusInTransit: "בדרך",
+    shipmentStatusPrepared: "בהכנה",
+    shipmentStatusReadyForPickup: "מוכן לאיסוף",
+    shipmentStatusOutForDelivery: "בדרך אליך",
     shipmentStatusDelivered: "נמסר",
-    shipmentStatusCancelled: "בוטל",
     shipmentStatusUnknown: "סטטוס לא ידוע",
     shippingCostLabel: "עלות משלוח",
     deliveryAddress: "כתובת משלוח",
@@ -1294,9 +1297,10 @@ const ar: Dictionary = {
     shippingPickupHint: "الاستلام من المتجر — بدون عنوان توصيل.",
     shipmentStatusLabel: "حالة الشحن",
     shipmentStatusPending: "قيد الانتظار",
-    shipmentStatusInTransit: "قيد النقل",
+    shipmentStatusPrepared: "قيد التحضير",
+    shipmentStatusReadyForPickup: "جاهز للاستلام",
+    shipmentStatusOutForDelivery: "في الطريق",
     shipmentStatusDelivered: "تم التسليم",
-    shipmentStatusCancelled: "ملغي",
     shipmentStatusUnknown: "حالة غير معروفة",
     shippingCostLabel: "تكلفة الشحن",
     deliveryAddress: "عنوان التوصيل",
