@@ -11,7 +11,7 @@ import { getServerStoreContext } from "@/lib/tenant/server-store";
 import { getCategoryTree } from "@/services/categories.service";
 import { getStoreConfiguration } from "@/services/configuration.service";
 import type { StoreConfiguration } from "@/types/api/configuration";
-import { themeToCssVars, themes } from "@/tenants/registry";
+import { themeToCssVars, themes } from "@/theme";
 
 export async function generateMetadata(): Promise<Metadata> {
   const ctx = await getServerStoreContext();
