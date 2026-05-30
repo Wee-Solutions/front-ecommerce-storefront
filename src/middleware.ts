@@ -19,6 +19,10 @@ function resolveRequestLocale(request: NextRequest): Locale {
 }
 
 export function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname === "/favicon.ico") {
+    return NextResponse.redirect(new URL("/icon", request.url));
+  }
+
   const locale = resolveRequestLocale(request);
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-sf-locale", locale);
@@ -66,6 +70,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/favicon.ico",
+    "/((?!_next/static|_next/image|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
