@@ -1,9 +1,6 @@
 /**
- * Locale-specific typography.
+ * Locale font CSS variables (consumed by Tailwind `@theme` and `typography.css`).
  * Font files are registered in `src/theme/fonts.ts`.
- *
- * Overrides `--font-ui` / `--font-sans` / `--font-heading` so Tailwind utilities
- * (`font-sans`, `font-heading`) use the correct family per language.
  */
 
 html[lang="ar"] {
@@ -11,6 +8,7 @@ html[lang="ar"] {
   --font-ui: var(--font-arabic);
   --font-display: var(--font-arabic);
   --font-heading: var(--font-arabic);
+  --font-mono: var(--font-arabic);
 }
 
 html[lang="he"] {
@@ -18,15 +16,10 @@ html[lang="he"] {
   --font-ui: var(--font-hebrew);
   --font-display: var(--font-hebrew);
   --font-heading: var(--font-hebrew);
+  --font-mono: var(--font-hebrew);
 }
 
 html[lang="en"] {
   --font-sans: var(--font-ui);
   --font-heading: var(--font-display);
-}
-
-/* Headings that use `font-heading` (Cormorant in English, Tajawal in Arabic). */
-html[lang="ar"] .font-heading,
-html[lang="he"] .font-heading {
-  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
 }

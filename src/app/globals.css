@@ -3,6 +3,7 @@
 @import "shadcn/tailwind.css";
 @import "../theme/default.css";
 @import "../theme/locale.css";
+@import "../theme/typography.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -10,8 +11,8 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-ui);
-  /* Headings follow the active UI font; English overrides to display in locale.css */
   --font-heading: var(--font-ui);
+  --font-mono: var(--font-ui);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -320,9 +321,30 @@ body {
    * in most cases vs `hidden`.
    */
   html {
-    @apply overflow-x-clip font-sans;
+    @apply overflow-x-clip;
   }
   body {
     @apply overflow-x-clip bg-background text-foreground;
   }
+}
+
+/*
+ * Locale font overrides — must stay after Tailwind layers (unlayered).
+ * Source: src/theme/typography.css (keep in sync).
+ */
+html[lang="ar"] {
+  font-family: var(--font-arabic), ui-sans-serif, system-ui, sans-serif;
+}
+
+html[lang="he"] {
+  font-family: var(--font-hebrew), ui-sans-serif, system-ui, sans-serif;
+}
+
+html[lang="en"] {
+  font-family: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
+}
+
+html[lang="ar"] :where(body, body *) :is(.font-sans, .font-heading, .font-mono),
+html[lang="he"] :where(body, body *) :is(.font-sans, .font-heading, .font-mono) {
+  font-family: inherit;
 }

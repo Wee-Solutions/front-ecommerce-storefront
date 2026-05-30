@@ -4,12 +4,6 @@ import { iconsFromStoreConfig } from "@/lib/store-metadata";
 import { getServerLocale } from "@/lib/i18n/server-locale";
 import { getServerStoreContext } from "@/lib/tenant/server-store";
 import { getStoreConfiguration } from "@/services/configuration.service";
-import {
-  Cormorant_Garamond,
-  Cairo,
-  Heebo,
-  Inter,
-} from "next/font/google";
 import { isLocale, isRtlLocale } from "@/lib/i18n/locale-config";
 import { localeFontClassName, rootFontClassName } from "@/theme/fonts";
 import "./globals.css";
@@ -55,12 +49,12 @@ export default async function RootLayout({
       lang={locale}
       dir={dir}
       className={cn(
-        "h-full scroll-smooth font-sans",
+        "h-full scroll-smooth",
         rootFontClassName(),
         localeFontClassName(locale),
       )}
     >
-      <body className="min-h-full bg-background font-sans text-foreground antialiased selection:bg-primary/20 selection:text-foreground">
+      <body className="min-h-full bg-background text-foreground antialiased selection:bg-primary/20 selection:text-foreground">
         {children}
       </body>
     </html>
