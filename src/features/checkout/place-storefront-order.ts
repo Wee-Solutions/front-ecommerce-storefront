@@ -45,6 +45,7 @@ export async function placeStorefrontOrder({
     if (!isOnlineCardCheckout(submission.paymentMethod)) {
       const success: PlaceOrderSuccess = {
         nextStep: "confirmation",
+        orderId: created.orderId,
         orderNumber: created.orderNumber,
         paymentCapturedOnline: false,
       };
@@ -63,6 +64,7 @@ export async function placeStorefrontOrder({
       if (!paymentFrameUrl) {
         const success: PlaceOrderSuccess = {
           nextStep: "confirmation",
+          orderId: created.orderId,
           orderNumber: created.orderNumber,
           paymentCapturedOnline: false,
           userMessage: cardUnavailableMessage,
@@ -80,6 +82,7 @@ export async function placeStorefrontOrder({
     } catch {
       const success: PlaceOrderSuccess = {
         nextStep: "confirmation",
+        orderId: created.orderId,
         orderNumber: created.orderNumber,
         paymentCapturedOnline: false,
         userMessage: cardUnavailableMessage,

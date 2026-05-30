@@ -13,6 +13,11 @@ import {
 } from "@/services/carts.service";
 import type { AddCartLineInput, CartLine } from "./cart-types";
 import { mapCartItemToLine } from "./cart-types";
+import {
+  trackAddProductToCart,
+  trackRemoveFromCart,
+  trackUpdateCartItem,
+} from "@/features/events/track-events";
 import { cartQueryKey } from "./cart-query";
 import { useCartUiStore } from "./cart-ui-store";
 
@@ -51,6 +56,8 @@ export function useCart() {
     queryFn: () => getCart(gateway),
   });
 
+  const cartId = cartQuery.data?.cartId ?? null;
+
   const lines = useMemo<CartLine[]>(
     () => (cartQuery.data?.items ?? []).map(mapCartItemToLine),
     [cartQuery.data?.items],
@@ -67,7 +74,13 @@ export function useCart() {
   const addMutation = useMutation({
     mutationFn: (line: AddCartLineInput) =>
       addCartItem({ line: toCartLineRequest(line) }, gateway),
-    onSuccess: async () => {
+    onSuccess: async (_data, line) => {
+      trackAddProductToCart({
+        productId: line.productId,
+        quantity: line.quantity,
+        cartId,
+        propertyValueIds: line.propertyValueIds,
+      });
       await invalidate();
       open();
     },
@@ -85,12 +98,31 @@ export function useCart() {
         { cartItemId, line: toCartLineRequest(line) },
         gateway,
       ),
-    onSuccess: invalidate,
+    onSuccess: (_data, { cartItemId, line }) => {
+      trackUpdateCartItem({
+        cartItemId,
+        quantity: line.quantity,
+        cartId,
+        propertyValueIds: line.propertyValueIds,
+      });
+      void invalidate();
+    },
   });
 
   const removeMutation = useMutation({
     mutationFn: (cartItemId: string) => removeCartItem(cartItemId, gateway),
-    onSuccess: invalidate,
+    onSuccess: (_data, cartItemId) => {
+      const existing = lines.find((l) => l.id === cartItemId);
+      if (existing) {
+        trackRemoveFromCart({
+          productId: existing.productId,
+          cartId,
+          cartItemId,
+          propertyValueIds: existing.propertyValueIds,
+        });
+      }
+      void invalidate();
+    },
   });
 
   const clearMutation = useMutation({
@@ -142,6 +174,7 @@ export function useCart() {
 
   return {
     lines,
+    cartId,
     isOpen,
     open,
     close,

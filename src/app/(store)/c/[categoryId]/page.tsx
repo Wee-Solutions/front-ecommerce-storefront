@@ -8,6 +8,7 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getServerLocale } from "@/lib/i18n/server-locale";
 import { isGuid } from "@/lib/guards";
 import { getServerStoreContext } from "@/lib/tenant/server-store";
+import { TrackCategoryView } from "@/features/events/page-view-trackers";
 import { getCategoryTree } from "@/services/categories.service";
 import { searchProducts } from "@/services/products.service";
 
@@ -68,6 +69,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
 
   return (
     <div>
+      {isGuid(categoryId) ? <TrackCategoryView categoryId={categoryId} /> : null}
       <nav
         className="mb-8 flex flex-wrap items-center gap-x-2 gap-y-2 text-xs font-medium text-muted-foreground"
         aria-label="Breadcrumb"

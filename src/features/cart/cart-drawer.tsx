@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+import { trackViewCart } from "@/features/events/track-events";
 import { useLocale, useTranslations } from "@/contexts/locale-context";
 import { formatMoney } from "@/lib/format-currency";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -41,10 +42,18 @@ export function CartDrawer() {
     isOpen: open,
     close,
     lines,
+    cartId,
     updateQty,
     removeLine,
     isMutating,
   } = useCart();
+
+  const viewCartTracked = useRef(false);
+  useEffect(() => {
+    if (!open || viewCartTracked.current || lines.length === 0) return;
+    viewCartTracked.current = true;
+    trackViewCart(cartId);
+  }, [cartId, lines.length, open]);
 
   const subtotal = lines.reduce((sum, l) => sum + l.unitPrice * l.quantity, 0);
 

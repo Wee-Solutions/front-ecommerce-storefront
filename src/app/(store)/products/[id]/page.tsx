@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { RelatedProducts } from "@/components/catalog/related-products";
 import { ProductDetailCommerce } from "@/features/catalog/product-detail-commerce";
+import { TrackProductView } from "@/features/events/page-view-trackers";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getServerLocale } from "@/lib/i18n/server-locale";
 import { isGuid } from "@/lib/guards";
@@ -63,6 +64,7 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <div>
+      <TrackProductView productId={product.id} />
       <nav
         className="mb-8 flex flex-wrap items-center gap-2 text-xs font-medium text-muted-foreground"
         aria-label="Breadcrumb"
