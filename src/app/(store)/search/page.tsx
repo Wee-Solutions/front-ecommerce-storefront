@@ -4,6 +4,7 @@ import { ProductCard } from "@/components/product/product-card";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getServerLocale } from "@/lib/i18n/server-locale";
 import { getServerStoreContext } from "@/lib/tenant/server-store";
+import { TrackSearchView } from "@/features/events/page-view-trackers";
 import { searchProducts } from "@/services/products.service";
 import type { Metadata } from "next";
 
@@ -47,6 +48,7 @@ export default async function SearchPage({ searchParams }: Props) {
 
   return (
     <div>
+      {term ? <TrackSearchView searchTerm={term} /> : null}
       <nav className="mb-6 text-sm text-[var(--sf-color-muted)]">
         <Link
           href="/"

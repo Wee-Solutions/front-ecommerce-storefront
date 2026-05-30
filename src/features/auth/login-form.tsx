@@ -17,6 +17,7 @@ import { DispatchMethod, VerificationType } from "@/types/api/auth";
 import { GatewayRequestError } from "@/types/api/gateway";
 import { cartQueryKey, invalidateCartQueries } from "@/features/cart/cart-query";
 import { getCart } from "@/services/carts.service";
+import { trackLogin } from "@/features/events/track-events";
 import { useCustomerSession } from "./customer-session";
 
 export function LoginForm() {
@@ -94,6 +95,7 @@ export function LoginForm() {
       );
     },
     onSuccess: async (data) => {
+      trackLogin();
       setSession({
         accessToken: data.accessToken,
         customerId: data.customerId,

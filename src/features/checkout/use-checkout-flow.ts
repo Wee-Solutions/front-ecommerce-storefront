@@ -7,6 +7,10 @@ import type { OrderGatewayContext } from "@/types/api/order";
 import type { CheckoutStep, StorefrontOrderSubmission } from "./checkout-flow.types";
 import { isPlaceOrderFailure } from "./checkout-flow.types";
 import { authenticatedOrderContext } from "./order-gateway-context";
+import {
+  trackCheckout,
+  trackViewOrderConfirmation,
+} from "@/features/events/track-events";
 import { placeStorefrontOrder } from "./place-storefront-order";
 
 function interpolateOrderNumber(template: string, orderNumber: number): string {
@@ -66,9 +70,11 @@ export function useCheckoutFlow({ locale, labels, clearCart }: Params) {
   const onEmbeddedPaymentSucceeded = useCallback(() => {
     setStep((current) => {
       if (current.name !== "embedded_payment") return current;
+      trackViewOrderConfirmation(current.orderId);
       clearCart();
       return {
         name: "confirmation",
+        orderId: current.orderId,
         orderNumber: current.orderNumber,
         paymentCapturedOnline: true,
       };
@@ -100,6 +106,10 @@ export function useCheckoutFlow({ locale, labels, clearCart }: Params) {
         }
 
         if (result.nextStep === "embedded_payment") {
+          trackCheckout({
+            orderId: result.orderId,
+            paymentMethod: submission.paymentMethod,
+          });
           setStep({
             name: "embedded_payment",
             orderId: result.orderId,
@@ -109,9 +119,15 @@ export function useCheckoutFlow({ locale, labels, clearCart }: Params) {
           return;
         }
 
+        trackCheckout({
+          orderId: result.orderId,
+          paymentMethod: submission.paymentMethod,
+        });
+        trackViewOrderConfirmation(result.orderId);
         clearCart();
         setStep({
           name: "confirmation",
+          orderId: result.orderId,
           orderNumber: result.orderNumber,
           paymentCapturedOnline: result.paymentCapturedOnline,
         });

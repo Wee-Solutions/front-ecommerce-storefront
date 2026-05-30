@@ -6,6 +6,7 @@ import { UnknownStore } from "@/components/layout/unknown-store";
 import { LocaleProvider } from "@/contexts/locale-context";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getServerLocale } from "@/lib/i18n/server-locale";
+import { iconsFromStoreConfig } from "@/lib/store-metadata";
 import { getServerStoreContext } from "@/lib/tenant/server-store";
 import { getCategoryTree } from "@/services/categories.service";
 import { getStoreConfiguration } from "@/services/configuration.service";
@@ -20,17 +21,20 @@ export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
   const theme = themes[ctx.themeId] ?? themes.store1;
   let storeName = theme.name;
+  let config: StoreConfiguration | null = null;
   try {
-    const config = await getStoreConfiguration(locale);
+    config = await getStoreConfiguration(locale);
     if (config.name?.trim()) {
       storeName = config.name.trim();
     }
   } catch {
     // Fallback to local theme registry when config endpoint fails.
   }
+  const icons = iconsFromStoreConfig(config);
   return {
     title: { default: storeName, template: `%s · ${storeName}` },
     description: "Multi-tenant commerce storefront",
+    ...(icons ? { icons } : {}),
   };
 }
 
@@ -52,8 +56,9 @@ export default async function StoreLayout({
   const theme = themes[ctx.themeId] ?? themes.store1;
   let storeConfig: StoreConfiguration | null = null;
   let storeName = theme.name;
-  let categories: Awaited<ReturnType<typeof getCategoryTree>>["categoriesTree"] =
-    [];
+  let categories: Awaited<
+    ReturnType<typeof getCategoryTree>
+  >["categoriesTree"] = [];
 
   try {
     storeConfig = await getStoreConfiguration(locale);
@@ -80,14 +85,14 @@ export default async function StoreLayout({
           className="sf-boutique-canvas sf-grain flex min-h-screen w-full min-w-0 flex-col overflow-x-clip bg-background text-foreground"
         >
           <div className="relative z-1 flex min-h-screen w-full min-w-0 flex-1 flex-col">
-          <StoreShell
-            storeName={storeName}
-            storeConfig={storeConfig}
-            categories={categories}
-            currentLocale={locale}
-          >
-            {children}
-          </StoreShell>
+            <StoreShell
+              storeName={storeName}
+              storeConfig={storeConfig}
+              categories={categories}
+              currentLocale={locale}
+            >
+              {children}
+            </StoreShell>
           </div>
         </div>
       </LocaleProvider>

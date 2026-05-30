@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useSyncExternalStore } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import {
   AtSign,
   ChevronDown,
@@ -38,6 +38,7 @@ import {
   getCategoryIdFromPathname,
   isCategoryBranchActive,
 } from "@/lib/category-tree";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { CartIconButton } from "./cart-icon-button";
 import { HeaderCategoryNav } from "./header-category-nav";
 import { MobileCategorySubtree } from "./mobile-category-subtree";
@@ -61,6 +62,25 @@ function toExternalHref(raw: string) {
   if (!value) return "";
   if (value.startsWith("http://") || value.startsWith("https://")) return value;
   return `https://${value}`;
+}
+
+function toWhatsAppHref(raw: string) {
+  const value = raw.trim();
+  if (!value) return "";
+  const lower = value.toLowerCase();
+  if (lower.includes("wa.me/") || lower.includes("whatsapp.com")) {
+    return toExternalHref(value);
+  }
+  const digits = value.replace(/\D/g, "");
+  if (!digits) return "";
+  return `https://wa.me/${digits}`;
+}
+
+function toSocialHref(type: VendorSocialMediaType, raw: string) {
+  if (type === VendorSocialMediaType.WhatsApp) {
+    return toWhatsAppHref(raw);
+  }
+  return toExternalHref(raw);
 }
 
 function resolveSocialMediaType(
@@ -102,7 +122,7 @@ function iconForSocialType(type: VendorSocialMediaType) {
     case VendorSocialMediaType.Telegram:
       return Send;
     case VendorSocialMediaType.WhatsApp:
-      return MessageCircle;
+      return WhatsAppIcon;
     default:
       return LinkIcon;
   }
@@ -164,6 +184,29 @@ export function StoreShell({
     );
   const supportEmail = storeConfig?.supportEmail?.trim() || null;
   const supportPhoneNumber = storeConfig?.supportPhoneNumber?.trim() || null;
+  const footerSocialItems = useMemo(() => {
+    const hasWhatsAppLink = socialLinks.some(
+      (item) => item.typeValue === VendorSocialMediaType.WhatsApp,
+    );
+    const fromPhone =
+      supportPhoneNumber && !hasWhatsAppLink
+        ? [
+            {
+              id: "support-whatsapp",
+              typeValue: VendorSocialMediaType.WhatsApp,
+              link: supportPhoneNumber,
+            },
+          ]
+        : [];
+    return [
+      ...socialLinks.map((item) => ({
+        id: `${item.type}-${item.link}`,
+        typeValue: item.typeValue,
+        link: item.link,
+      })),
+      ...fromPhone,
+    ];
+  }, [socialLinks, supportPhoneNumber]);
   const accessToken = useCustomerSession((s) => s.accessToken);
   const customerId = useCustomerSession((s) => s.customerId);
   const isSignedIn = Boolean(accessToken && customerId);
@@ -488,15 +531,16 @@ export function StoreShell({
                 </a>
               ) : null}
             </div>
-            {socialLinks.length > 0 ? (
+            {footerSocialItems.length > 0 ? (
               <div className="mt-4 flex flex-wrap items-center gap-2">
-                {socialLinks.map((item) => {
-                  const href = toExternalHref(item.link);
+                {footerSocialItems.map((item) => {
+                  const href = toSocialHref(item.typeValue, item.link);
+                  if (!href) return null;
                   const Icon = iconForSocialType(item.typeValue);
                   const typeName = socialMediaTypeName(item.typeValue);
                   return (
                     <a
-                      key={`${item.type}-${item.link}`}
+                      key={item.id}
                       href={href}
                       target="_blank"
                       rel="noreferrer noopener"

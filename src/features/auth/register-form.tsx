@@ -19,6 +19,7 @@ import { GatewayRequestError } from "@/types/api/gateway";
 import { cn } from "@/lib/utils";
 import { cartQueryKey, invalidateCartQueries } from "@/features/cart/cart-query";
 import { getCart } from "@/services/carts.service";
+import { trackRegister } from "@/features/events/track-events";
 import { useCustomerSession } from "./customer-session";
 
 const textFieldShell =
@@ -124,6 +125,7 @@ export function RegisterForm() {
       );
     },
     onSuccess: async (data) => {
+      trackRegister();
       setSession({
         accessToken: data.accessToken,
         customerId: data.customerId,

@@ -14,6 +14,7 @@ export type CheckoutStep =
     }
   | {
       name: "confirmation";
+      orderId: string;
       orderNumber: number;
       paymentCapturedOnline: boolean;
     };
@@ -37,6 +38,7 @@ export type PlaceOrderSuccess =
     }
   | {
       nextStep: "confirmation";
+      orderId: string;
       orderNumber: number;
       paymentCapturedOnline: boolean;
       userMessage?: string;

@@ -1,14 +1,24 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useRef } from "react";
 import { useLocale, useTranslations } from "@/contexts/locale-context";
+import { trackViewCart } from "@/features/events/track-events";
 import { formatMoney } from "@/lib/format-currency";
 import { useCart } from "./use-cart";
 
 export function CartView() {
   const t = useTranslations();
   const locale = useLocale();
-  const { lines, updateQty, removeLine, isLoading, isMutating } = useCart();
+  const { lines, cartId, updateQty, removeLine, isLoading, isMutating } =
+    useCart();
+
+  const viewCartTracked = useRef(false);
+  useEffect(() => {
+    if (viewCartTracked.current || isLoading || lines.length === 0) return;
+    viewCartTracked.current = true;
+    trackViewCart(cartId);
+  }, [cartId, isLoading, lines.length]);
 
   const subtotal = lines.reduce((sum, l) => sum + l.unitPrice * l.quantity, 0);
 

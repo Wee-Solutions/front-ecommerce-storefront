@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Banknote, Building2, CreditCard, Package, Truck } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "@/contexts/locale-context";
 import { useCustomerSession } from "@/features/auth/customer-session";
 import { BankTransferPanel } from "@/features/checkout/bank-transfer-panel";
@@ -13,6 +13,10 @@ import { CheckoutPricingSummary } from "@/features/checkout/checkout-pricing-sum
 import { useCheckoutFlow } from "@/features/checkout/use-checkout-flow";
 import { useCheckoutPricing } from "@/features/checkout/use-checkout-pricing";
 import { useCart } from "@/features/cart/use-cart";
+import {
+  trackApplyCoupon,
+  trackBeginCheckout,
+} from "@/features/events/track-events";
 import { useStoreConfiguration } from "@/features/store-configuration/store-configuration-store";
 import { formatMoney } from "@/lib/format-currency";
 import { getCustomerShipmentInfos } from "@/services/customers.service";
@@ -46,7 +50,7 @@ function PaymentMethodIcon({ method }: { method: PaymentMethodValue }) {
 export function CheckoutForm() {
   const t = useTranslations();
   const locale = useLocale();
-  const { lines, clear: clearCart } = useCart();
+  const { lines, cartId, clear: clearCart } = useCart();
   const accessToken = useCustomerSession((s) => s.accessToken);
   const storeConfig = useStoreConfiguration((s) => s.config);
 
@@ -84,6 +88,13 @@ export function CheckoutForm() {
     const first = supportedPaymentMethods[0];
     if (first !== undefined) setPaymentMethod(first);
   }, [supportedPaymentMethods]);
+
+  const beginCheckoutTracked = useRef(false);
+  useEffect(() => {
+    if (beginCheckoutTracked.current || lines.length === 0) return;
+    beginCheckoutTracked.current = true;
+    trackBeginCheckout(cartId);
+  }, [cartId, lines.length]);
 
   const checkout = useCheckoutFlow({
     locale,
@@ -151,13 +162,14 @@ export function CheckoutForm() {
       }
       setAppliedCouponCode(code);
       setCouponInput(code);
+      trackApplyCoupon(code, cartId);
     } catch {
       setAppliedCouponCode(null);
       setCouponError(t.checkout.couponInvalid);
     } finally {
       setCouponBusy(false);
     }
-  }, [accessToken, couponInput, refreshPricing, t.checkout.couponInvalid]);
+  }, [accessToken, cartId, couponInput, refreshPricing, t.checkout.couponInvalid]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
