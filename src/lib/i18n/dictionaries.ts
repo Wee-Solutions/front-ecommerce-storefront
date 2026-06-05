@@ -172,6 +172,10 @@ export type Dictionary = {
     bankTransferReferenceHint: string;
     bankCopy: string;
     bankCopied: string;
+    branch: string;
+    selectBranch: string;
+    branchRequired: string;
+    ordersUnavailable: string;
   };
   account: {
     title: string;
@@ -518,6 +522,10 @@ const en: Dictionary = {
       "Important: include your name and order number in the transfer reference so we can match your payment.",
     bankCopy: "Copy",
     bankCopied: "Copied",
+    branch: "Branch",
+    selectBranch: "Select a branch",
+    branchRequired: "Please select a branch before placing your order.",
+    ordersUnavailable: "This store can't accept orders right now.",
   },
   account: {
     title: "Account",
@@ -856,6 +864,10 @@ const he: Dictionary = {
       "חשוב: ציינו בשדה ההפניה את השם ומספר ההזמנה כדי שנוכל לזהות את התשלום.",
     bankCopy: "העתקה",
     bankCopied: "הועתק",
+    branch: "סניף",
+    selectBranch: "בחרו סניף",
+    branchRequired: "יש לבחור סניף לפני ביצוע ההזמנה.",
+    ordersUnavailable: "החנות אינה מקבלת הזמנות כרגע.",
   },
   account: {
     title: "חשבון",
@@ -1194,6 +1206,10 @@ const ar: Dictionary = {
       "مهم: اذكر اسمك ورقم الطلب في بيانات التحويل ليتم ربط الدفع.",
     bankCopy: "نسخ",
     bankCopied: "تم النسخ",
+    branch: "فرع",
+    selectBranch: "اختر فرعاً",
+    branchRequired: "يرجى اختيار فرع قبل تأكيد الطلب.",
+    ordersUnavailable: "المتجر لا يقبل الطلبات حالياً.",
   },
   account: {
     title: "الحساب",

@@ -27,6 +27,7 @@ export type StorefrontOrderSubmission = {
   shippingAddressId: string | null;
   customerNotes: string | null;
   couponCode: string | null;
+  tenantId: string | null;
 };
 
 export type PlaceOrderSuccess =

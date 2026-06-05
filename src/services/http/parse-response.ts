@@ -1,5 +1,6 @@
 import type { GatewayResponse } from "@/types/api/gateway";
 import { GatewayRequestError } from "@/types/api/gateway";
+import { readGatewayErrorMessage } from "./gateway-error-message";
 
 function isGatewayEnvelope(
   json: unknown
@@ -7,7 +8,11 @@ function isGatewayEnvelope(
   return (
     json !== null &&
     typeof json === "object" &&
-    ("data" in json || "errorMessage" in json || "errorCode" in json)
+    ("data" in json ||
+      "errorMessage" in json ||
+      "errorCode" in json ||
+      "ErrorMessage" in json ||
+      "ErrorCode" in json)
   );
 }
 
@@ -16,9 +21,9 @@ function isGatewayEnvelope(
  */
 export function parseClientJson<T>(json: unknown): T {
   if (isGatewayEnvelope(json)) {
-    const err = json.errorMessage ?? json.errorCode;
+    const err = readGatewayErrorMessage(json);
     if (err) {
-      throw new GatewayRequestError(String(err), 400, json);
+      throw new GatewayRequestError(err, 400, json);
     }
     if ("data" in json && json.data !== undefined) {
       return json.data as T;

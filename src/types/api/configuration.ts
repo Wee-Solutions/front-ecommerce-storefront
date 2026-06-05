@@ -24,6 +24,11 @@ export type SelectionListItem = {
   name: string;
 };
 
+export type StoreTenant = {
+  id: string;
+  name: string;
+};
+
 export type GetCitySelectionListRequest = {
   searchTerm?: string;
   take?: number;
@@ -55,4 +60,5 @@ export type StoreConfiguration = {
   /** Enabled payment methods for this vendor (e.g. 1 cash, 2 card, 3 bank). */
   supportedPaymentMethods: number[];
   bankInfo?: StoreBankInfo | null;
+  tenants: StoreTenant[];
 };

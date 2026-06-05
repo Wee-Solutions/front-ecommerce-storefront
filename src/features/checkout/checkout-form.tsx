@@ -4,6 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { Banknote, Building2, CreditCard, Package, Truck } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useLocale, useTranslations } from "@/contexts/locale-context";
 import { useCustomerSession } from "@/features/auth/customer-session";
 import { BankTransferPanel } from "@/features/checkout/bank-transfer-panel";
@@ -21,6 +28,7 @@ import { useStoreConfiguration } from "@/features/store-configuration/store-conf
 import { formatMoney } from "@/lib/format-currency";
 import { getCustomerShipmentInfos } from "@/services/customers.service";
 import { authenticatedOrderContext } from "@/features/checkout/order-gateway-context";
+import { getGatewayRequestErrorMessage } from "@/services/http/gateway-error-message";
 import {
   OrderShippingMethod,
   PaymentMethod,
@@ -28,6 +36,7 @@ import {
 } from "@/types/api/order";
 import type { ShipmentInfo } from "@/types/api/customer";
 import type { StorefrontOrderSubmission } from "./checkout-flow.types";
+import { getTenantOptionsFromConfig } from "./tenant-options";
 
 function shipmentSummaryLine(s: ShipmentInfo): string {
   const parts = [s.street, s.streetNumber, s.cityName, s.zipCode].filter(
@@ -83,10 +92,40 @@ export function CheckoutForm() {
   );
   const [couponError, setCouponError] = useState<string | null>(null);
   const [couponBusy, setCouponBusy] = useState(false);
+  const tenants = useMemo(
+    () => getTenantOptionsFromConfig(storeConfig),
+    [storeConfig],
+  );
+  const showBranchDropdown = tenants.length > 1;
+  const ordersUnavailable =
+    storeConfig !== null && tenants.length === 0;
+  const [selectedTenantId, setSelectedTenantId] = useState<string | null>(
+    () => tenants[0]?.id ?? null,
+  );
+  const selectedTenant = useMemo(
+    () => tenants.find((tenant) => tenant.id === selectedTenantId) ?? null,
+    [tenants, selectedTenantId],
+  );
+
+  useEffect(() => {
+    if (tenants.length === 0) {
+      setSelectedTenantId(null);
+      return;
+    }
+    setSelectedTenantId((current) => {
+      if (current && tenants.some((tenant) => tenant.id === current)) {
+        return current;
+      }
+      return tenants[0].id;
+    });
+  }, [tenants]);
 
   useEffect(() => {
     const first = supportedPaymentMethods[0];
-    if (first !== undefined) setPaymentMethod(first);
+    if (first === undefined) return;
+    setPaymentMethod((current) =>
+      supportedPaymentMethods.includes(current) ? current : first,
+    );
   }, [supportedPaymentMethods]);
 
   const beginCheckoutTracked = useRef(false);
@@ -138,6 +177,12 @@ export function CheckoutForm() {
   });
 
   const pricing = pricingQuery.data;
+  const pricingErrorMessage = pricingQuery.isError
+    ? getGatewayRequestErrorMessage(
+        pricingQuery.error,
+        t.checkout.pricingLoadError,
+      )
+    : null;
   const isPricingBusy =
     !shippingReady ||
     pricingQuery.isLoading ||
@@ -163,9 +208,11 @@ export function CheckoutForm() {
       setAppliedCouponCode(code);
       setCouponInput(code);
       trackApplyCoupon(code, cartId);
-    } catch {
+    } catch (error) {
       setAppliedCouponCode(null);
-      setCouponError(t.checkout.couponInvalid);
+      setCouponError(
+        getGatewayRequestErrorMessage(error, t.checkout.couponInvalid),
+      );
     } finally {
       setCouponBusy(false);
     }
@@ -174,8 +221,13 @@ export function CheckoutForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!accessToken) return;
+    if (ordersUnavailable) return;
     if (shippingMethod === OrderShippingMethod.Delivery && !shippingAddressId) {
       checkout.setErrorMessage(t.checkout.noSavedAddresses);
+      return;
+    }
+    if (showBranchDropdown && !selectedTenantId) {
+      checkout.setErrorMessage(t.checkout.branchRequired);
       return;
     }
 
@@ -188,6 +240,7 @@ export function CheckoutForm() {
           : null,
       customerNotes: orderNotes.trim() || null,
       couponCode: appliedCouponCode,
+      tenantId: selectedTenantId,
     };
 
     void checkout.submitDetailsStep(submission, lines);
@@ -271,13 +324,32 @@ export function CheckoutForm() {
 
   return (
     <form className="mt-10 space-y-8" onSubmit={handleSubmit}>
-      {checkout.errorMessage ? (
-        <p
-          className="rounded-[var(--sf-radius)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
-          role="alert"
-        >
-          {checkout.errorMessage}
-        </p>
+      {showBranchDropdown ? (
+        <section className="space-y-3 rounded-[var(--sf-radius)] border border-[var(--sf-color-border)] bg-white p-5 shadow-[var(--sf-shadow-sm)]">
+          <h2 className="text-sm font-semibold text-[var(--sf-color-primary)]">
+            {t.checkout.branch}
+          </h2>
+          <Select
+            value={selectedTenantId ?? undefined}
+            onValueChange={(value) => {
+              setSelectedTenantId(value || null);
+              checkout.setErrorMessage(null);
+            }}
+          >
+            <SelectTrigger className="h-11 w-full rounded-xl border-[var(--sf-color-border)] bg-white text-sm">
+              <SelectValue placeholder={t.checkout.selectBranch}>
+                {selectedTenant?.name}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {tenants.map((tenant) => (
+                <SelectItem key={tenant.id} value={tenant.id}>
+                  {tenant.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </section>
       ) : null}
 
       <section className="space-y-3">
@@ -473,18 +545,36 @@ export function CheckoutForm() {
         <CheckoutPricingSummary
           pricing={pricing}
           isLoading={isPricingBusy}
-          hasError={pricingQuery.isError}
+          errorMessage={pricingErrorMessage}
         />
       </div>
+
+      {ordersUnavailable ? (
+        <p
+          className="rounded-[var(--sf-radius)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+          role="alert"
+        >
+          {t.checkout.ordersUnavailable}
+        </p>
+      ) : checkout.errorMessage ? (
+        <p
+          className="rounded-[var(--sf-radius)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+          role="alert"
+        >
+          {checkout.errorMessage}
+        </p>
+      ) : null}
 
       <button
         type="submit"
         disabled={
           checkout.isSubmitting ||
           lines.length === 0 ||
+          ordersUnavailable ||
           isPricingBusy ||
           pricingQuery.isError ||
           !pricing ||
+          (showBranchDropdown && !selectedTenantId) ||
           (shippingMethod === OrderShippingMethod.Delivery &&
             (!shippingAddressId || activeShipments.length === 0))
         }
