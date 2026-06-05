@@ -233,8 +233,8 @@ export function StoreShell({
   );
   return (
     <>
-      <div className="sf-top-marquee border-b border-border/60 py-2 text-center text-[11px] font-semibold tracking-[0.16em] text-foreground/85 uppercase">
-        {marqueeTexts.length > 0 ? (
+      {marqueeTexts.length > 0 ? (
+        <div className="sf-top-marquee border-b border-border/60 py-2 text-center text-[11px] font-semibold tracking-[0.16em] text-foreground/85 uppercase">
           <div className="sf-marquee mx-auto max-w-7xl px-4 leading-relaxed">
             <div className="sf-marquee-track">
               {[0, 1].map((dup) => (
@@ -254,8 +254,8 @@ export function StoreShell({
               ))}
             </div>
           </div>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
       <div className="sticky top-0 z-40 w-full min-w-0">
         {storeConfig && !acceptingOrders ? (
           <OrdersClosedBanner message={ordersClosedMessage} />
