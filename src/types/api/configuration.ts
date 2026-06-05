@@ -61,4 +61,8 @@ export type StoreConfiguration = {
   supportedPaymentMethods: number[];
   bankInfo?: StoreBankInfo | null;
   tenants: StoreTenant[];
+  /** When false, checkout is disabled and a store-wide notice is shown. */
+  acceptOrders?: boolean;
+  /** Optional message shown when `acceptOrders` is false. */
+  ordersClosedMessage?: string | null;
 };

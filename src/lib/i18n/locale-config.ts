@@ -4,6 +4,17 @@ export type Locale = (typeof LOCALES)[number];
 
 export const RTL_LOCALES: Locale[] = ["he", "ar"];
 
+/** Native display names for supported storefront locales. */
+export const LOCALE_DISPLAY_NAMES: Record<Locale, string> = {
+  en: "English",
+  he: "עברית",
+  ar: "العربية",
+};
+
+export function getLocaleDisplayName(locale: Locale): string {
+  return LOCALE_DISPLAY_NAMES[locale] ?? locale.toUpperCase();
+}
+
 export function isLocale(value: string | undefined | null): value is Locale {
   return value === "en" || value === "he" || value === "ar";
 }

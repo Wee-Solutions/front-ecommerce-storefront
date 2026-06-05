@@ -10,6 +10,10 @@ import { iconsFromStoreConfig } from "@/lib/store-metadata";
 import { getServerStoreContext } from "@/lib/tenant/server-store";
 import { getCategoryTree } from "@/services/categories.service";
 import { getStoreConfiguration } from "@/services/configuration.service";
+import {
+  getLanguageOptionsFromConfig,
+  resolveLocaleFromStoreConfig,
+} from "@/features/store-configuration/store-language-options";
 import type { StoreConfiguration } from "@/types/api/configuration";
 import { themeToCssVars, themes } from "@/theme";
 
@@ -46,11 +50,12 @@ export default async function StoreLayout({
   const ctx = await getServerStoreContext();
   const h = await headers();
   const host = h.get("host") ?? "";
-  const locale = await getServerLocale();
-  const dict = getDictionary(locale);
+  const requestedLocale = await getServerLocale();
 
   if (!ctx) {
-    return <UnknownStore host={host} dict={dict} />;
+    return (
+      <UnknownStore host={host} dict={getDictionary(requestedLocale)} />
+    );
   }
 
   const theme = themes[ctx.themeId] ?? themes.store1;
@@ -61,7 +66,7 @@ export default async function StoreLayout({
   >["categoriesTree"] = [];
 
   try {
-    storeConfig = await getStoreConfiguration(locale);
+    storeConfig = await getStoreConfiguration(requestedLocale);
     if (storeConfig.name?.trim()) {
       storeName = storeConfig.name.trim();
     }
@@ -69,6 +74,10 @@ export default async function StoreLayout({
     storeConfig = null;
     storeName = theme.name;
   }
+
+  const languageOptions = getLanguageOptionsFromConfig(storeConfig);
+  const locale = resolveLocaleFromStoreConfig(storeConfig, requestedLocale);
+  const dict = getDictionary(locale);
 
   try {
     const tree = await getCategoryTree({}, locale);
@@ -90,6 +99,7 @@ export default async function StoreLayout({
               storeConfig={storeConfig}
               categories={categories}
               currentLocale={locale}
+              languages={languageOptions}
             >
               {children}
             </StoreShell>

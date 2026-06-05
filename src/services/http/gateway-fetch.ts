@@ -67,13 +67,23 @@ export async function gatewayFetch<T>(
     }
   }
 
+  const usesNextDataCache =
+    next?.revalidate !== undefined || (next?.tags?.length ?? 0) > 0;
+
   const init: RequestInit = {
     method,
     headers,
     body: body !== undefined ? JSON.stringify(body) : undefined,
-    cache: "no-store",
-    next,
   };
+
+  if (next) {
+    init.next = next;
+  }
+
+  // Next.js forbids combining `cache: "no-store"` with `next.revalidate`.
+  if (!usesNextDataCache) {
+    init.cache = cache ?? "no-store";
+  }
 
   const res = await fetch(url, init);
   const raw = await readJsonSafe(res);

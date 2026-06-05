@@ -35,6 +35,11 @@ import {
 import { CartDrawer } from "@/features/cart/cart-drawer";
 import { useCustomerSession } from "@/features/auth/customer-session";
 import {
+  getOrdersClosedMessage,
+  isStoreAcceptingOrders,
+} from "@/features/store-configuration/store-order-availability";
+import { OrdersClosedBanner } from "@/components/layout/orders-closed-banner";
+import {
   getCategoryIdFromPathname,
   isCategoryBranchActive,
 } from "@/lib/category-tree";
@@ -42,6 +47,7 @@ import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { CartIconButton } from "./cart-icon-button";
 import { HeaderCategoryNav } from "./header-category-nav";
 import { MobileCategorySubtree } from "./mobile-category-subtree";
+import type { StoreLanguageOption } from "@/features/store-configuration/store-language-options";
 import { LocaleSwitcher } from "./locale-switcher";
 import { SearchBar } from "./search-bar";
 import { cn } from "@/lib/utils";
@@ -137,12 +143,14 @@ export function StoreShell({
   storeConfig,
   categories,
   currentLocale,
+  languages,
   children,
 }: {
   storeName: string;
   storeConfig: StoreConfiguration | null;
   categories: CategoryTreeItem[];
   currentLocale: Locale;
+  languages: StoreLanguageOption[];
   children: React.ReactNode;
 }) {
   const [mobileNav, setMobileNav] = useState(false);
@@ -165,8 +173,12 @@ export function StoreShell({
   );
   const t = useTranslations();
   const displayName = storeConfig?.name?.trim() || storeName;
+  const rawMarqueeTexts =
+    storeConfig?.marqueeTexts ??
+    (storeConfig as StoreConfiguration & { MarqueeTexts?: string[] })
+      ?.MarqueeTexts;
   const configMarqueeTexts =
-    storeConfig?.marqueeTexts
+    rawMarqueeTexts
       ?.map((item) => item.trim())
       .filter((item) => item.length > 0) ?? [];
   const marqueeTexts = configMarqueeTexts.length > 0 ? configMarqueeTexts : [];
@@ -214,31 +226,41 @@ export function StoreShell({
   const activeCategoryId = getCategoryIdFromPathname(pathname);
   const searchActive =
     pathname === "/search" || pathname.startsWith("/search?");
-
+  const acceptingOrders = isStoreAcceptingOrders(storeConfig);
+  const ordersClosedMessage = getOrdersClosedMessage(
+    storeConfig,
+    t.checkout.ordersUnavailable,
+  );
   return (
     <>
       <div className="sf-top-marquee border-b border-border/60 py-2 text-center text-[11px] font-semibold tracking-[0.16em] text-foreground/85 uppercase">
-        <div className="sf-marquee mx-auto max-w-7xl px-4 leading-relaxed">
-          <div className="sf-marquee-track">
-            {[0, 1].map((dup) => (
-              <div className="sf-marquee-group" key={dup}>
-                {marqueeTexts.map((text, idx) => (
-                  <span
-                    key={`${dup}-${text}-${idx}`}
-                    className="sf-marquee-pill inline-flex items-center whitespace-nowrap"
-                  >
-                    {idx > 0 ? (
-                      <span className="me-3 opacity-50">•</span>
-                    ) : null}
-                    {text}
-                  </span>
-                ))}
-              </div>
-            ))}
+        {marqueeTexts.length > 0 ? (
+          <div className="sf-marquee mx-auto max-w-7xl px-4 leading-relaxed">
+            <div className="sf-marquee-track">
+              {[0, 1].map((dup) => (
+                <div className="sf-marquee-group" key={dup}>
+                  {marqueeTexts.map((text, idx) => (
+                    <span
+                      key={`${dup}-${text}-${idx}`}
+                      className="sf-marquee-pill inline-flex items-center whitespace-nowrap"
+                    >
+                      {idx > 0 ? (
+                        <span className="me-3 opacity-50">•</span>
+                      ) : null}
+                      {text}
+                    </span>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
-      <header className="sticky top-0 z-40 w-full min-w-0 border-b border-border/80 bg-background/90 shadow-sm backdrop-blur-xl backdrop-saturate-150 supports-backdrop-filter:bg-background/80">
+      <div className="sticky top-0 z-40 w-full min-w-0">
+        {storeConfig && !acceptingOrders ? (
+          <OrdersClosedBanner message={ordersClosedMessage} />
+        ) : null}
+        <header className="w-full min-w-0 border-b border-border/80 bg-background/90 shadow-sm backdrop-blur-xl backdrop-saturate-150 supports-backdrop-filter:bg-background/80">
         {/* Row 1: brand · search (centered) · actions */}
         <div className="mx-auto flex w-full min-w-0 max-w-7xl items-center gap-3 px-4 py-3.5 md:gap-4">
           <Link href="/" className="group block shrink-0 text-start transition">
@@ -258,7 +280,7 @@ export function StoreShell({
           </div>
 
           <div className="ms-auto flex shrink-0 items-center gap-0.5 md:ms-0 md:gap-1">
-            <LocaleSwitcher current={currentLocale} />
+            <LocaleSwitcher current={currentLocale} languages={languages} />
             <Link
               href="/account"
               className={cn(
@@ -305,7 +327,8 @@ export function StoreShell({
         <div className="border-t border-border/60 px-4 py-2.5 md:hidden">
           <SearchBar />
         </div>
-      </header>
+        </header>
+      </div>
 
       <Sheet
         open={mobileNav}

@@ -25,6 +25,10 @@ import {
   trackBeginCheckout,
 } from "@/features/events/track-events";
 import { useStoreConfiguration } from "@/features/store-configuration/store-configuration-store";
+import {
+  getOrdersClosedMessage,
+  isStoreAcceptingOrders,
+} from "@/features/store-configuration/store-order-availability";
 import { formatMoney } from "@/lib/format-currency";
 import { getCustomerShipmentInfos } from "@/services/customers.service";
 import { authenticatedOrderContext } from "@/features/checkout/order-gateway-context";
@@ -97,8 +101,14 @@ export function CheckoutForm() {
     [storeConfig],
   );
   const showBranchDropdown = tenants.length > 1;
-  const ordersUnavailable =
-    storeConfig !== null && tenants.length === 0;
+  const acceptingOrders = isStoreAcceptingOrders(storeConfig);
+  const ordersClosedMessage = getOrdersClosedMessage(
+    storeConfig,
+    t.checkout.ordersUnavailable,
+  );
+  const noBranches = storeConfig !== null && tenants.length === 0;
+  const ordersClosed = storeConfig !== null && !acceptingOrders;
+  const ordersUnavailable = noBranches || ordersClosed;
   const [selectedTenantId, setSelectedTenantId] = useState<string | null>(
     () => tenants[0]?.id ?? null,
   );
@@ -549,7 +559,14 @@ export function CheckoutForm() {
         />
       </div>
 
-      {ordersUnavailable ? (
+      {ordersClosed ? (
+        <p
+          className="rounded-[var(--sf-radius)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+          role="alert"
+        >
+          {ordersClosedMessage}
+        </p>
+      ) : noBranches ? (
         <p
           className="rounded-[var(--sf-radius)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
           role="alert"
