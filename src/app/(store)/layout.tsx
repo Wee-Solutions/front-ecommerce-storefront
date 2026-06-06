@@ -49,11 +49,11 @@ export default async function StoreLayout({
   const locale = await getServerLocale();
   const dict = getDictionary(locale);
 
-  if (!ctx) {
-    return <UnknownStore host={host} dict={dict} />;
-  }
+  // if (!ctx) {
+  //   return <UnknownStore host={host} dict={dict} />;
+  // }
 
-  const theme = themes[ctx.themeId] ?? themes.store1;
+  const theme = themes[ctx?.themeId ?? "store1"] ?? themes.store1;
   let storeConfig: StoreConfiguration | null = null;
   let storeName = theme.name;
   let categories: Awaited<
