@@ -1,6 +1,7 @@
 "use client";
 
 import { KeyRound } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +14,8 @@ type AuthOtpFieldProps = {
   hint?: string;
   disabled?: boolean;
   autoComplete?: string;
+  autoFocus?: boolean;
+  onComplete?: (value: string) => void;
 };
 
 export function AuthOtpField({
@@ -24,9 +27,26 @@ export function AuthOtpField({
   hint,
   disabled,
   autoComplete = "one-time-code",
+  autoFocus,
+  onComplete,
 }: AuthOtpFieldProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
   const normalized = value.slice(0, codeLength);
   const slots = Array.from({ length: codeLength }, (_, i) => normalized[i] ?? "");
+
+  useEffect(() => {
+    if (!autoFocus || disabled) return;
+    const frame = requestAnimationFrame(() => inputRef.current?.focus());
+    return () => cancelAnimationFrame(frame);
+  }, [autoFocus, disabled]);
+
+  const handleChange = (raw: string) => {
+    const next = raw.replace(/\D/g, "").slice(0, codeLength);
+    onChange(next);
+    if (next.length === codeLength && onComplete) {
+      onComplete(next);
+    }
+  };
 
   return (
     <div className="space-y-2">
@@ -37,6 +57,7 @@ export function AuthOtpField({
         {label}
       </label>
       <div
+        dir="ltr"
         className={cn(
           "relative rounded-xl border border-border bg-card/70 p-3 shadow-sm transition-[box-shadow,border-color]",
           "focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/35"
@@ -62,19 +83,25 @@ export function AuthOtpField({
           ))}
         </div>
         <Input
+          ref={inputRef}
           id={id}
           type="text"
           inputMode="numeric"
           autoComplete={autoComplete}
           enterKeyHint="done"
+          dir="ltr"
           value={normalized}
-          onChange={(e) =>
-            onChange(e.target.value.replace(/\D/g, "").slice(0, codeLength))
-          }
+          onChange={(e) => handleChange(e.target.value)}
           disabled={disabled}
           maxLength={codeLength}
           aria-describedby={hint ? `${id}-hint` : undefined}
-          className="absolute inset-0 h-full w-full border-0 bg-transparent opacity-0 shadow-none focus-visible:ring-0"
+          className={cn(
+            "absolute inset-0 z-10 h-full w-full cursor-text border-0 bg-transparent shadow-none",
+            "text-transparent caret-transparent selection:bg-transparent",
+            "opacity-0 focus-visible:ring-0 focus-visible:outline-none",
+            "disabled:pointer-events-none disabled:bg-transparent disabled:opacity-0",
+            "[-webkit-text-fill-color:transparent]",
+          )}
         />
       </div>
       {hint ? (

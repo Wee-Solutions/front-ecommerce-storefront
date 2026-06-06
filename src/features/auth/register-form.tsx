@@ -110,12 +110,12 @@ export function RegisterForm() {
   }, [resendCountdown]);
 
   const registerMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (verificationCode: string) => {
       if (!verificationId) throw new Error("Send a code first.");
       return registerCustomer(
         {
           verificationId,
-          verificationCode: code.trim(),
+          verificationCode: verificationCode.trim(),
           firstName: firstName.trim(),
           lastName: lastName.trim(),
           email: email.trim() || undefined,
@@ -223,6 +223,9 @@ export function RegisterForm() {
             placeholder={t.auth.phonePlaceholder}
             hint={t.auth.phoneHint}
             autoComplete="tel"
+            onEnter={() => {
+              if (canSendCode) sendMutation.mutate();
+            }}
           />
           <AuthContactField
             id={optionalEmailId}
@@ -233,6 +236,9 @@ export function RegisterForm() {
             placeholder={t.auth.emailPlaceholder}
             hint={t.auth.emailHint}
             autoComplete="email"
+            onEnter={() => {
+              if (canSendCode) sendMutation.mutate();
+            }}
           />
           <button
             type="button"
@@ -259,6 +265,17 @@ export function RegisterForm() {
             codeLength={codeLength}
             hint={t.auth.codeHint}
             disabled={registerMutation.isPending}
+            autoFocus
+            onComplete={(completedCode) => {
+              if (
+                !registerMutation.isPending &&
+                firstName.trim() &&
+                lastName.trim() &&
+                phoneNumber.trim()
+              ) {
+                registerMutation.mutate(completedCode);
+              }
+            }}
           />
           <button
             type="button"
@@ -269,7 +286,7 @@ export function RegisterForm() {
               !lastName.trim() ||
               !phoneNumber.trim()
             }
-            onClick={() => registerMutation.mutate()}
+            onClick={() => registerMutation.mutate(code)}
             className={primaryClass}
           >
             {t.auth.createAccount}

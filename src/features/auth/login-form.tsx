@@ -60,6 +60,7 @@ export function LoginForm() {
     },
     onSuccess: (data) => {
       setVerificationId(data.verificationId);
+      setCode("");
       setMessage(t.auth.msgCodeSent);
     },
     onError: (e: unknown) => {
@@ -83,12 +84,12 @@ export function LoginForm() {
   });
 
   const loginMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (verificationCode: string) => {
       if (!verificationId) throw new Error("Send a code first.");
       return loginCustomer(
         {
           verificationId,
-          verificationCode: code.trim(),
+          verificationCode: verificationCode.trim(),
           isPersistent: true,
         },
         language,
@@ -158,6 +159,11 @@ export function LoginForm() {
               }
               disabled={sendMutation.isPending}
               autoComplete={channel === "sms" ? "tel" : "email"}
+              onEnter={() => {
+                if (!sendMutation.isPending && destination.trim()) {
+                  sendMutation.mutate();
+                }
+              }}
             />
           </div>
           <button
@@ -178,11 +184,17 @@ export function LoginForm() {
             onChange={setCode}
             hint={t.auth.codeHint}
             disabled={loginMutation.isPending}
+            autoFocus
+            onComplete={(completedCode) => {
+              if (!loginMutation.isPending) {
+                loginMutation.mutate(completedCode);
+              }
+            }}
           />
           <button
             type="button"
             disabled={loginMutation.isPending || !code.trim()}
-            onClick={() => loginMutation.mutate()}
+            onClick={() => loginMutation.mutate(code)}
             className={primaryClass}
           >
             {t.auth.signIn}

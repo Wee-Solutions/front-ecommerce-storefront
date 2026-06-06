@@ -17,6 +17,7 @@ type AuthContactFieldProps = {
   optionalLabel?: string;
   autoComplete?: string;
   "aria-invalid"?: boolean;
+  onEnter?: () => void;
 };
 
 export function AuthContactField({
@@ -32,6 +33,7 @@ export function AuthContactField({
   optionalLabel,
   autoComplete,
   "aria-invalid": ariaInvalid,
+  onEnter,
 }: AuthContactFieldProps) {
   const Icon = type === "tel" ? Phone : Mail;
 
@@ -67,6 +69,12 @@ export function AuthContactField({
           enterKeyHint="send"
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && onEnter) {
+              e.preventDefault();
+              onEnter();
+            }
+          }}
           placeholder={placeholder}
           disabled={disabled}
           autoComplete={autoComplete}

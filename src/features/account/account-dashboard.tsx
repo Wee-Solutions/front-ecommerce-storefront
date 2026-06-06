@@ -112,13 +112,13 @@ export function AccountDashboard() {
   });
 
   const updatePhoneMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (verificationCode: string) => {
       if (!accessToken || !verificationId) throw new Error("Missing verification");
       return updateCustomerPhoneNumber(
         {
           newPhoneNumber: newPhone.trim(),
           verificationId,
-          verificationCode: code.trim(),
+          verificationCode: verificationCode.trim(),
         },
         accessToken,
         language,
@@ -276,6 +276,11 @@ export function AccountDashboard() {
                 placeholder={t.auth.phonePlaceholder}
                 hint={t.auth.phoneHint}
                 autoComplete="tel"
+                onEnter={() => {
+                  if (!sendPhoneCodeMutation.isPending && newPhone.trim()) {
+                    sendPhoneCodeMutation.mutate();
+                  }
+                }}
               />
               {!verificationId ? (
                 <Button
@@ -294,10 +299,16 @@ export function AccountDashboard() {
                     codeLength={codeLength}
                     hint={t.auth.codeHint}
                     disabled={updatePhoneMutation.isPending}
+                    autoFocus
+                    onComplete={(completedCode) => {
+                      if (!updatePhoneMutation.isPending) {
+                        updatePhoneMutation.mutate(completedCode);
+                      }
+                    }}
                   />
                   <div className="flex flex-wrap items-center gap-2">
                     <Button
-                      onClick={() => updatePhoneMutation.mutate()}
+                      onClick={() => updatePhoneMutation.mutate(code)}
                       disabled={updatePhoneMutation.isPending || !code.trim()}
                     >
                       {t.account.verifyAndUpdatePhone}
