@@ -1,0 +1,25 @@
+/**
+ * Locale font CSS variables (consumed by Tailwind `@theme` and `typography.css`).
+ * Font files are registered in `src/theme/fonts.ts`.
+ */
+
+html[lang="ar"] {
+  --font-sans: var(--font-arabic);
+  --font-ui: var(--font-arabic);
+  --font-display: var(--font-arabic);
+  --font-heading: var(--font-arabic);
+  --font-mono: var(--font-arabic);
+}
+
+html[lang="he"] {
+  --font-sans: var(--font-hebrew);
+  --font-ui: var(--font-hebrew);
+  --font-display: var(--font-hebrew);
+  --font-heading: var(--font-hebrew);
+  --font-mono: var(--font-hebrew);
+}
+
+html[lang="en"] {
+  --font-sans: var(--font-ui);
+  --font-heading: var(--font-display);
+}

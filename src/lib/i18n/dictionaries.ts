@@ -172,6 +172,10 @@ export type Dictionary = {
     bankTransferReferenceHint: string;
     bankCopy: string;
     bankCopied: string;
+    branch: string;
+    selectBranch: string;
+    branchRequired: string;
+    ordersUnavailable: string;
   };
   account: {
     title: string;
@@ -275,9 +279,10 @@ export type Dictionary = {
     shippingPickupHint: string;
     shipmentStatusLabel: string;
     shipmentStatusPending: string;
-    shipmentStatusInTransit: string;
+    shipmentStatusPrepared: string;
+    shipmentStatusReadyForPickup: string;
+    shipmentStatusOutForDelivery: string;
     shipmentStatusDelivered: string;
-    shipmentStatusCancelled: string;
     shipmentStatusUnknown: string;
     shippingCostLabel: string;
     deliveryAddress: string;
@@ -517,6 +522,10 @@ const en: Dictionary = {
       "Important: include your name and order number in the transfer reference so we can match your payment.",
     bankCopy: "Copy",
     bankCopied: "Copied",
+    branch: "Branch",
+    selectBranch: "Select a branch",
+    branchRequired: "Please select a branch before placing your order.",
+    ordersUnavailable: "This store can't accept orders right now.",
   },
   account: {
     title: "Account",
@@ -620,9 +629,10 @@ const en: Dictionary = {
     shippingPickupHint: "Collect from the store — no delivery address.",
     shipmentStatusLabel: "Shipment status",
     shipmentStatusPending: "Pending",
-    shipmentStatusInTransit: "In transit",
+    shipmentStatusPrepared: "Prepared",
+    shipmentStatusReadyForPickup: "Ready for pickup",
+    shipmentStatusOutForDelivery: "Out for delivery",
     shipmentStatusDelivered: "Delivered",
-    shipmentStatusCancelled: "Cancelled",
     shipmentStatusUnknown: "Unknown status",
     shippingCostLabel: "Shipping cost",
     deliveryAddress: "Delivery address",
@@ -854,6 +864,10 @@ const he: Dictionary = {
       "חשוב: ציינו בשדה ההפניה את השם ומספר ההזמנה כדי שנוכל לזהות את התשלום.",
     bankCopy: "העתקה",
     bankCopied: "הועתק",
+    branch: "סניף",
+    selectBranch: "בחרו סניף",
+    branchRequired: "יש לבחור סניף לפני ביצוע ההזמנה.",
+    ordersUnavailable: "החנות אינה מקבלת הזמנות כרגע.",
   },
   account: {
     title: "חשבון",
@@ -957,9 +971,10 @@ const he: Dictionary = {
     shippingPickupHint: "איסוף מהחנות — ללא כתובת משלוח.",
     shipmentStatusLabel: "סטטוס משלוח",
     shipmentStatusPending: "ממתין",
-    shipmentStatusInTransit: "בדרך",
+    shipmentStatusPrepared: "בהכנה",
+    shipmentStatusReadyForPickup: "מוכן לאיסוף",
+    shipmentStatusOutForDelivery: "בדרך אליך",
     shipmentStatusDelivered: "נמסר",
-    shipmentStatusCancelled: "בוטל",
     shipmentStatusUnknown: "סטטוס לא ידוע",
     shippingCostLabel: "עלות משלוח",
     deliveryAddress: "כתובת משלוח",
@@ -1191,6 +1206,10 @@ const ar: Dictionary = {
       "مهم: اذكر اسمك ورقم الطلب في بيانات التحويل ليتم ربط الدفع.",
     bankCopy: "نسخ",
     bankCopied: "تم النسخ",
+    branch: "فرع",
+    selectBranch: "اختر فرعاً",
+    branchRequired: "يرجى اختيار فرع قبل تأكيد الطلب.",
+    ordersUnavailable: "المتجر لا يقبل الطلبات حالياً.",
   },
   account: {
     title: "الحساب",
@@ -1294,9 +1313,10 @@ const ar: Dictionary = {
     shippingPickupHint: "الاستلام من المتجر — بدون عنوان توصيل.",
     shipmentStatusLabel: "حالة الشحن",
     shipmentStatusPending: "قيد الانتظار",
-    shipmentStatusInTransit: "قيد النقل",
+    shipmentStatusPrepared: "قيد التحضير",
+    shipmentStatusReadyForPickup: "جاهز للاستلام",
+    shipmentStatusOutForDelivery: "في الطريق",
     shipmentStatusDelivered: "تم التسليم",
-    shipmentStatusCancelled: "ملغي",
     shipmentStatusUnknown: "حالة غير معروفة",
     shippingCostLabel: "تكلفة الشحن",
     deliveryAddress: "عنوان التوصيل",

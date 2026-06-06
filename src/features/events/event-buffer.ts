@@ -1,5 +1,4 @@
 import { isMockApiEnabled } from "@/config/mock-mode";
-import { env } from "@/config/env";
 import { isGuid } from "@/lib/guards";
 import {
   trackEvents,
@@ -15,7 +14,7 @@ import {
 const MAX_BATCH = 50;
 const FLUSH_DEBOUNCE_MS = 2000;
 
-let buffer: TrackEventItem[] = [];
+const buffer: TrackEventItem[] = [];
 let flushTimer: ReturnType<typeof setTimeout> | null = null;
 let flushPromise: Promise<void> | null = null;
 let gatewayContext: EventGatewayContext = { language: "en" };
@@ -34,11 +33,6 @@ function scheduleFlush(): void {
     flushTimer = null;
     void flushEventBuffer();
   }, FLUSH_DEBOUNCE_MS);
-}
-
-function withTenant(item: TrackEventItem): TrackEventItem {
-  if (item.tenantId) return item;
-  return { ...item, tenantId: env.tenantId };
 }
 
 function validatePayloadObject(
@@ -97,15 +91,14 @@ function validateEvent(item: TrackEventItem): boolean {
 export function enqueueTrackEvent(item: TrackEventItem): void {
   if (!isBrowser() || isMockApiEnabled()) return;
 
-  const normalized = withTenant(item);
-  if (!validateEvent(normalized)) {
+  if (!validateEvent(item)) {
     if (process.env.NODE_ENV === "development") {
-      console.warn("[events] skipped invalid event", normalized);
+      console.warn("[events] skipped invalid event", item);
     }
     return;
   }
 
-  buffer.push(normalized);
+  buffer.push(item);
   if (buffer.length >= MAX_BATCH) {
     void flushEventBuffer();
   } else {

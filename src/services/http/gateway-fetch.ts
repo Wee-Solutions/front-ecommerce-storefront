@@ -1,6 +1,7 @@
 import { env, getGatewayBaseUrl } from "@/config/env";
 import { getOrCreateGuestIdentifier } from "@/lib/guest-identifier";
 import { GatewayRequestError } from "@/types/api/gateway";
+import { readGatewayErrorMessage } from "./gateway-error-message";
 import { parseClientJson, readJsonSafe } from "./parse-response";
 
 const API = "/api/v1/client";
@@ -45,8 +46,6 @@ export async function gatewayFetch<T>(
     "Vendor-Code": env.vendorCode,
     "Frontend-Platform": "W",
     "Frontend-Platform-Version": "1",
-    "Tenant-Id": env.tenantId,
-    "Vendor-Id": env.vendorId,
   };
 
   if (body !== undefined) {
@@ -68,31 +67,29 @@ export async function gatewayFetch<T>(
     }
   }
 
+  const usesNextDataCache =
+    next?.revalidate !== undefined || (next?.tags?.length ?? 0) > 0;
+
   const init: RequestInit = {
     method,
     headers,
     body: body !== undefined ? JSON.stringify(body) : undefined,
-    cache: cache ?? "default",
-    next,
   };
+
+  if (next) {
+    init.next = next;
+  }
+
+  // Next.js forbids combining `cache: "no-store"` with `next.revalidate`.
+  if (!usesNextDataCache) {
+    init.cache = cache ?? "no-store";
+  }
 
   const res = await fetch(url, init);
   const raw = await readJsonSafe(res);
 
   if (!res.ok) {
-    const msg =
-      raw &&
-      typeof raw === "object" &&
-      raw !== null &&
-      "errorMessage" in raw &&
-      typeof (raw as { errorMessage?: string }).errorMessage === "string"
-        ? (raw as { errorMessage: string }).errorMessage
-        : typeof raw === "object" &&
-            raw !== null &&
-            "errorCode" in raw &&
-            typeof (raw as { errorCode?: string }).errorCode === "string"
-          ? (raw as { errorCode: string }).errorCode
-          : res.statusText;
+    const msg = readGatewayErrorMessage(raw) ?? res.statusText;
     throw new GatewayRequestError(msg, res.status, raw);
   }
 

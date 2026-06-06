@@ -1,5 +1,4 @@
 import type { CartLine } from "@/features/cart/cart-types";
-import { env } from "@/config/env";
 import type { CheckoutOrderRequest, CreateOrderRequest } from "@/types/api/order";
 import {
   OrderShippingMethod,
@@ -59,7 +58,7 @@ export function buildCreateOrderRequest(
     shippingAddressId: isDelivery ? submission.shippingAddressId : null,
     customerNotes: submission.customerNotes?.trim() || undefined,
     couponCode: submission.couponCode?.trim() || undefined,
-    tenantId: env.tenantId,
+    tenantId: submission.tenantId?.trim() || undefined,
     orderProducts: buildOrderLinesFromCart(cartLines),
   };
 }

@@ -7,17 +7,21 @@ import type { CheckoutOrderResponse } from "@/types/api/order";
 type Props = {
   pricing: CheckoutOrderResponse | undefined;
   isLoading: boolean;
-  hasError: boolean;
+  errorMessage?: string | null;
 };
 
-export function CheckoutPricingSummary({ pricing, isLoading, hasError }: Props) {
+export function CheckoutPricingSummary({
+  pricing,
+  isLoading,
+  errorMessage,
+}: Props) {
   const t = useTranslations();
   const locale = useLocale();
 
-  if (hasError) {
+  if (errorMessage) {
     return (
       <p className="text-sm text-red-600" role="alert">
-        {t.checkout.pricingLoadError}
+        {errorMessage}
       </p>
     );
   }

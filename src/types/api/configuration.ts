@@ -24,6 +24,11 @@ export type SelectionListItem = {
   name: string;
 };
 
+export type StoreTenant = {
+  id: string;
+  name: string;
+};
+
 export type GetCitySelectionListRequest = {
   searchTerm?: string;
   take?: number;
@@ -55,4 +60,9 @@ export type StoreConfiguration = {
   /** Enabled payment methods for this vendor (e.g. 1 cash, 2 card, 3 bank). */
   supportedPaymentMethods: number[];
   bankInfo?: StoreBankInfo | null;
+  tenants: StoreTenant[];
+  /** When false, checkout is disabled and a store-wide notice is shown. */
+  acceptOrders?: boolean;
+  /** Optional message shown when `acceptOrders` is false. */
+  ordersClosedMessage?: string | null;
 };

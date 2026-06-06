@@ -1,4 +1,3 @@
-import { env } from "@/config/env";
 import { enqueueTrackEvent, enqueueTrackEvents } from "@/features/events/event-buffer";
 import { PaymentMethod, type PaymentMethodValue } from "@/types/api/order";
 import { EventType } from "@/types/api/events";
@@ -104,7 +103,6 @@ export function trackCheckout(params: {
   enqueueTrackEvent({
     type: EventType.Checkout,
     orderId: params.orderId,
-    tenantId: env.tenantId,
     payload: {
       paymentMethod: paymentMethodEventName(params.paymentMethod),
     },
@@ -115,7 +113,6 @@ export function trackViewOrderConfirmation(orderId: string): void {
   enqueueTrackEvent({
     type: EventType.ViewOrderConfirmation,
     orderId,
-    tenantId: env.tenantId,
   });
 }
 

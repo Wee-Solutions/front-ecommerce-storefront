@@ -9,10 +9,7 @@ type Props = {
   children: ReactNode;
 };
 
-/**
- * Hydrates the global store from the server snapshot before children render,
- * so any client subtree can read config on first paint without a flash.
- */
+/** Hydrates the global store from the server layout snapshot. */
 export function StoreConfigProvider({ initialConfig, children }: Props) {
   const serializedRef = useRef<string | null>(null);
   const serialized =

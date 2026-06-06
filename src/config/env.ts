@@ -5,12 +5,8 @@ export const env = {
   /** Fallback vendor when host has no mapping (e.g. plain localhost). */
   // defaultVendorCode:
   //   process.env.NEXT_PUBLIC_DEFAULT_VENDOR_CODE ?? "DEMO_VENDOR",
-  vendorId:
-    process.env.NEXT_PUBLIC_VENDOR_ID ?? "00000000-0000-0000-0000-000000000001",
-  tenantId:
-    process.env.NEXT_PUBLIC_TENANT_ID ?? "00000000-0000-0000-0000-000000000002",
   /** Sent on every gateway request as the `Vendor-Code` header. */
-  vendorCode: process.env.NEXT_PUBLIC_VENDOR_CODE ?? "default",
+  vendorCode: process.env.NEXT_PUBLIC_VENDOR_CODE ?? "selva",
   /**
    * ISO 4217 code for price display (default Israeli new shekel).
    * Override with `NEXT_PUBLIC_STORE_CURRENCY` (e.g. USD, EUR). Legacy: `NEXT_PUBLIC_CURRENCY`.

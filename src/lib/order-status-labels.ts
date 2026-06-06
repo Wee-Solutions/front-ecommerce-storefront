@@ -5,7 +5,7 @@ import {
   OrderStatus,
   OrderPaymentStatus,
   PaymentMethod,
-  SHIPMENT_PROGRESS_STATUSES,
+  getShipmentProgressStatuses,
 } from "@/types/api/order";
 
 type OrdersDict = Dictionary["orders"];
@@ -64,35 +64,48 @@ export function shippingMethodLabel(method: number, o: OrdersDict): string {
   }
 }
 
-/** Mirrors backend `OrderShipmentStatus` when known; extend as API documents values. */
+/** Mirrors backend `OrderShipmentStatus`. */
 export function shipmentStatusLabel(status: number, o: OrdersDict): string {
   switch (status) {
     case OrderShipmentStatus.Pending:
       return o.shipmentStatusPending;
-    case OrderShipmentStatus.InTransit:
-      return o.shipmentStatusInTransit;
+    case OrderShipmentStatus.Prepared:
+      return o.shipmentStatusPrepared;
+    case OrderShipmentStatus.ReadyForPickup:
+      return o.shipmentStatusReadyForPickup;
+    case OrderShipmentStatus.OutForDelivery:
+      return o.shipmentStatusOutForDelivery;
     case OrderShipmentStatus.Delivered:
       return o.shipmentStatusDelivered;
-    case OrderShipmentStatus.Cancelled:
-      return o.shipmentStatusCancelled;
     default:
       return `${o.shipmentStatusUnknown} (${status})`;
   }
 }
 
-export function shipmentProgressStepLabels(o: OrdersDict): string[] {
-  return SHIPMENT_PROGRESS_STATUSES.map((value) => shipmentStatusLabel(value, o));
+export function shipmentProgressStepLabels(
+  shippingMethod: number,
+  o: OrdersDict,
+): string[] {
+  return getShipmentProgressStatuses(shippingMethod).map((value) =>
+    shipmentStatusLabel(value, o),
+  );
 }
 
-/** Index into `SHIPMENT_PROGRESS_STATUSES`, or -1 when cancelled / unknown. */
-export function shipmentProgressStepIndex(status: number): number {
-  if (status === OrderShipmentStatus.Cancelled) return -1;
-  const idx = SHIPMENT_PROGRESS_STATUSES.indexOf(
-    status as (typeof SHIPMENT_PROGRESS_STATUSES)[number],
-  );
+/** Index into the method-specific progress steps, or -1 when unknown. */
+export function shipmentProgressStepIndex(
+  status: number,
+  shippingMethod: number,
+): number {
+  const steps = getShipmentProgressStatuses(shippingMethod);
+  const idx = steps.indexOf(status as (typeof steps)[number]);
   if (idx >= 0) return idx;
-  if (status > OrderShipmentStatus.Delivered) return -1;
-  return 0;
+  if (status > OrderShipmentStatus.Delivered) {
+    return steps.length - 1;
+  }
+  for (let i = steps.length - 1; i >= 0; i--) {
+    if (status >= steps[i]) return i;
+  }
+  return -1;
 }
 
 export function orderStatusTone(
