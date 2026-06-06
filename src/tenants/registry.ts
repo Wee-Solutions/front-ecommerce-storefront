@@ -21,14 +21,15 @@ const hostMap: Record<string, () => StoreDefinition> = {
   "store2.localhost": () => ({
     themeId: "store2",
   }),
-  localhost: () => ({
-    themeId: env.defaultThemeId,
-  }),
+  localhost: () => defaultStore(),
 };
 
-export function resolveStoreFromHost(host: string): StoreDefinition | null {
+const defaultStore = (): StoreDefinition => ({
+  themeId: env.defaultThemeId,
+});
+
+export function resolveStoreFromHost(host: string): StoreDefinition {
   const key = host.split(":")[0]?.toLowerCase() ?? "";
   const resolver = hostMap[key];
-  if (!resolver) return null;
-  return resolver();
+  return resolver?.() ?? defaultStore();
 }

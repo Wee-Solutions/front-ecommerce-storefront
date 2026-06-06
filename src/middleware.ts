@@ -30,21 +30,6 @@ export function middleware(request: NextRequest) {
   const hostHeader = request.headers.get("host") ?? "";
   const hostname = hostHeader.split(":")[0]?.toLowerCase() ?? "";
   const store = resolveStoreFromHost(hostname);
-
-  if (!store) {
-    const res = NextResponse.next({
-      request: { headers: requestHeaders },
-    });
-    if (!request.cookies.get(LOCALE_COOKIE)) {
-      res.cookies.set(LOCALE_COOKIE, locale, {
-        path: "/",
-        sameSite: "lax",
-        maxAge: LOCALE_MAX_AGE,
-      });
-    }
-    return res;
-  }
-
   requestHeaders.set("x-sf-theme-id", store.themeId);
 
   const res = NextResponse.next({

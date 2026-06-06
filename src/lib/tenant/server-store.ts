@@ -22,7 +22,5 @@ export async function getServerStoreContext(): Promise<ServerStoreContext | null
     };
   }
 
-  const resolved = resolveStoreFromHost(hostname);
-  if (!resolved) return null;
-  return { ...resolved, host: hostname };
+  return { ...resolveStoreFromHost(hostname), host: hostname };
 }

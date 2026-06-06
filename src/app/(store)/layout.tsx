@@ -10,12 +10,8 @@ import { iconsFromStoreConfig } from "@/lib/store-metadata";
 import { getServerStoreContext } from "@/lib/tenant/server-store";
 import { getCategoryTree } from "@/services/categories.service";
 import { getStoreConfiguration } from "@/services/configuration.service";
-import {
-  getLanguageOptionsFromConfig,
-  resolveLocaleFromStoreConfig,
-} from "@/features/store-configuration/store-language-options";
 import type { StoreConfiguration } from "@/types/api/configuration";
-import { themeToCssVars, themes } from "@/theme";
+import { themeToCssVars, themes } from "@/tenants/registry";
 
 export async function generateMetadata(): Promise<Metadata> {
   const ctx = await getServerStoreContext();
@@ -50,13 +46,14 @@ export default async function StoreLayout({
   const ctx = await getServerStoreContext();
   const h = await headers();
   const host = h.get("host") ?? "";
-  const requestedLocale = await getServerLocale();
+  const locale = await getServerLocale();
+  const dict = getDictionary(locale);
 
-  // if (!ctx) {
-  //   return <UnknownStore host={host} dict={dict} />;
-  // }
+  if (!ctx) {
+    return <UnknownStore host={host} dict={dict} />;
+  }
 
-  const theme = themes[ctx?.themeId ?? "store1"] ?? themes.store1;
+  const theme = themes[ctx.themeId] ?? themes.store1;
   let storeConfig: StoreConfiguration | null = null;
   let storeName = theme.name;
   let categories: Awaited<
@@ -64,7 +61,7 @@ export default async function StoreLayout({
   >["categoriesTree"] = [];
 
   try {
-    storeConfig = await getStoreConfiguration(requestedLocale);
+    storeConfig = await getStoreConfiguration(locale);
     if (storeConfig.name?.trim()) {
       storeName = storeConfig.name.trim();
     }
@@ -72,10 +69,6 @@ export default async function StoreLayout({
     storeConfig = null;
     storeName = theme.name;
   }
-
-  const languageOptions = getLanguageOptionsFromConfig(storeConfig);
-  const locale = resolveLocaleFromStoreConfig(storeConfig, requestedLocale);
-  const dict = getDictionary(locale);
 
   try {
     const tree = await getCategoryTree({}, locale);
@@ -97,7 +90,6 @@ export default async function StoreLayout({
               storeConfig={storeConfig}
               categories={categories}
               currentLocale={locale}
-              languages={languageOptions}
             >
               {children}
             </StoreShell>
