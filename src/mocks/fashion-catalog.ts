@@ -55,6 +55,7 @@ export const MOCK_PRODUCT_DETAILS: ProductDetail[] = [
       {
         propertyId: "prop-size-1",
         propertyName: "Size",
+        type: 0,
         values: [
           { propertyValueId: "pv-sz-xs", value: "XS" },
           { propertyValueId: "pv-sz-s", value: "S" },

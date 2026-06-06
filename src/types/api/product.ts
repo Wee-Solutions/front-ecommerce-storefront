@@ -44,6 +44,15 @@ export type ProductSearchResponse = {
 
 export type ImageItem = { id: string; url: string };
 
+export enum PropertyType {
+  Default = 0,
+  Color = 1,
+}
+
+export type PropertyValueAdditionalData = {
+  color?: string;
+};
+
 export type ProductDetail = {
   id: string;
   vendorId: string;
@@ -72,7 +81,12 @@ export type ProductDetail = {
   properties: {
     propertyId: string;
     propertyName: string;
-    values: { propertyValueId: string; value: string }[];
+    type: PropertyType;
+    values: {
+      propertyValueId: string;
+      value: string;
+      additionalData?: PropertyValueAdditionalData | null;
+    }[];
   }[];
   variants: {
     id: string;

@@ -160,6 +160,7 @@ export function ProductPurchasePanel({
           price={displayPrice}
           compareAt={compareAt}
           isVATExcluded={product.isVATExcluded}
+          className="mt-4"
         />
 
         {!complete && product.properties.length > 0 && (
