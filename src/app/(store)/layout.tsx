@@ -8,6 +8,7 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import { getServerLocale } from "@/lib/i18n/server-locale";
 import { iconsFromStoreConfig } from "@/lib/store-metadata";
 import { getServerStoreContext } from "@/lib/tenant/server-store";
+import { getLanguageOptionsFromConfig } from "@/features/store-configuration/store-language-options";
 import { getCategoryTree } from "@/services/categories.service";
 import { getStoreConfiguration } from "@/services/configuration.service";
 import type { StoreConfiguration } from "@/types/api/configuration";
@@ -77,6 +78,8 @@ export default async function StoreLayout({
     categories = [];
   }
 
+  const languageOptions = getLanguageOptionsFromConfig(storeConfig);
+
   return (
     <AppProviders language={locale} initialStoreConfig={storeConfig}>
       <LocaleProvider locale={locale} dict={dict}>
@@ -90,6 +93,7 @@ export default async function StoreLayout({
               storeConfig={storeConfig}
               categories={categories}
               currentLocale={locale}
+              languages={languageOptions}
             >
               {children}
             </StoreShell>
