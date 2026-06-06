@@ -14,6 +14,7 @@ import {
   paymentStatusLabel,
 } from "@/lib/order-status-labels";
 import { formatMoney } from "@/lib/format-currency";
+import { formatDateTimeDDMMYYYYHHMMSS } from "@/lib/format-date";
 import { OrderPricingSummary } from "@/features/account/order-pricing-summary";
 import { OrderShipmentSection } from "@/features/account/order-shipment-section";
 import { getCustomerOrderById } from "@/services/orders.service";
@@ -109,10 +110,10 @@ export function OrderDetailClient({ orderId }: { orderId: string }) {
           </p>
           <p className="mt-3 text-xs text-muted-foreground">
             {t.orders.placedOn}{" "}
-            {new Date(order.createdAt).toLocaleString(locale)}
+            {formatDateTimeDDMMYYYYHHMMSS(order.createdAt)}
             {" · "}
             {t.orders.lastUpdated}{" "}
-            {new Date(order.updatedAt).toLocaleString(locale)}
+            {formatDateTimeDDMMYYYYHHMMSS(order.updatedAt)}
           </p>
         </div>
         <div className="flex flex-col items-start gap-2 sm:items-end">

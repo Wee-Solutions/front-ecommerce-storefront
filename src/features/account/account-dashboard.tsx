@@ -8,7 +8,8 @@ import { AuthOtpField } from "@/components/auth/auth-otp-field";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useLocale, useTranslations } from "@/contexts/locale-context";
+import { useTranslations } from "@/contexts/locale-context";
+import { formatDateDDMMYYYY } from "@/lib/format-date";
 import { useVendor } from "@/contexts/vendor-context";
 import { sendVerificationCode } from "@/services/auth.service";
 import {
@@ -24,7 +25,6 @@ const RESEND_WAIT_SEC = 30;
 
 export function AccountDashboard() {
   const t = useTranslations();
-  const locale = useLocale();
   const { language } = useVendor();
   const { accessToken, clear } = useCustomerSession();
   const [message, setMessage] = useState<string | null>(null);
@@ -157,7 +157,7 @@ export function AccountDashboard() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-border/60 bg-muted/20 px-4 py-3">
         <p className="text-sm text-muted-foreground">
-          {profile ? `#${profile.number} · ${new Date(profile.createdAt).toLocaleDateString(locale)}` : t.account.signedInAs}
+          {profile ? `#${profile.number} · ${formatDateDDMMYYYY(profile.createdAt)}` : t.account.signedInAs}
         </p>
         <Button variant="ghost" size="sm" onClick={() => clear()}>
           {t.account.signOut}
